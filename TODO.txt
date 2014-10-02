@@ -1,0 +1,5 @@
+systemtap to capture send patterns from specific applications running in ns
+study tmix in general, what is the benefit
+discuss about the general API to extend but not break mininet
+look into the ns-3 socket API and how it works, or either primex
+prepare a shared testing environment (use a base topology and traffic matrix)
