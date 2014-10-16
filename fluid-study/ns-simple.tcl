@@ -3,7 +3,7 @@ set ns [new Simulator]
 set tcp_tick       0.001
 set dt 0.1 ; # sampling interval (in seconds) used when logging cwnd etc
 set psize   1500
-set bsize 1000000
+set bsize 10000000
 set max_window     20000
 set tcp_tick       0.001
 
@@ -86,11 +86,8 @@ print-tcpstats [set tcp] [set sink] 0 tcp_cwnd_1 ;
 set ftp [new Application/FTP]
 $ftp attach-agent $tcp
 $ftp set type_ FTP
-
-$ftp proc done {} {
-	global ns
-	$ftp reset
-}
+$ftp set maxpkts_ $bsize
+$ftp set enableResume_ true
 
 #Setup a second TCP connection
 set tcp2 [new Agent/TCP]
@@ -102,23 +99,34 @@ $tcp2 set packetSize_ [expr $psize - 40]
 $tcp2 set tcpTick_ $tcp_tick
 
 $ns attach-agent $n1 $tcp2
-set sink [new Agent/TCPSink]
-$ns attach-agent $n3 $sink
-$ns connect $tcp2 $sink
-print-tcpstats [set tcp2] [set sink] 0 tcp_cwnd_2 ;
+set sink2 [new Agent/TCPSink]
+$ns attach-agent $n3 $sink2
+$ns connect $tcp2 $sink2
+print-tcpstats [set tcp2] [set sink2] 0 tcp_cwnd_2 ;
 
 #Setup a FTP over TCP connection
 set ftp2 [new Application/FTP]
 $ftp2 attach-agent $tcp2
 $ftp2 set type_ FTP
+$ftp2 set maxpkts_ $bsize
+$ftp2 set enableResume_ true
+
+Application/FTP instproc resume {} {
+    global ns
+    puts "finished tcp"
+    $ns at [expr [$ns now] + 0.5] "[$self agent] reset"
+}
 
 #Schedule events for the CBR and FTP agents
+puts "Total number of packets [expr $bsize/$psize]"
 $ns at 0.0 "$ftp start"
 $ns at 0.0 "$ftp2 start"
-$ns at 0.0 "$ftp producemore [expr $bsize/$psize]"
-$ns at 0.0 "$ftp2 producemore [expr $bsize/$psize]"
-$ns at 100.0 "$ftp stop"
-$ns at 100.0 "$ftp2 stop"
+$ns at 0.0 "$ftp produce [expr $bsize/$psize]"
+$ns at 0.0 "$ftp2 produce [expr $bsize/$psize]"
+#$ns at 0.0 "$ftp producemore [expr $bsize/$psize]"
+#$ns at 0.0 "$ftp2 producemore [expr $bsize/$psize]"
+#$ns at 100.0 "$ftp stop"
+#$ns at 100.0 "$ftp2 stop"
 
 $ns at 100.0 "finish"
 
