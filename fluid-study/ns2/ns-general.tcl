@@ -57,6 +57,7 @@ set file [open conflux-mininet/fluid-study/ns2/out-$name.tr w]
 $ns trace-all $file
 for {set i 0}  {$i < $FlowNumber}  {incr i 1} {
 	set tcpfile($i) [open conflux-mininet/fluid-study/ns2/out-$name.tcp$i w]
+#	set sentfile($i) [open conflux-mininet/fluid-study/ns2/out-$name.sent$i w]
 }
 Agent/TCP set trace_all_oneline_ true
 ##### Setting Main Node
@@ -93,6 +94,7 @@ for {set i 0}  {$i < $FlowNumber}  {incr i 1}  {
 	$ns connect $tcp($i) $sink($i)
 ##### Setting tcp trace to output
 	$tcp($i) attach-trace $tcpfile($i)
+#	$tcp($i) attach-trace $sentfile($i)
 	$tcp($i) trace cwnd_
 ##### Setting FTP Application
 	set ftp($i) [new Application/FTP]
