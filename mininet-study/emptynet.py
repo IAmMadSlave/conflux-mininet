@@ -7,6 +7,7 @@ This example shows how to create an empty Mininet object
 
 from mininet.net import Mininet
 from mininet.node import Controller
+from mininet.node import Node
 from mininet.cli import CLI
 from mininet.log import setLogLevel, info
 
@@ -16,19 +17,18 @@ def emptyNet():
 
     net = Mininet( controller=Controller )
 
-    info( '*** Adding controller\n' )
-    net.addController( 'c0' )
-
     info( '*** Adding hosts\n' )
-    h1 = net.addHost( 'h1', ip='10.0.0.1' )
-    h2 = net.addHost( 'h2', ip='10.0.0.2' )
-
-    info( '*** Adding switch\n' )
-    s3 = net.addSwitch( 's3' )
-
+    primex = net.addHost( 'primex', ip='10.10.1.1/24' )
+    h1 = net.addHost( 'h1', ip='10.10.1.2', defaultRoute='via 10.10.1.1' )
+    h2 = net.addHost( 'h2', ip='10.10.3.1', defaultRoute='via 10.10.3.2' )
+    
     info( '*** Creating links\n' )
-    net.addLink( h1, s3 )
-    net.addLink( h2, s3 )
+    net.addLink( h1, primex, intfName2='r0-eth1', params2={ 'ip' : '10.10.1.1/24' } )
+    net.addLink( h2, primex, intfName2='r0-eth2', params2={ 'ip' : '10.10.3.2/24' } )
+
+    info( '*** Running primex\n' )
+    cmd = '/home/cesar/primogeni/netsim/primex -tp 10.10.3.2 166 -tp 10.10.1.1 605 600 /home/cesar/PortalsExogeni_part_1.tlv 2>test.out &'
+    primex.cmd( cmd )
 
     info( '*** Starting network\n')
     net.start()
