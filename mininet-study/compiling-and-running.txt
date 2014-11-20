@@ -1,0 +1,39 @@
+================= (Compile TLV with Portals)
+PART_STR = number of partitions :: first partition : number of processors, second partition : number of processors
+example: 2::1:1,1:2 means 2 partitions where 1st partition has 1 processor and 2nd partition also 1 processor
+example: 1::1:1 means 1 partition where 1st partition has 1 processor
+
+RUNTIME_ENV = c_master is set, c_slave1 is expecting 2 interfaces with 2 different portals, one on each
+              c_slave1 is configured to run on interfaces eth2 and eth3 respectively with the ip addresses
+
+Note: when 1 partition is used, it seems that RUNTIME_ENV have to be only 1 elem/slave in [ ... ]
+
+/usr/bin/java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.1.1,eth3,10.10.3.2] -DPORTAL_LINKS=c_slave1:eth2,topnet.net01.net1.r1.portal_10_1_2_0,c_slave1:eth3,topnet.net2.r5.portal_10_1_3_0 -jar ./../dist/jprime.jar create PortalsExogeni java_models/PortalsExogeni.java
+
+================= (Running TLV with Portals)
+
+ip link add h1-eth0 type veth peer name h3-eth0
+ip link add h2-eth0 type veth peer name h3-eth1
+
+ip netns add h1
+ip netns add h2
+ip netns add h3
+
+ip link set h1-eth0 netns h1
+ip link set h2-eth0 netns h2
+ip link set h3-eth0 netns h3
+ip link set h3-eth1 netns h3
+
+ip netns exec h1 ifconfig h1-eth0 10.10.1.2
+ip netns exec h2 ifconfig h2-eth0 10.10.3.1
+ip netns exec h3 ifconfig h3-eth0 10.10.1.1
+ip netns exec h3 ifconfig h3-eth1 10.10.3.2
+
+ip netns exec h1 ifconfig lo up
+ip netns exec h2 ifconfig lo up
+ip netns exec h3 ifconfig lo up
+ip netns exec h1 ping -c5 10.10.1.1
+
+ip netns exec h1 ip route add 192.168.0.0/16 via 10.10.1.1 dev h1-eth0
+ip netns exec h2 ip route add 192.168.0.0/16 via 10.10.3.2 dev h2-eth0
+ip netns exec h3 /home/cesar/primogeni/netsim/primex -tp 10.10.3.2 166 -tp 10.10.1.1 605 600 /home/cesar/PortalsExogeni_part_1.tlv

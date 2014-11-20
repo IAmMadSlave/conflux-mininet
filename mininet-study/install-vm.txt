@@ -42,13 +42,3 @@ sudo mn
 sudo ~/mininet/examples/sshd.py 
 (in another terminal type ssh 10.0.0.1, and then ping 10.0.0.2)
 
-================= (Compile TLV with Portals)
-PART_STR = number of partitions :: first partition : number of processors, second partition : number of processors
-example: 2::1:1,1:2 means 2 partitions where 1st partition has 1 processor and 2nd partition also 1 processor
-example: 1::1:1 means 1 partition where 1st partition has 1 processor
-
-RUNTIME_ENV = c_master is set, c_slave1 is expecting 2 interfaces with 2 different portals, one on each 
-              c_slave1 is configured to run on interfaces eth2 and eth3 respectively with the ip addresses
-
-java -DPART_STR="1::1:1"-DRUNTIME_ENV="[c_master,d_master],[c_slave1,d_slave1,eth2,10.10.1.1,eth3,10.10.3.2]" -DPORTAL_LINKS="c_slave1:eth2,topnet.net01.net1.r1.portal_10_1_3_0,c_slave1:eth3,topnet.net2.r5.portal_10_1_2_0" -jar dist/jprime.jar create some_model_name test/java_models/PortalsExogeni.java"
-

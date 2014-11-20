@@ -1,0 +1,63 @@
+============================================================
+Parallel Real-time Immersive Simulation Environment (PRIME)
+SSF Network Simulator (SSFNet) Version x1.0
+Copyright (c) 2007-2011 Florida International University.
+============================================================
+
+
+USAGE: ./primex [ssf-options] [ssfnet-options] <sim-time> <model source>
+SSF command-line options:
+  -submodel <fname>  : use ssf dml submodel
+  -s                 : same as -submodel
+  -nmachs <m> [n_0,]p_0:[n_1,]p_1:..:[n_{m-1},]p_{m-1} : machine config (default: 1 localhost:1)
+  -m                 : same as -nmachs
+  -nprocs <n>        : set number of processors (default: 1)
+  -n                 : same as -nprocs
+  -rank <r>          : set the machine rank in the array (default: 0 or from MPI context)
+  -r                 : same as -rank
+  -same              : homogeneous machine cluster
+  -diverse           : heterogeneous machine cluster (default)
+  -seed <n>          : set initial random seed (default: 54321)
+  -silent            : suppress ssf messages (default: show messages)
+  -showcfg           : show system configuration (default)
+  -noshowcfg         : do not show system configuration
+  -outfile <fname>   : output message to file (default: stdout)
+  -o                 : same as -outfile
+  -debug <n>         : debug mask (default 0)
+  -d                 : same as -debug
+  -flowdelta <ltime> : time increment per scheduling (default: infinite)
+  -flowmark <mbytes> : max kernel events per scheduling (default: infinite)
+  -progress <intv>   : show progress of simulation (default: infinite)
+  -p                 : same as -progress
+  -synthresh <ltime> : local composite synchronization threshold (default: automatic)
+  -t                 : same as -synthresh
+  -spin              : spinning simulation processes instead of yielding
+  -yield             : yielding simulation processes (default)
+  --                 : end of parsing ssf command-line arguments
+SSFNet command-line options:
+  -help                : show this message.
+  -h                   : same as -help.
+  -quiet               : quiet mode (no ssfnet runtime messages).
+  -q                   : same as -quiet.
+  -emuratio <ratio>    : set emulation speed (i.e., the slow-down factor).
+  -e                   : same as -emuratio.
+  -vars <file>         : load runtime variables/symbols
+                         and default values from <file>.
+  -V                   : same as -vars.
+  -CCD <millisecs>     : the delay between event channels of collocated
+                         communities (which carry control events) in milliseconds.
+  -enable_state_file   : save exported state to state_part_X.stats
+  -enable_state_stream : send exported state to a state server.
+  -stream_server <ip>:<port>
+                       : connect to the state sever at <ip>:port;
+                         the default is 127.0.0.1:9992 ;
+  -VEI <milliseconds>  : the number of milliseconds between
+                       : visualization data exports (defaults to 500).
+  -gateway <ip>:<port> : add an openvpn server to connect to
+  -tp <IP> <UID>       : attach the interface with <IP>
+                         to the traffic portal with UID <UID>.
+  <sim-time>           : the simulation time in seconds.
+  <model source>       : specify ONE of the following:
+     <server>:<port>   : The name of the server that hosts the
+                         model DB, and port which its runs on
+     <packed-file>     : the serialized model for this partition
