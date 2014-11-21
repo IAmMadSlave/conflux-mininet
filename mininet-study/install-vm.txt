@@ -1,0 +1,44 @@
+download ubuntu server (12.04)
+wget http://releases.ubuntu.com/12.04/ubuntu-12.04.5-server-i386.iso
+create 32bits machine on Virtualbox
+put the iso as virtual DVD
+configure 2nd NIC to be host-only
+on boot - choose F4 (mode) minimal virtual machine
+choose hostname to be primex
+create a user (sudoer) and password, do not encrypt home
+install the minimum system
+no automatic updates
+no software to install
+install grub loader
+boot
+
+================= (Compile primex and jprime.jar)
+sudo rm -rf /var/lib/apt/lists/*
+sudo apt-get update; sudo apt-get upgrade
+sudo apt-get install openssh-server vim
+sudo apt-get install git subversion wget build-essential gcc python flex bison ant openjdk-6-jdk libpcap-dev texlive-binaries
+sudo update-alternatives --config javac
+echo "export JAVA_HOME=/usr/lib/jvm/java-6-openjdk-i386" >> ~/.bashrc
+git clone https://github.com/netsym/primogeni
+cd primogeni
+sh build_all.sh
+
+(Test if it works)
+cd primogeni/netscript/test/
+bash compile_test.sh . java_models/AThirdJavaModel.java
+cd testtmp/
+ls -l AThirdJavaModel.model_part_1.tlv
+cd ..
+bash compile_test.sh . java_models/MySecondJavaModel.java
+cd testtmp/
+../../../netsim/primex 20 MySecondJavaModel.model_part_1.tlv
+
+================= (Install mininet)
+git clone git://github.com/mininet/mininet.git
+mininet/util/install.sh -a
+
+(Test if it works)
+sudo mn
+sudo ~/mininet/examples/sshd.py 
+(in another terminal type ssh 10.0.0.1, and then ping 10.0.0.2)
+
