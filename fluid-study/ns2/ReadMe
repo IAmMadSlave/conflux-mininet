@@ -1,10 +1,14 @@
 1. Run ns with model configure file
 cd Downloads/ns-allinone-2.35/ns-2.35
-sudo ./ns conflux-mininet/fluid-study/ns2/ns-general.tcl config_1_reno
-sudo ./ns conflux-mininet/fluid-study/ns2/ns-general.tcl config_1_cubic
+sudo ./ns conflux-mininet/fluid-study/ns2/ns-general.tcl config/config_1_reno
+sudo ./ns conflux-mininet/fluid-study/ns2/ns-general.tcl config/config_1_cubic
 2. Move all the files from step 1 to a folder (1flow-3links)
 cd conflux-mininet/fluid-study/ns2/
 mkdir 1flow-3links
 mv *.tcp* *.tr 1flow-3links/
 3. Parse the files under 1flow-3links
-python rvalidate 1flow-3links/ 
+python parse.py 1flow-3links/
+4. Generate the expected sending packets:<loss_file><cwnd_file><output_file>
+python expectedsentbytes 0.loss.reno reno.tcp0.cwnd reno_tcp0 
+5. Plot the output results
+python plot.py reno_tcp0
