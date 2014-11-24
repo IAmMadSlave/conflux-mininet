@@ -1,3 +1,21 @@
-[1] prepare a PrimoGENI VM
-[2] generate the TLV file and primex command line
-[3] hook up mininet with it
+STEP 1)
+install-vm.txt
+
+STEP 2)
+compiling-and-running.txt
+(to run the command to compile the TLV file, you have to upload the java model -PortalsExogeni.java - using SCP to put into the VM, and also upload the file compile_test.sh in the proper directory)
+
+bash compile_test.sh . java_models/PortalsExogeni.java
+
+STEP 3)
+compiling-and-running.txt
+run the primex tlv and namespaces by hand to check if it works
+
+STEP 4)
+run mininet emptynet.py script
+
+python emptynet.py
+
+It should work 
+mininet> h1 ping -c3 192.168.1.50
+
