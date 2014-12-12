@@ -1,0 +1,7 @@
+sudo apt-get install libcr-dev mpich2 mpich2-doc
+ssh-keygen
+ssh-copy-id -i ~/.ssh/id_rsa.pub 192.168.57.103
+ssh 192.168.57.103
+ssh-copy-id -i ~/.ssh/id_rsa.pub 192.168.57.104
+ssh 192.168.57.104
+sudo apt-get install lzop
