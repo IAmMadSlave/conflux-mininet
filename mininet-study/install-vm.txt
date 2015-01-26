@@ -42,3 +42,30 @@ sudo mn
 sudo ~/mininet/examples/sshd.py 
 (in another terminal type ssh 10.0.0.1, and then ping 10.0.0.2)
 
+=============== (SSHing into the virtualbox guest VM from the host)
+    1) create an host only interface in VirtualBox Manager:
+     File> Preferences> network> Host Only Network> Add a new interface (say vboxnet0).
+    2) Make sure your VM is shut down. Select your VM and do followings:
+      Right Click/Setting> Network> Adapter2/3> Enable Network Adapter > Attach to: Host-Only Adapter > Name : select the Host only adapter we just created.
+   3) Turn on the vm and do ifconfig -a to see all the interfaces. and get an Ip for the interface and bring it up: 
+     sudo dhclient eth1 
+     sudo ifconfig eth1 up
+You will be able to see the Ip of that interface in "ifconfig" now.
+From your host you can ssh to this IP
+
+
+========== Troubleshoot: Sometimes the VM tyou downloaded might not have the ssh program installed init.
+			Solving ssh issues in a virtualbox vm, ubuntu 12.04 server 32 bit
+
+   check if u have ssh installed
+     	sudo service ssh status
+   if the service isnt installed u need to install the following
+     sudo apt-get install openssh-server
+	
+   If openssh-server installationfails for libwrap0:
+     wget http://mirrors.kernel.org/ubuntu/pool/main/t/tcp-wrappers/libwrap0_7.6.q-21_i386.deb
+	//or get another link by searching for libwrap0
+	
+   Installing debian package:
+     sudo dpkg -i package_name.deb
+	
