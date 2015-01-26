@@ -11,7 +11,7 @@ no automatic updates
 no software to install
 install grub loader
 boot
-
+login cesar, passwd: 1234
 ================= (Compile primex and jprime.jar)
 sudo rm -rf /var/lib/apt/lists/*
 sudo apt-get update; sudo apt-get upgrade

@@ -40,6 +40,7 @@ public class PortalsExogeni extends ModelInterface{
     @Override
     public INet buildModel(Map<String, ModelParamValue> parameters) {
         Net top = exp.createTopNet("topnet");
+        top.setIpPrefix("192.168.0.0/16");
         top.createShortestPath();
         Random randomGenerator = new Random();
        

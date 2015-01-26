@@ -1,0 +1,8 @@
+start from MySecondJavaModel.java
+change the ip prefix of the whole top network (top.net)
+
+INet topnet   = exp.createTopNet("top");
+topnet.createShortestPath();
+
+java -jar dist/jprime.jar create MySecondJavaModel test/java_models/MySecondJavaModel.java
+ 
