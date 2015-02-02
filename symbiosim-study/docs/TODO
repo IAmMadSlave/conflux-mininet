@@ -1,0 +1,11 @@
+Symbiosim for Mininet-Conflux
+=============================
+
+1. Execute commands as seperate processes in mininet using popen objects. 
+2. Solve openflow controller issues.
+3. Log Send-Q data per host to file.
+4. Start mininet console from custom topology.
+5. Thread mininet console and preserve stdout & stdin.
+6. Continous logging of Send-Q data per host.
+7. Iterate through hosts and collect Send-Q data from files as available.
+8. Translate fork() and select() example to multi-threaded.
