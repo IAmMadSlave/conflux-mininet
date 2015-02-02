@@ -1,0 +1,11 @@
+Please make sure you have Mininet install (e.g., for debian based systems "apt-get install mininet").
+
+There are three examples to run.
+
+The first example is "parallelpings.py", this example will construct a single switch topology with three hosts. Then is will start Mininet and each host will ping another four times. The script will then monitor and print the output for each host.
+
+To run this example use the following command "python parallelpings.py". To run this example and use the Mininet console use the following command "mn --custom=parallelpings.py".
+
+The second example is "clitest.py", this example is an attempt to thread the Mininet console with the "parallelpings.py" example. To run this example use the following command "python clitest.py". Note: Ctrl-C does not work.
+
+The last example is "iperftest.py", this example will construct a single switch topology with two hosts. It will then start a seperate thread with the Mininet console. Next, it will run iperf on the two hosts using popen objects instead of the Mininet constructs. Once the iperf has started each host will execute the "ss_test.sh" script to collect and log statistics, again using popen objects. The iperf and logging will cease after 20 seconds and the Mininet console will remain. Using Ctrl-D to exit the Mininet console the program will exit and you will find two file "h1.log" and "h2.log" with "ss" statistics of each host during the iperf.
