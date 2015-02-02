@@ -1,0 +1,99 @@
+#AThirdJavaModel.java with netns:
+
+sudo ip link add h11-eth0 type veth peer name veth55
+sudo ip link add h13-eth0 type veth peer name veth216
+
+sudo ip netns add h11
+sudo ip netns add h12
+sudo ip netns add h13
+
+sudo ip link set h11-eth0 netns  h11
+sudo ip link set h13-eth0 netns  h13
+sudo ip link set veth55 netns h12
+sudo ip link set veth216 netns h12
+
+sudo ip netns exec h11 ifconfig h11-eth0 192.168.0.9/24
+sudo ip netns exec h13 ifconfig h13-eth0 192.168.0.41/24
+
+sudo ip netns exec h11 ifconfig lo up
+sudo ip netns exec h11 ifconfig h11-eth0 up
+sudo ip netns exec h13 ifconfig lo up
+sudo ip netns exec h13 ifconfig h13-eth0 up
+sudo ip netns exec h12 ifconfig lo up
+sudo ip netns exec h12 ifconfig veth55 up
+sudo ip netns exec h12 ifconfig veth216 up
+
+
+sudo ip netns exec h12 ifconfig veth55 down
+sudo ip netns exec h12 ifconfig veth216 down
+
+sudo ip netns exec h11 ifconfig h11-eth0  hw ether 00:00:00:00:00:37
+sudo ip netns exec h13 ifconfig h13-eth0  hw ether 00:00:00:00:00:d8
+
+(veth55 also had 00:00:00:00:00:37)
+(veth216 also had 00:00:00:00:00:d8)
+37 is hexadecimal of 55 decimal
+d8 is hex of 216 which is the uid of the interface
+
+sudo ip netns exec h12 ifconfig veth55 up
+sudo ip netns exec h12 ifconfig veth216 up
+sudo ip netns exec h12 ifconfig 
+
+Compiling:
+java -jar netscript/dist/jprime.jar create AthirdJavaModel netscript/test/java_models/AThirdJavaModel.java
+
+mnconflux@mnconflux:~/expt2$ sudo ip netns exec h12 ../primogeni/netsim/primex 300 AThirdJavaModel_part_1.tlv
+------------------------------------------------------------
+Parallel Real-time Immersive Simulation Environment (PRIME)
+Scalable Simulation Framework (SSF) Version x1.0
+Copyright (c) 2007-2011 Florida International University.
+PRIME SSF is open source.
+See COPYRIGHT for detailed licence information.
+------------------------------------------------------------
+============================================================
+Parallel Real-time Immersive Simulation Environment (PRIME)
+SSF Network Simulator (SSFNet) Version x1.0
+Copyright (c) 2007-2011 Florida International University.
+============================================================
+
+
+using intial VEI of 500
+Simulation time [0, 3e+11]
+[284]BlockingEmulationDevice::init(), getCommunity()=0x9ed42d0
+[0] setup time: user = 0, system = 0.03
+[0] DECADE LENGTH = 4.61169e+18
+[140]EmulationArrivalProcess::action(): waitOn()
+[409]BlockingEmulationDevice::write(0x9edccd0,0x9ed4c28)
+[404]BlockingEmulationDevice::read(0x9edcc58,0x9ed4c28)
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+---> creating an active session, IP=192.168.0.1 srcport=2 dstport=80
+top:left:h1:HTTPClient_0[29] is downloading 1000000000 bytes from 190, time=10
+top:right_net:h1:HTTPServer_0[190] is sending 1000000000, time=10.009
+[140]EmulationArrivalProcess::action(): waitOn()
+---> creating an active session, IP=192.168.0.5 srcport=2 dstport=80
+top:left:h2:HTTPClient_0[52] is downloading 1000000000 bytes from 190, time=12
+top:right_net:h1:HTTPServer_0[190] is sending 1000000000, time=12.0125
+[140]EmulationArrivalProcess::action(): waitOn()
+---> creating an active session, IP=192.168.0.5 srcport=3 dstport=80
+top:left:h2:HTTPClient_0[52] is downloading 1000000000 bytes from 190, time=13
+top:right_net:h1:HTTPServer_0[190] is sending 1000000000, time=13.0138
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+[140]EmulationArrivalProcess::action(): waitOn()
+
+
+
+
+
+mnconflux@mnconflux:~/expt2$ sudo ip netns exec h11 ping 192.168.0.13
+
