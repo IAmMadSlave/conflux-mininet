@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     time.sleep(1)
 
-    popens[3] = h1.popen("ss --tcp", stdout=h1log)
+    popens[3] = h1.popen(["./ss_test.sh"], stdout=h1log)
     popens[4] = h2.popen(["./ss_test.sh"], stdout=h2log)
 
     out = popens[4].communicate()
