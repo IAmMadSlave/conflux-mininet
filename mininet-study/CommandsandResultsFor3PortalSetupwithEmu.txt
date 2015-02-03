@@ -3,32 +3,44 @@
                                  sim1                                     sim2
                                  192.168/16                               192.170/16
 
-Step 1:
 java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.1.1,eth3,10.10.3.2] -DPORTAL_LINKS=c_slave1:eth2,topnet.net01.net1.r1.portal_10_1_2_0,c_slave1:eth3,topnet.net2.r5.portal_10_1_3_0 -jar ../primogeni/netscript/dist/jprime.jar create Portals1withEmu Portals1withEmu.java 192.168.0.0/16
-
-java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.1.1,eth3,10.10.3.2] -DPORTAL_LINKS=c_slave1:eth2,topnet.net01.net1.r1.portal_10_1_2_0,c_slave1:eth3,topnet.net2.r5.portal_10_1_3_0 -jar ../primogeni/netscript/dist/jprime.jar create Portals1 Portals1.java 192.168.0.0/16
 java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.3.1] -DPORTAL_LINKS=c_slave1:eth2,topnet.net01.net1.r1.portal_10_1_2_0 -jar ../primogeni/netscript/dist/jprime.jar create Portals2 Portals2.java 192.170.0.0/16
+
+Found out veth uid of the interface that belongs to the emulated host. uid=212
+
 
 sudo ip link add h1-eth0 type veth peer name h2-eth0
 sudo ip link add h2-eth1 type veth peer name h3-eth0
+sudo ip link add h4-eth0 type veth peer name veth212
 
 sudo ip netns add h1
 sudo ip netns add h2
 sudo ip netns add h3
+sudo ip netns add h4
 
 sudo ip link set h1-eth0 netns h1
 sudo ip link set h2-eth0 netns h2
 sudo ip link set h2-eth1 netns h2
+sudo ip link set veth212 netns h2
 sudo ip link set h3-eth0 netns h3
+sudo ip link set h4-eth0 netns h4
 
 sudo ip netns exec h1 ifconfig h1-eth0 10.10.1.2/24
 sudo ip netns exec h2 ifconfig h2-eth0 10.10.1.1/24
 sudo ip netns exec h2 ifconfig h2-eth1 10.10.3.2/24
 sudo ip netns exec h3 ifconfig h3-eth0 10.10.3.1/24
+sudo ip netns exec h4 ifconfig h4-eth0 192.168.8.22/16
+sudo ip netns exec h4 ifconfig h4-eth0 down
+sudo ip netns exec h4 ifconfig h4-eth0 hw ether 00:00:00:00:00:d4
+sudo ip netns exec h2 ifconfig veth212 hw ether 00:00:00:00:00:d4
+sudo ip netns exec h4 ifconfig h4-eth0 up
+
 
 sudo ip netns exec h1 ifconfig lo up
 sudo ip netns exec h2 ifconfig lo up
 sudo ip netns exec h3 ifconfig lo up
+sudo ip netns exec h4 ifconfig lo up
+sudo ip netns exec h2 ifconfig veth212 up
 
 sudo ip netns exec h1 ping -c1 10.10.1.1
 sudo ip netns exec h2 ping -c1 10.10.1.2
@@ -38,8 +50,11 @@ sudo ip netns exec h3 ping -c1 10.10.3.2
 
 sudo ip netns exec h1 ip route add 192.168.0.0/16 via 10.10.1.1 dev h1-eth0
 sudo ip netns exec h1 ip route add 192.170.0.0/16 via 10.10.1.1 dev h1-eth0
+sudo ip netns exec h4 ip route add 192.170.0.0/16 dev h4-eth0
+sudo ip netns exec h4 ip route add 192.168.0.0/16 dev h4-eth0
 
-sudo ip netns exec h2 /home/mnconflux/primogeni/netsim/primex -tp 10.10.3.2 166 -tp 10.10.1.1 605 600 /home/mnconflux/expt2/Portals1_part_1.tlv
+
+sudo ip netns exec h2 /home/mnconflux/primogeni/netsim/primex -tp 10.10.3.2 166 -tp 10.10.1.1 605 600 /home/mnconflux/expt2/Portals1withEmu_part_1.tlv
 sudo ip netns exec h3 /home/mnconflux/primogeni/netsim/primex -tp 10.10.3.1 166 600 /home/mnconflux/expt2/Portals2_part_1.tlv
 mnconflux@mnconflux:~$ sudo ip netns exec h1 ping 192.168.1.50
 

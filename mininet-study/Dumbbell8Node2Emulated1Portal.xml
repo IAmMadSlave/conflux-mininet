@@ -1,0 +1,177 @@
+<?xml version="1.0" ?>
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema_instance" xsi:noNamespaceSchemaLocation="primex.xsd">
+	<node name="topnet" type="Net" >
+		<attribute name="sub_edge_ifaces" value="[[147, 170], [109, 132], [301, 322]]" symbol="false" />
+		<attribute name="portal_rules" value="[10.10.9.0/24,170,147,10.10.9.1]" symbol="false" />
+		<!-- RoutingSphere name=_rsphere_ numRoutes=6  -->
+		<node name="_viz_agg_" type="VizAggregate" >
+			<attribute name="var_id" value="161" symbol="false" />
+		</node>
+		<node name="left_net" type="Net" >
+			<!-- RoutingSphere name=_rsphere_ numRoutes=21  -->
+			<node name="_viz_agg_" type="VizAggregate" >
+				<attribute name="var_id" value="161" symbol="false" />
+			</node>
+			<node name="h1" type="Host" >
+				<node name="if0" type="Interface" >
+				</node>
+			</node>
+			<node name="h2" type="Host" >
+				<node name="if0" type="Interface" >
+				</node>
+			</node>
+			<node name="h3" type="Host" >
+				<node name="if0" type="Interface" >
+					<node name="TAPEmulation_19" type="TAPEmulation" >
+					</node>
+				</node>
+			</node>
+			<node name="h4" type="Host" >
+				<node name="if0" type="Interface" >
+				</node>
+			</node>
+			<node name="r" type="Router" >
+				<node name="if1" type="Interface" >
+				</node>
+				<node name="if2" type="Interface" >
+				</node>
+				<node name="if3" type="Interface" >
+				</node>
+				<node name="if4" type="Interface" >
+				</node>
+				<node name="if0" type="Interface" >
+				</node>
+				<node name="if20" type="Interface" >
+				</node>
+			</node>
+			<node name="Link_23" type="Link" >
+				<ref name="InterfaceAlias_24" path="..:h1:if0" />
+				<ref name="InterfaceAlias_26" path="..:r:if1" />
+			</node>
+			<node name="Link_27" type="Link" >
+				<ref name="InterfaceAlias_28" path="..:h2:if0" />
+				<ref name="InterfaceAlias_30" path="..:r:if2" />
+			</node>
+			<node name="Link_31" type="Link" >
+				<ref name="InterfaceAlias_32" path="..:h3:if0" />
+				<ref name="InterfaceAlias_34" path="..:r:if3" />
+			</node>
+			<node name="Link_35" type="Link" >
+				<ref name="InterfaceAlias_36" path="..:h4:if0" />
+				<ref name="InterfaceAlias_38" path="..:r:if4" />
+			</node>
+			<node name="portal_router" type="Router" >
+				<node name="portal_if_10_10_9_0" type="Interface" >
+					<node name="TrafficPortal_82" type="TrafficPortal" >
+						<attribute name="networks" value="[10.10.9.0/24]" symbol="false" />
+					</node>
+				</node>
+				<node name="if0" type="Interface" >
+				</node>
+			</node>
+			<node name="Link_77" type="Link" >
+				<ref name="InterfaceAlias_79" path="..:r:if20" />
+				<ref name="InterfaceAlias_81" path="..:portal_router:if0" />
+			</node>
+			<node name="__dynamic_traffics__" type="Traffic" >
+			</node>
+			<node name="8" type="ShortestPath" />
+		</node>
+		<node name="right_net" type="Net" >
+			<!-- RoutingSphere name=_rsphere_ numRoutes=17  -->
+			<node name="_viz_agg_" type="VizAggregate" >
+				<attribute name="var_id" value="161" symbol="false" />
+			</node>
+			<node name="h1" type="Host" >
+				<node name="if0" type="Interface" >
+				</node>
+			</node>
+			<node name="h2" type="Host" >
+				<node name="if0" type="Interface" >
+				</node>
+			</node>
+			<node name="h3" type="Host" >
+				<node name="if0" type="Interface" >
+					<node name="TAPEmulation_19" type="TAPEmulation" >
+					</node>
+				</node>
+			</node>
+			<node name="h4" type="Host" >
+				<node name="if0" type="Interface" >
+				</node>
+			</node>
+			<node name="r" type="Router" >
+				<node name="if1" type="Interface" >
+				</node>
+				<node name="if2" type="Interface" >
+				</node>
+				<node name="if3" type="Interface" >
+				</node>
+				<node name="if4" type="Interface" >
+				</node>
+				<node name="if0" type="Interface" >
+				</node>
+			</node>
+			<node name="Link_23" type="Link" >
+				<ref name="InterfaceAlias_24" path="..:h1:if0" />
+				<ref name="InterfaceAlias_26" path="..:r:if1" />
+			</node>
+			<node name="Link_27" type="Link" >
+				<ref name="InterfaceAlias_28" path="..:h2:if0" />
+				<ref name="InterfaceAlias_30" path="..:r:if2" />
+			</node>
+			<node name="Link_31" type="Link" >
+				<ref name="InterfaceAlias_32" path="..:h3:if0" />
+				<ref name="InterfaceAlias_34" path="..:r:if3" />
+			</node>
+			<node name="Link_35" type="Link" >
+				<ref name="InterfaceAlias_36" path="..:h4:if0" />
+				<ref name="InterfaceAlias_38" path="..:r:if4" />
+			</node>
+			<node name="__dynamic_traffics__" type="Traffic" >
+			</node>
+			<node name="39" type="ShortestPath" />
+		</node>
+		<node name="toplink" type="Link" >
+			<ref name="InterfaceAlias_72" path="..:left_net:r:if0" />
+			<ref name="InterfaceAlias_74" path="..:right_net:r:if0" />
+		</node>
+		<node name="Traffic_83" type="Traffic" >
+			<node name="TCPTraffic_84" type="TCPTraffic" >
+				<attribute name="dsts" value="01021
+001064
+Host01023
+221" symbol="false" />
+				<attribute name="mapping" value="one2one" symbol="false" />
+				<attribute name="srcs" value="01021
+001064
+Host01022
+29" symbol="false" />
+				<attribute name="start_time" value="10.0" symbol="false" />
+				<attribute name="file_size" value="1000000000" symbol="false" />
+				<attribute name="number_of_sessions" value="1" symbol="false" />
+				<attribute name="interval" value="1.0" symbol="false" />
+				<attribute name="interval_exponential" value="false" symbol="false" />
+			</node>
+			<node name="TCPTraffic_85" type="TCPTraffic" >
+				<attribute name="dsts" value="01021
+001064
+Host01023
+221" symbol="false" />
+				<attribute name="mapping" value="one2one" symbol="false" />
+				<attribute name="srcs" value="01021
+001064
+Host01022
+52" symbol="false" />
+				<attribute name="start_time" value="12.0" symbol="false" />
+				<attribute name="file_size" value="1000000000" symbol="false" />
+				<attribute name="number_of_sessions" value="2" symbol="false" />
+				<attribute name="interval" value="1.0" symbol="false" />
+				<attribute name="interval_exponential" value="false" symbol="false" />
+			</node>
+		</node>
+		<node name="__dynamic_traffics__" type="Traffic" >
+		</node>
+		<node name="3" type="ShortestPath" />
+	</node>
+</model>

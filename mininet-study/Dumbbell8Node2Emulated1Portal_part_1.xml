@@ -1,0 +1,708 @@
+<?xml version="1.0" ?>
+<partitioned_model alignments="[[Alignment 0]]">
+	<partitionMap>
+		<communities>
+			<community id="0" partId="1" ranges="1">
+				<uidRange low="1" high="404" />
+			</community>
+		</communities>
+		<commityForwardingEntries>
+		</commityForwardingEntries>
+		<ipAlignments>
+		</ipAlignments>
+	</partitionMap>
+	<symbolTable>
+	</symbolTable>
+	<node type="Net" uid="404" aligns="[0]" >
+		<unqiueName value="topnet" />
+		<partDebug isSphere="true" haveSubSpheres="true" />
+		<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+		<attr name="name" >topnet</attr>
+		<attr name="offset" >0</attr>
+		<attr name="size" >404</attr>
+		<attr name="ip_prefix" >192.168.0.0/25</attr>
+		<attr name="ip_prefix_len" >25</attr>
+		<attr name="sub_edge_ifaces" >[[147, 170], [109, 132], [301, 322]]</attr>
+		<attr name="portal_rules" >[10.10.9.0/24,170,147,10.10.9.1]</attr>
+		<node type="RoutingSphere" uid="2" aligns="[0]" >
+			<unqiueName value="topnet:_rsphere_" />
+			<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+			<attr name="name" >_rsphere_</attr>
+			<attr name="offset" >0</attr>
+			<attr name="size" >2</attr>
+			<node type="RouteTable" uid="1" aligns="[0]" >
+				<unqiueName value="topnet:_rsphere_:RouteTable_5" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >RouteTable_5</attr>
+				<attr name="offset" >0</attr>
+				<attr name="size" >1</attr>
+					<!-- #route entries = 6 -->
+			</node>
+		</node>
+		<node type="VizAggregate" uid="3" aligns="[0]" >
+			<unqiueName value="topnet:_viz_agg_" />
+			<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+			<attr name="name" >_viz_agg_</attr>
+			<attr name="offset" >2</attr>
+			<attr name="size" >1</attr>
+			<attr name="var_id" >161</attr>
+		</node>
+		<node type="Net" uid="195" aligns="[0]" >
+			<unqiueName value="topnet:left_net" />
+			<partDebug isSphere="true" haveSubSpheres="false" />
+			<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+			<attr name="name" >left_net</attr>
+			<attr name="offset" >3</attr>
+			<attr name="size" >192</attr>
+			<attr name="ip_prefix" >192.168.0.0/27</attr>
+			<attr name="ip_prefix_len" >27</attr>
+			<node type="RoutingSphere" uid="5" aligns="[0]" >
+				<unqiueName value="topnet:left_net:_rsphere_" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >_rsphere_</attr>
+				<attr name="offset" >0</attr>
+				<attr name="size" >2</attr>
+				<node type="RouteTable" uid="4" aligns="[0]" >
+					<unqiueName value="topnet:left_net:_rsphere_:RouteTable_10" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >RouteTable_10</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="edge_ifaces" >[144, 106]</attr>
+						<!-- #route entries = 21 -->
+				</node>
+			</node>
+			<node type="VizAggregate" uid="6" aligns="[0]" >
+				<unqiueName value="topnet:left_net:_viz_agg_" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >_viz_agg_</attr>
+				<attr name="offset" >2</attr>
+				<attr name="size" >1</attr>
+				<attr name="var_id" >161</attr>
+			</node>
+			<node type="Host" uid="29" aligns="[0]" >
+				<unqiueName value="topnet:left_net:h1" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >h1</attr>
+				<attr name="offset" >3</attr>
+				<attr name="size" >23</attr>
+				<node type="Interface" uid="8" aligns="[0]" >
+					<unqiueName value="topnet:left_net:h1:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.1</attr>
+				</node>
+			</node>
+			<node type="Host" uid="52" aligns="[0]" >
+				<unqiueName value="topnet:left_net:h2" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >h2</attr>
+				<attr name="offset" >26</attr>
+				<attr name="size" >23</attr>
+				<node type="Interface" uid="31" aligns="[0]" >
+					<unqiueName value="topnet:left_net:h2:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.5</attr>
+				</node>
+			</node>
+			<node type="Host" uid="76" aligns="[0]" >
+				<unqiueName value="topnet:left_net:h3" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >h3</attr>
+				<attr name="offset" >49</attr>
+				<attr name="size" >24</attr>
+				<node type="Interface" uid="55" aligns="[0]" >
+					<unqiueName value="topnet:left_net:h3:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >3</attr>
+					<attr name="ip_address" >192.168.0.9</attr>
+					<node type="TAPEmulation" uid="53" aligns="[0]" >
+						<unqiueName value="topnet:left_net:h3:if0:TAPEmulation_19" />
+						<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+						<attr name="name" >TAPEmulation_19</attr>
+						<attr name="offset" >0</attr>
+						<attr name="size" >1</attr>
+					</node>
+				</node>
+			</node>
+			<node type="Host" uid="99" aligns="[0]" >
+				<unqiueName value="topnet:left_net:h4" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >h4</attr>
+				<attr name="offset" >73</attr>
+				<attr name="size" >23</attr>
+				<node type="Interface" uid="78" aligns="[0]" >
+					<unqiueName value="topnet:left_net:h4:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.13</attr>
+				</node>
+			</node>
+			<node type="Router" uid="132" aligns="[0]" >
+				<unqiueName value="topnet:left_net:r" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >r</attr>
+				<attr name="offset" >96</attr>
+				<attr name="size" >33</attr>
+				<node type="Interface" uid="101" aligns="[0]" >
+					<unqiueName value="topnet:left_net:r:if1" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if1</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.2</attr>
+				</node>
+				<node type="Interface" uid="103" aligns="[0]" >
+					<unqiueName value="topnet:left_net:r:if2" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if2</attr>
+					<attr name="offset" >2</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.6</attr>
+				</node>
+				<node type="Interface" uid="105" aligns="[0]" >
+					<unqiueName value="topnet:left_net:r:if3" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if3</attr>
+					<attr name="offset" >4</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.10</attr>
+				</node>
+				<node type="Interface" uid="107" aligns="[0]" >
+					<unqiueName value="topnet:left_net:r:if4" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if4</attr>
+					<attr name="offset" >6</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.14</attr>
+				</node>
+				<node type="Interface" uid="109" aligns="[0]" >
+					<unqiueName value="topnet:left_net:r:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >8</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.65</attr>
+				</node>
+				<node type="Interface" uid="111" aligns="[0]" >
+					<unqiueName value="topnet:left_net:r:if20" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if20</attr>
+					<attr name="offset" >10</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.17</attr>
+				</node>
+			</node>
+			<node type="Link" uid="135" aligns="[0]" >
+				<unqiueName value="topnet:left_net:Link_23" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >Link_23</attr>
+				<attr name="offset" >129</attr>
+				<attr name="size" >3</attr>
+				<attr name="ip_prefix" >192.168.0.0/30</attr>
+				<attr name="ip_prefix_len" >30</attr>
+				<node type="InterfaceAlias" uid="133" aligns="[0]" >
+					<unqiueName value="topnet:left_net:Link_23:InterfaceAlias_24" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_24</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:h1:if0</attr>
+				</node>
+				<node type="InterfaceAlias" uid="134" aligns="[0]" >
+					<unqiueName value="topnet:left_net:Link_23:InterfaceAlias_26" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_26</attr>
+					<attr name="offset" >1</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:r:if1</attr>
+				</node>
+			</node>
+			<node type="Link" uid="138" aligns="[0]" >
+				<unqiueName value="topnet:left_net:Link_27" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >Link_27</attr>
+				<attr name="offset" >132</attr>
+				<attr name="size" >3</attr>
+				<attr name="ip_prefix" >192.168.0.4/30</attr>
+				<attr name="ip_prefix_len" >30</attr>
+				<node type="InterfaceAlias" uid="136" aligns="[0]" >
+					<unqiueName value="topnet:left_net:Link_27:InterfaceAlias_28" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_28</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:h2:if0</attr>
+				</node>
+				<node type="InterfaceAlias" uid="137" aligns="[0]" >
+					<unqiueName value="topnet:left_net:Link_27:InterfaceAlias_30" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_30</attr>
+					<attr name="offset" >1</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:r:if2</attr>
+				</node>
+			</node>
+			<node type="Link" uid="141" aligns="[0]" >
+				<unqiueName value="topnet:left_net:Link_31" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >Link_31</attr>
+				<attr name="offset" >135</attr>
+				<attr name="size" >3</attr>
+				<attr name="ip_prefix" >192.168.0.8/30</attr>
+				<attr name="ip_prefix_len" >30</attr>
+				<node type="InterfaceAlias" uid="139" aligns="[0]" >
+					<unqiueName value="topnet:left_net:Link_31:InterfaceAlias_32" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_32</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:h3:if0</attr>
+				</node>
+				<node type="InterfaceAlias" uid="140" aligns="[0]" >
+					<unqiueName value="topnet:left_net:Link_31:InterfaceAlias_34" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_34</attr>
+					<attr name="offset" >1</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:r:if3</attr>
+				</node>
+			</node>
+			<node type="Link" uid="144" aligns="[0]" >
+				<unqiueName value="topnet:left_net:Link_35" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >Link_35</attr>
+				<attr name="offset" >138</attr>
+				<attr name="size" >3</attr>
+				<attr name="ip_prefix" >192.168.0.12/30</attr>
+				<attr name="ip_prefix_len" >30</attr>
+				<node type="InterfaceAlias" uid="142" aligns="[0]" >
+					<unqiueName value="topnet:left_net:Link_35:InterfaceAlias_36" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_36</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:h4:if0</attr>
+				</node>
+				<node type="InterfaceAlias" uid="143" aligns="[0]" >
+					<unqiueName value="topnet:left_net:Link_35:InterfaceAlias_38" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_38</attr>
+					<attr name="offset" >1</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:r:if4</attr>
+				</node>
+			</node>
+			<node type="Router" uid="170" aligns="[0]" >
+				<unqiueName value="topnet:left_net:portal_router" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >portal_router</attr>
+				<attr name="offset" >141</attr>
+				<attr name="size" >26</attr>
+				<node type="Interface" uid="147" aligns="[0]" >
+					<unqiueName value="topnet:left_net:portal_router:portal_if_10_10_9_0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >portal_if_10_10_9_0</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >3</attr>
+					<attr name="ip_address" >10.10.9.1</attr>
+					<node type="TrafficPortal" uid="145" aligns="[0]" >
+						<unqiueName value="topnet:left_net:portal_router:portal_if_10_10_9_0:TrafficPortal_82" />
+						<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+						<attr name="name" >TrafficPortal_82</attr>
+						<attr name="offset" >0</attr>
+						<attr name="size" >1</attr>
+						<attr name="networks" >[10.10.9.0/24]</attr>
+					</node>
+				</node>
+				<node type="Interface" uid="149" aligns="[0]" >
+					<unqiueName value="topnet:left_net:portal_router:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >3</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.18</attr>
+				</node>
+			</node>
+			<node type="Link" uid="173" aligns="[0]" >
+				<unqiueName value="topnet:left_net:Link_77" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >Link_77</attr>
+				<attr name="offset" >167</attr>
+				<attr name="size" >3</attr>
+				<attr name="ip_prefix" >192.168.0.16/30</attr>
+				<attr name="ip_prefix_len" >30</attr>
+				<node type="InterfaceAlias" uid="171" aligns="[0]" >
+					<unqiueName value="topnet:left_net:Link_77:InterfaceAlias_79" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_79</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:r:if20</attr>
+				</node>
+				<node type="InterfaceAlias" uid="172" aligns="[0]" >
+					<unqiueName value="topnet:left_net:Link_77:InterfaceAlias_81" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_81</attr>
+					<attr name="offset" >1</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:portal_router:if0</attr>
+				</node>
+			</node>
+			<node type="Traffic" uid="194" aligns="[0]" >
+				<unqiueName value="topnet:left_net:__dynamic_traffics__" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >__dynamic_traffics__</attr>
+				<attr name="offset" >170</attr>
+				<attr name="size" >21</attr>
+			</node>
+		</node>
+		<node type="Net" uid="356" aligns="[0]" >
+			<unqiueName value="topnet:right_net" />
+			<partDebug isSphere="true" haveSubSpheres="false" />
+			<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+			<attr name="name" >right_net</attr>
+			<attr name="offset" >195</attr>
+			<attr name="size" >161</attr>
+			<attr name="ip_prefix" >192.168.0.32/27</attr>
+			<attr name="ip_prefix_len" >27</attr>
+			<node type="RoutingSphere" uid="197" aligns="[0]" >
+				<unqiueName value="topnet:right_net:_rsphere_" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >_rsphere_</attr>
+				<attr name="offset" >0</attr>
+				<attr name="size" >2</attr>
+				<node type="RouteTable" uid="196" aligns="[0]" >
+					<unqiueName value="topnet:right_net:_rsphere_:RouteTable_41" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >RouteTable_41</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="edge_ifaces" >[106]</attr>
+						<!-- #route entries = 17 -->
+				</node>
+			</node>
+			<node type="VizAggregate" uid="198" aligns="[0]" >
+				<unqiueName value="topnet:right_net:_viz_agg_" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >_viz_agg_</attr>
+				<attr name="offset" >2</attr>
+				<attr name="size" >1</attr>
+				<attr name="var_id" >161</attr>
+			</node>
+			<node type="Host" uid="221" aligns="[0]" >
+				<unqiueName value="topnet:right_net:h1" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >h1</attr>
+				<attr name="offset" >3</attr>
+				<attr name="size" >23</attr>
+				<node type="Interface" uid="200" aligns="[0]" >
+					<unqiueName value="topnet:right_net:h1:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.33</attr>
+				</node>
+			</node>
+			<node type="Host" uid="244" aligns="[0]" >
+				<unqiueName value="topnet:right_net:h2" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >h2</attr>
+				<attr name="offset" >26</attr>
+				<attr name="size" >23</attr>
+				<node type="Interface" uid="223" aligns="[0]" >
+					<unqiueName value="topnet:right_net:h2:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.37</attr>
+				</node>
+			</node>
+			<node type="Host" uid="268" aligns="[0]" >
+				<unqiueName value="topnet:right_net:h3" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >h3</attr>
+				<attr name="offset" >49</attr>
+				<attr name="size" >24</attr>
+				<node type="Interface" uid="247" aligns="[0]" >
+					<unqiueName value="topnet:right_net:h3:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >3</attr>
+					<attr name="ip_address" >192.168.0.41</attr>
+					<node type="TAPEmulation" uid="245" aligns="[0]" >
+						<unqiueName value="topnet:right_net:h3:if0:TAPEmulation_19" />
+						<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+						<attr name="name" >TAPEmulation_19</attr>
+						<attr name="offset" >0</attr>
+						<attr name="size" >1</attr>
+					</node>
+				</node>
+			</node>
+			<node type="Host" uid="291" aligns="[0]" >
+				<unqiueName value="topnet:right_net:h4" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >h4</attr>
+				<attr name="offset" >73</attr>
+				<attr name="size" >23</attr>
+				<node type="Interface" uid="270" aligns="[0]" >
+					<unqiueName value="topnet:right_net:h4:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.45</attr>
+				</node>
+			</node>
+			<node type="Router" uid="322" aligns="[0]" >
+				<unqiueName value="topnet:right_net:r" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >r</attr>
+				<attr name="offset" >96</attr>
+				<attr name="size" >31</attr>
+				<node type="Interface" uid="293" aligns="[0]" >
+					<unqiueName value="topnet:right_net:r:if1" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if1</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.34</attr>
+				</node>
+				<node type="Interface" uid="295" aligns="[0]" >
+					<unqiueName value="topnet:right_net:r:if2" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if2</attr>
+					<attr name="offset" >2</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.38</attr>
+				</node>
+				<node type="Interface" uid="297" aligns="[0]" >
+					<unqiueName value="topnet:right_net:r:if3" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if3</attr>
+					<attr name="offset" >4</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.42</attr>
+				</node>
+				<node type="Interface" uid="299" aligns="[0]" >
+					<unqiueName value="topnet:right_net:r:if4" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if4</attr>
+					<attr name="offset" >6</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.46</attr>
+				</node>
+				<node type="Interface" uid="301" aligns="[0]" >
+					<unqiueName value="topnet:right_net:r:if0" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >if0</attr>
+					<attr name="offset" >8</attr>
+					<attr name="size" >2</attr>
+					<attr name="ip_address" >192.168.0.66</attr>
+				</node>
+			</node>
+			<node type="Link" uid="325" aligns="[0]" >
+				<unqiueName value="topnet:right_net:Link_23" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >Link_23</attr>
+				<attr name="offset" >127</attr>
+				<attr name="size" >3</attr>
+				<attr name="ip_prefix" >192.168.0.32/30</attr>
+				<attr name="ip_prefix_len" >30</attr>
+				<node type="InterfaceAlias" uid="323" aligns="[0]" >
+					<unqiueName value="topnet:right_net:Link_23:InterfaceAlias_24" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_24</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:h1:if0</attr>
+				</node>
+				<node type="InterfaceAlias" uid="324" aligns="[0]" >
+					<unqiueName value="topnet:right_net:Link_23:InterfaceAlias_26" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_26</attr>
+					<attr name="offset" >1</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:r:if1</attr>
+				</node>
+			</node>
+			<node type="Link" uid="328" aligns="[0]" >
+				<unqiueName value="topnet:right_net:Link_27" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >Link_27</attr>
+				<attr name="offset" >130</attr>
+				<attr name="size" >3</attr>
+				<attr name="ip_prefix" >192.168.0.36/30</attr>
+				<attr name="ip_prefix_len" >30</attr>
+				<node type="InterfaceAlias" uid="326" aligns="[0]" >
+					<unqiueName value="topnet:right_net:Link_27:InterfaceAlias_28" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_28</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:h2:if0</attr>
+				</node>
+				<node type="InterfaceAlias" uid="327" aligns="[0]" >
+					<unqiueName value="topnet:right_net:Link_27:InterfaceAlias_30" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_30</attr>
+					<attr name="offset" >1</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:r:if2</attr>
+				</node>
+			</node>
+			<node type="Link" uid="331" aligns="[0]" >
+				<unqiueName value="topnet:right_net:Link_31" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >Link_31</attr>
+				<attr name="offset" >133</attr>
+				<attr name="size" >3</attr>
+				<attr name="ip_prefix" >192.168.0.40/30</attr>
+				<attr name="ip_prefix_len" >30</attr>
+				<node type="InterfaceAlias" uid="329" aligns="[0]" >
+					<unqiueName value="topnet:right_net:Link_31:InterfaceAlias_32" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_32</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:h3:if0</attr>
+				</node>
+				<node type="InterfaceAlias" uid="330" aligns="[0]" >
+					<unqiueName value="topnet:right_net:Link_31:InterfaceAlias_34" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_34</attr>
+					<attr name="offset" >1</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:r:if3</attr>
+				</node>
+			</node>
+			<node type="Link" uid="334" aligns="[0]" >
+				<unqiueName value="topnet:right_net:Link_35" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >Link_35</attr>
+				<attr name="offset" >136</attr>
+				<attr name="size" >3</attr>
+				<attr name="ip_prefix" >192.168.0.44/30</attr>
+				<attr name="ip_prefix_len" >30</attr>
+				<node type="InterfaceAlias" uid="332" aligns="[0]" >
+					<unqiueName value="topnet:right_net:Link_35:InterfaceAlias_36" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_36</attr>
+					<attr name="offset" >0</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:h4:if0</attr>
+				</node>
+				<node type="InterfaceAlias" uid="333" aligns="[0]" >
+					<unqiueName value="topnet:right_net:Link_35:InterfaceAlias_38" />
+					<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+					<attr name="name" >InterfaceAlias_38</attr>
+					<attr name="offset" >1</attr>
+					<attr name="size" >1</attr>
+					<attr name="alias_path" >..:..:r:if4</attr>
+				</node>
+			</node>
+			<node type="Traffic" uid="355" aligns="[0]" >
+				<unqiueName value="topnet:right_net:__dynamic_traffics__" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >__dynamic_traffics__</attr>
+				<attr name="offset" >139</attr>
+				<attr name="size" >21</attr>
+			</node>
+		</node>
+		<node type="Link" uid="359" aligns="[0]" >
+			<unqiueName value="topnet:toplink" />
+			<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+			<attr name="name" >toplink</attr>
+			<attr name="offset" >356</attr>
+			<attr name="size" >3</attr>
+			<attr name="ip_prefix" >192.168.0.64/30</attr>
+			<attr name="ip_prefix_len" >30</attr>
+			<node type="InterfaceAlias" uid="357" aligns="[0]" >
+				<unqiueName value="topnet:toplink:InterfaceAlias_72" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >InterfaceAlias_72</attr>
+				<attr name="offset" >0</attr>
+				<attr name="size" >1</attr>
+				<attr name="alias_path" >..:..:left_net:r:if0</attr>
+			</node>
+			<node type="InterfaceAlias" uid="358" aligns="[0]" >
+				<unqiueName value="topnet:toplink:InterfaceAlias_74" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >InterfaceAlias_74</attr>
+				<attr name="offset" >1</attr>
+				<attr name="size" >1</attr>
+				<attr name="alias_path" >..:..:right_net:r:if0</attr>
+			</node>
+		</node>
+		<node type="Traffic" uid="382" aligns="[0]" >
+			<unqiueName value="topnet:Traffic_83" />
+			<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+			<attr name="name" >Traffic_83</attr>
+			<attr name="offset" >359</attr>
+			<attr name="size" >23</attr>
+			<node type="TCPTraffic" uid="360" aligns="[0]" >
+				<unqiueName value="topnet:Traffic_83:TCPTraffic_84" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >TCPTraffic_84</attr>
+				<attr name="offset" >0</attr>
+				<attr name="size" >1</attr>
+				<attr name="dsts" >01021
+001064
+Host01023
+221</attr>
+				<attr name="mapping" >one2one</attr>
+				<attr name="srcs" >01021
+001064
+Host01022
+29</attr>
+				<attr name="start_time" >10.0</attr>
+				<attr name="file_size" >1000000000</attr>
+				<attr name="number_of_sessions" >1</attr>
+				<attr name="interval" >1.0</attr>
+				<attr name="interval_exponential" >false</attr>
+				<attr name="community_ids" >[0]</attr>
+			</node>
+			<node type="TCPTraffic" uid="361" aligns="[0]" >
+				<unqiueName value="topnet:Traffic_83:TCPTraffic_85" />
+				<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+				<attr name="name" >TCPTraffic_85</attr>
+				<attr name="offset" >1</attr>
+				<attr name="size" >1</attr>
+				<attr name="dsts" >01021
+001064
+Host01023
+221</attr>
+				<attr name="mapping" >one2one</attr>
+				<attr name="srcs" >01021
+001064
+Host01022
+52</attr>
+				<attr name="start_time" >12.0</attr>
+				<attr name="file_size" >1000000000</attr>
+				<attr name="number_of_sessions" >2</attr>
+				<attr name="interval" >1.0</attr>
+				<attr name="interval_exponential" >false</attr>
+				<attr name="community_ids" >[0]</attr>
+			</node>
+		</node>
+		<node type="Traffic" uid="403" aligns="[0]" >
+			<unqiueName value="topnet:__dynamic_traffics__" />
+			<action function="encodeRealNode" value="ENCODE_REAL" encode="real" />
+			<attr name="name" >__dynamic_traffics__</attr>
+			<attr name="offset" >382</attr>
+			<attr name="size" >21</attr>
+		</node>
+	</node>
+</partitioned_model>
