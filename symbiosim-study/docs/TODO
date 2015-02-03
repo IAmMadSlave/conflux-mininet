@@ -9,3 +9,6 @@ Symbiosim for Mininet-Conflux
 6. Continous logging of Send-Q data per host.
 7. Iterate through hosts and collect Send-Q data from files as available.
 8. Translate fork() and select() example to multi-threaded.
+9. Sim returns mapping id, bandwidth, loss prob.
+10.Readme
+

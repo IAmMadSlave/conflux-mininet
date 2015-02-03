@@ -1,11 +1,5 @@
-TODO 
-
-+ Reproduce Figure2 from Mahout Paper
-    - Looking to observer the TCP buffer size per socket
-    - As well as the seq of the first packet in the window
-
 Findings
---------
+===========================
 Linux does not make tcp socket buffer usage available, at least not via /proc.
 
 Netstat provides us with info about active sockets by querying /proc/net/tcp.
@@ -25,6 +19,14 @@ https://access.redhat.com/discussions/782343
 
 http://packetbomb.com/how-to-troubleshoot-throughput-and-tcp-windows/#comment-93
 
-Command
--------
-ss --tcp | head -n 1; for i in {1..100}; do ss -p --tcp | iperf; sleep 0.1s; done
+Select() and Poll()
+=====================================
+Both are python wrappers for underlying system calls.
+
+Select() builds a bitmap and turns on bits for fds of interest. Afterwards the
+entire bitmap must be linearly scanned again. =O(highest fds)/
+
+Poll() only requires listing the file descriptors of interest, =O(number of
+fds)
+
+

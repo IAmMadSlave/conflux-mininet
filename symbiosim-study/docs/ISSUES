@@ -1,0 +1,2 @@
+1. Mininet console doesn't respond to Ctrl-D or Ctrl-C
+2. Fork() and Select() to Thread and Poll()
