@@ -16,13 +16,13 @@ import jprime.util.ModelInterface;
 /**
  * @author Miguel A. Erazo
  */
-public class Portals2 extends ModelInterface{
+public class Portals1withEmu extends ModelInterface{
 
     /**
      * @param db
      * @param exp
      */
-    public Portals2(Database db, Experiment exp) {
+    public Portals1withEmu(Database db, Experiment exp) {
         super(db, exp);
     }
 
@@ -30,7 +30,7 @@ public class Portals2 extends ModelInterface{
      * @param db
      * @param expName
      */
-    public Portals2(Database db, String expName) {
+    public Portals1withEmu(Database db, String expName) {
         super(db, expName);
     }
 
@@ -104,6 +104,8 @@ public class Portals2 extends ModelInterface{
         IInterface net1_h2_if0 = net1_h2.createInterface("if0");
        
         IHost net1_h3 = net1.createHost("h3");
+        net1_h3.enableEmulation();
+
         IInterface net1_h3_if0 = net1_h3.createInterface("if0");
        
         IHost net1_h4 = net1.createHost("h4");
@@ -496,15 +498,14 @@ public class Portals2 extends ModelInterface{
         r5_net3_2.createInterface(net3_r1_if0);   
         
         // Setup the traffic portals
-    //    left_portal.createTrafficPortal();
-     //   left_portal.setIpAddress("10.10.3.1");
-     //   left_portal.addReachableNetwork("10.10.1.0/24");
-        
+        left_portal.createTrafficPortal();
+        left_portal.setIpAddress("10.10.1.1");
+        left_portal.addReachableNetwork("10.10.1.0/24");
         
 	
-       right_portal.createTrafficPortal();       
-       right_portal.setIpAddress("10.10.3.1");
-       right_portal.addReachableNetwork("10.10.1.0/24");
+        right_portal.createTrafficPortal();       
+        right_portal.setIpAddress("10.10.3.2");
+        right_portal.addReachableNetwork("192.170.0.0/16");
           
         return top;
     }
