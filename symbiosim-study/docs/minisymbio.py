@@ -1,5 +1,3 @@
-
-
 class MiniSymbio:
 
 # hosts_sim2mn: a map from simulation host ids to mininet vm hosts

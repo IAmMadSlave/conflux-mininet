@@ -1,0 +1,21 @@
+{
+    "net":{
+        "hosts":[
+            {"name":"h1"},
+            {"name":"h2"},
+            {"name":"h3"},
+            {"name":"h4"}
+            ],
+        "switches":[
+            {"name":"s1"},
+            {"name":"s2"}
+            ],
+        "links":[
+            {"name":"l1", "left":"h1", "right":"s1"},
+            {"name":"l2", "left":"h2", "right":"s1"},
+            {"name":"l3", "left":"s1", "right":"s2"},
+            {"name":"l4", "left":"h3", "right":"s2"},
+            {"name":"l5", "left":"h4", "right":"s2"}
+            ]
+    }
+}
