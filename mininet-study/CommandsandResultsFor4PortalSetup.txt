@@ -1,7 +1,7 @@
- h1 10.10.1.2
- h2 10.10.1.1 (192.168.0.0) 10.10.3.2
- h3 10.10.3.1 (192.170.0.0) 10.10.5.1
- h4 10.10.5.2
+ h1 (h1-eth0) 10.10.1.2
+ h2 (h2-eth0) 10.10.1.1 (192.168.0.0) (h2-eth1) 10.10.3.2
+ h3 (h3-eth0) 10.10.3.1 (192.170.0.0) (h3-eth1) 10.10.5.1
+ h4 (h4-eth0) 10.10.5.2
 
 STEP 1(compiling models):
 ------------------------
@@ -9,58 +9,73 @@ java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.1.1,eth3,10.10.3.2] -DPORTAL_LI
 
 java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.3.1,eth3,10.10.5.1] -DPORTAL_LINKS=c_slave1:eth2,topnet.net01.net1.r1.portal_10_1_2_0,c_slave1:eth3,topnet.net2.r5.portal_10_1_3_0 -jar ../primogeni/netscript/dist/jprime.jar create Portals4 Portals4.java 192.170.0.0/16
 
-STEP 2(Creating namespaces and links)
+STEP 2 (Creating 3 veth pairs - a total of 6 interfaces) 
 sudo ip link add h1-eth0 type veth peer name h2-eth0
 sudo ip link add h2-eth1 type veth peer name h3-eth0
+sudo ip link add h3-eth1 type veth peer name h4-eth0
 
+(Create 4 namespaces)
 sudo ip netns add h1
 sudo ip netns add h2
 sudo ip netns add h3
+sudo ip netns add h4
+
+(Add the 6 interfaces to their respective namespaced hosts)
 sudo ip link set h1-eth0 netns h1
 sudo ip link set h2-eth0 netns h2
 sudo ip link set h2-eth1 netns h2
 sudo ip link set h3-eth0 netns h3
+sudo ip link set h3-eth1 netns h3
+sudo ip link set h4-eth0 netns h4
+
+(Configure all IP addresses of the 6 interfaces)
 sudo ip netns exec h1 ifconfig h1-eth0 10.10.1.2/24
 sudo ip netns exec h2 ifconfig h2-eth0 10.10.1.1/24
 sudo ip netns exec h2 ifconfig h2-eth1 10.10.3.2/24
 sudo ip netns exec h3 ifconfig h3-eth0 10.10.3.1/24
+sudo ip netns exec h3 ifconfig h3-eth1 10.10.5.1/24
+sudo ip netns exec h4 ifconfig h4-eth0 10.10.5.2/24
+
+(Loop back interfaces)
 sudo ip netns exec h1 ifconfig lo up
 sudo ip netns exec h2 ifconfig lo up
 sudo ip netns exec h3 ifconfig lo up
+sudo ip netns exec h4 ifconfig lo up
 
+(Check connectivity)
 sudo ip netns exec h1 ping -c1 10.10.1.1
 sudo ip netns exec h2 ping -c1 10.10.1.2
 sudo ip netns exec h2 ping -c1 10.10.3.1
 sudo ip netns exec h3 ping -c1 10.10.3.2
+sudo ip netns exec h3 ping -c1 10.10.5.2
+sudo ip netns exec h4 ping -c1 10.10.5.1
 
 STEP3 (SETTING ROUTES):
 ----------------------
 sudo ip netns exec h1 ip route add 192.168.0.0/16 via 10.10.1.1
 sudo ip netns exec h1 ip route add 192.170.0.0/16 via 10.10.1.1
+sudo ip netns exec h1 ip route add 10.10.5.0/24 via 10.10.1.1
 sudo ip netns exec h1 ifconfig h1-eth0 down
 sudo ip netns exec h1 ifconfig h1-eth0 up
 
-sudo ip netns exec h2 ip route add 192.170.0.0/16 via 10.10.3.1
 sudo ip netns exec h2 ifconfig h2-eth0 down
 sudo ip netns exec h2 ifconfig h2-eth0 up
 sudo ip netns exec h2 ifconfig h2-eth1 down
 sudo ip netns exec h2 ifconfig h2-eth1 up
 
-
-sudo ip netns exec h3 ip route add 192.168.0.0/16 via 10.10.3.2
 sudo ip netns exec h3 ifconfig h3-eth0 down
 sudo ip netns exec h3 ifconfig h3-eth0 up
+sudo ip netns exec h3 ifconfig h3-eth1 down
+sudo ip netns exec h3 ifconfig h3-eth1 up
 
-sudo ip netns exec h2 /home/mnconflux/primogeni/netsim/primex -tp 10.10.3.2 166 -tp 10.10.1.1 605 600 /home/mnconflux/expt2/Portals1_part_1.tlv
-sudo ip netns exec h3 /home/mnconflux/primogeni/netsim/primex -tp 10.10.3.1 166 600 /home/mnconflux/expt2/Portals2_part_1.tlv
+sudo ip netns exec h4 ip route add 192.168.0.0/16 via 10.10.5.1
+sudo ip netns exec h4 ip route add 192.170.0.0/16 via 10.10.5.1
+sudo ip netns exec h4 ip route add 10.10.1.0/24 via 10.10.5.1
+sudo ip netns exec h4 ifconfig h4-eth0 down
+sudo ip netns exec h4 ifconfig h4-eth0 up
 
-
-
-
-
-
-
-
+sudo ip netns exec h2 ~/primogeni/netsim/primex -tp 10.10.3.2 166 -tp 10.10.1.1 605 600 Portals3_part_1.tlv
+sudo ip netns exec h3 ~/primogeni/netsim/primex -tp 10.10.3.1 166 -tp 10.10.5.1 605 600 Portals4_part_1.tlv
 
 ###############################################################################
 					ROUTING TABLE AND INTERFACES
