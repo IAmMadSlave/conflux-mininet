@@ -1,35 +1,6 @@
-
 /**
  * \file portal_device.cc
- * \brief XXX
- * \author Nathanael Van Vorst
- * 
- * Copyright (c) 2011 Florida International University.
- *
- * Permission is hereby granted, free of charge, to any individual or
- * institution obtaining a copy of this software and associated
- * documentation files (the "software"), to use, copy, modify, and
- * distribute without restriction.
- *
- * The software is provided "as is", without warranty of any kind,
- * express or implied, including but not limited to the warranties of
- * merchantability, fitness for a particular purpose and
- * non-infringement.  In no event shall Florida International
- * University be liable for any claim, damages or other liability,
- * whether in an action of contract, tort or otherwise, arising from,
- * out of or in connection with the software or the use or other
- * dealings in the software.
- *
- * This software is developed and maintained by
- *
- *   Modeling and Networking Systems Research Group
- *   School of Computing and Information Sciences
- *   Florida International University
- *   Miami, Florida 33199, USA
- *
- * You can find our research at http://www.primessf.net/.
  */
-
 
 #define EMU_BUFSIZ 300000 // buffer up to 200 pkts of 1500 bytes
 
@@ -38,8 +9,6 @@
 #include "os/logger.h"
 #include "proto/emu/emulation_protocol.h"
 #include "os/partition.h"
-
-#ifdef SSFNET_EMULATION
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,13 +30,8 @@
 #include <string.h>
 #include <arpa/inet.h>
 
-
-
-#ifdef PRIME_SSF_MACH_X86_DARWIN
-#else
 #include <linux/if_ether.h>
 #include <linux/if_packet.h>
-#endif
 
 //#define LOG_WARN(X) std::cout<<"["<<__LINE__<<"]"<<X;
 #define LOG_DEBUG(X) std::cout<<"["<<__LINE__<<"]"<<X;
@@ -75,11 +39,6 @@
 namespace prime {
 namespace ssfnet {
 
-#ifdef USE_TX_RING
-int Portal::c_buffer_sz   = 1024*8;
-int Portal::c_buffer_nb   = 1024;
-int Portal::c_sndbuf_sz   = 0;
-#endif
 int Portal::c_mtu         = 0;
 int Portal::mode_loss     = 1;
 bool Portal::sconfiged = false;
@@ -102,7 +61,6 @@ void TrafficPortal::transmit(Packet* pkt, VirtualTime deficit) {
 }
 
 bool TrafficPortal::receive(Packet* pkt, bool pkt_was_targeted_at_iface) {
-#ifdef SSFNET_EMULATION
 	LOG_DEBUG(getUName()<<" emu proto pkt_was_targeted_at_iface="<<(pkt_was_targeted_at_iface?"true":"false")<<
 			", ipForwardingEnabled()="<<(ipForwardingEnabled()?"true":"false")<<", isActive()="<<(isActive()?"true":"false")<<endl);
 	if(isActive()) {
@@ -112,7 +70,6 @@ bool TrafficPortal::receive(Packet* pkt, bool pkt_was_targeted_at_iface) {
 		return true;
 	}
 	LOG_DEBUG(getUName()<<" emu proto did not take packet! "<<endl);
-#endif
 	return false;
 }
 
@@ -138,7 +95,7 @@ void PortalDevice::init(){
 		ip2mac.insert(SSFNET_MAKE_PAIR(i->second->getIP(),i->second->getMAC()));
 	}
 	sim_net=getCommunity()->getPartition()->getTopnet()->getIPPrefix();
-	ip2portal.setupRoutes(sim_net);
+	//ip2portal.setupRoutes(sim_net);
 	LOG_DEBUG("Simulated network prefix is "<<sim_net<<endl);
 }
 
@@ -329,83 +286,20 @@ int PortalDevice::getDeviceType() {
 	return EMU_TRAFFIC_PORTAL;
 }
 
-
-void PortalDevice::handleArp(Portal* portal, EthernetHeader* eth, ARPHeader* arp) {
-	LOG_DEBUG("Got arp\n"<<*eth<<"\n"<<*arp<<"\n");
-	if(arp->isArpRequest()) {
-		IPAddress ip=IPAddress(arp->getDstIP());
-		LOG_DEBUG("Looking for mac of ip "<<ip<<endl);
-		if(sim_net.contains(ip)) {
-			LOG_DEBUG("It is in the simulation, send response!");
-			LOG_DEBUG("\narp->getSrcIP()="<<IPAddress(arp->getSrcIP())<<" arp->getSrcMac()="<<MACAddress(arp->getSrcMac())<<" arp->getDstIP()="<<IPAddress(arp->getDstIP())<<" arp->getDstMac()="<<MACAddress(arp->getDstMac()));
-			portal->sendArpResponse(MACAddress(arp->getSrcMac()), IPAddress(arp->getSrcIP()), ip, portal->getMAC());
-											//ip=IPAddress(arp->getDstIP() should be 192.170.1.50
-	//		portal->sendArpResponse(MACAddress(eth->getSrc()), IPAddress(arp->getSrcIP()), ip, portal->getMAC());//zzz
-		}
-		else {
-			//ignore it
-			LOG_DEBUG("Ignoring arp...\n");
-		}
-	}
-	else {
-		ArpEvent* evt = new ArpEvent(IPAddress(arp->getSrcIP()),MACAddress(arp->getSrcMac()));
-		LOG_DEBUG("I think "<<evt->ip<<" is at "<<evt->mac<<endl);
-		input_channel->putRealEvent(evt); //XXX not sure this is legal....
-	}
-}
-
-MACAddress* PortalDevice::lookupMAC(IPAddress ip) {
-	IP2MACMap::iterator rv = ip2mac.find(ip);
-	if(rv == ip2mac.end())
-		return 0;
-	return &(rv->second);
-}
-
 SSFNET_REGISTER_EMU_DEVICE(PortalDevice, EMU_TRAFFIC_PORTAL);
 
-
-
-#ifdef PRIME_SSF_MACH_X86_DARWIN
-Portal::Portal(EmulationProtocol* emuproto_, PortalDevice* dev_)
-{
-	LOG_ERROR("Not supported on the mac!");
-}
-#else
 Portal::Portal(EmulationProtocol* emuproto_, PortalDevice* dev_) :
 					dev(dev_),
 					emuproto(emuproto_),
 					rx_fd(-1),
 					tx_fd(-1),
 					pcap_handle(0),
-#ifdef USE_TX_RING
-					tx_data_offset(0),
-					tx_idx(0),
-					tx_header_start(0)
-#else
 					sendbuf(new byte[BUFFSIZE])
-#endif					
 					{
-#ifdef USE_TX_RING
-	memset(&s_packet_req, 0, sizeof(struct tpacket_req));
-#endif										
 
 	if(!sconfiged) {
 		sconfiged=true;
 		char* env_var=0;
-#ifdef USE_TX_RING
-		env_var = getenv("c_buffer_sz");
-		if(env_var && strlen(env_var)>0) {
-			c_buffer_sz   = (int)atol(env_var);
-		}
-		env_var = getenv("c_buffer_nb");
-		if(env_var && strlen(env_var)>0) {
-			c_buffer_nb   = (int)atol(env_var);
-		}
-		env_var = getenv("c_sndbuf_sz");
-		if(env_var && strlen(env_var)>0) {
-			c_sndbuf_sz   = (int)atol(env_var);
-		}
-#endif
 		env_var = getenv("c_mtu");
 		if(env_var && strlen(env_var)>0) {
 			c_mtu   = (int)atol(env_var);
@@ -416,30 +310,18 @@ Portal::Portal(EmulationProtocol* emuproto_, PortalDevice* dev_) :
 		}
 	}
 }
-#endif
 
 Portal::~Portal() {
 	/* cleanup */
-#ifndef PRIME_SSF_MACH_X86_DARWIN
 	if(pcap_handle) {
 		pcap_close(pcap_handle);
 		pcap_handle=0;
 	}
-#endif
 	if(tx_fd!=-1)
 		close(tx_fd);
-#ifndef PRIME_SSF_MACH_X86_DARWIN
-#ifndef USE_TX_RING
 	delete sendbuf;
-#endif
-#endif
 }
 
-#ifdef PRIME_SSF_MACH_X86_DARWIN
-void Portal::init() {
-	LOG_ERROR("Not supported on the mac!");
-}
-#else
 void Portal::init() {
 
 	//setup the pcap rx channel
@@ -544,298 +426,10 @@ void Portal::init() {
 		perror("iotcl");
 		LOG_ERROR("Unable to bind the tx socket for "<<nic<<"!"<<endl);
 	}
-
-#ifdef USE_TX_RING
-	/* set packet loss option */
-	int tmp = mode_loss;
-	if (setsockopt(tx_fd,
-			SOL_PACKET,
-			PACKET_LOSS,
-			(char *)&tmp,
-			sizeof(tmp))<0) {
-		perror("iotcl");
-		LOG_ERROR("Unable to set the (tx) packet loss socket option for "<<nic<<"!"<<endl);
-	}
-
-	/* prepare TX ring request */
-	s_packet_req.tp_block_size = c_buffer_sz;
-	s_packet_req.tp_frame_size = c_buffer_sz;
-	s_packet_req.tp_block_nr = c_buffer_nb;
-	s_packet_req.tp_frame_nr = c_buffer_nb;
-
-	/* calculate memory to mmap in the kernel */
-	uint32_t size = s_packet_req.tp_block_size * s_packet_req.tp_block_nr;
-
-	/* send TX ring request */
-	if (setsockopt(tx_fd,
-			SOL_PACKET,
-			PACKET_TX_RING,
-			(char *)&s_packet_req,
-			sizeof(s_packet_req))<0) {
-		perror("iotcl");
-		LOG_ERROR("Unable to set the packet tx_ring option for "<<nic<<"!"<<endl);
-	}
-	/* change send buffer size */
-	if(c_sndbuf_sz) {
-		LOG_DEBUG("Changing send buffer size to "<<c_sndbuf_sz<<endl);
-		if (setsockopt(tx_fd, SOL_SOCKET, SO_SNDBUF, &c_sndbuf_sz,
-				sizeof(c_sndbuf_sz))< 0) {
-			perror("iotcl");
-			LOG_ERROR("Unable to set the send buffer size for "<<nic<<"!"<<endl);
-		}
-	}
-
-	/* get data offset */
-	tx_data_offset = TPACKET_HDRLEN - sizeof(struct sockaddr_ll);
-	LOG_DEBUG("tx data_offset = "<<tx_data_offset<<endl);
-
-	/* mmap TX ring buffers memory */
-	tx_header_start = (tpacket_hdr*)
-			mmap(
-					0,
-					size,
-					PROT_READ|PROT_WRITE,
-					MAP_SHARED,
-					tx_fd, 0);
-	if (tx_header_start == (void*)-1)
-	{
-		perror("iotcl");
-		LOG_ERROR("Unable memory map tx_ring/socket for "<<nic<<"!"<<endl);
-	}
-
-#endif
-
 	LOG_DEBUG("Ready to send/recv on "<<nic<<"!"<<endl);
 }
 
-#endif
-
-#ifndef PRIME_SSF_MACH_X86_DARWIN
-#ifdef USE_TX_RING
-struct tpacket_hdr * Portal::nextTxFrame() {
-	struct tpacket_hdr * ps_header=0;
-	int idx=0;
-	/* get free pkt space */
-	for(int i=tx_idx; i<c_buffer_nb && !ps_header; i++)
-	{
-		ps_header = ((struct tpacket_hdr *)((u_char *)tx_header_start + (c_buffer_sz*i)));
-		switch((volatile uint32_t)ps_header->tp_status)
-		{
-		case TP_STATUS_SEND_REQUEST:
-		case TP_STATUS_SENDING:
-			//not available
-			ps_header=0;
-			break;
-		case TP_STATUS_AVAILABLE:
-			//case TP_STATUS_LOSING: //same as TP_STATUS_WRONG_FORMAT?
-		case TP_STATUS_WRONG_FORMAT:
-			//available
-			idx=i;
-			break;
-		default:
-			LOG_WARN("Unexpected state in tx ring!"<<endl)
-			ps_header=0;
-			break;
-		}
-	}
-	if(ps_header == 0) {
-		for(int i=0; i<tx_idx && !ps_header; i++)
-		{
-			ps_header = ((struct tpacket_hdr *)((u_char *)tx_header_start + (c_buffer_sz*i)));
-			switch((volatile uint32_t)ps_header->tp_status)
-			{
-			case TP_STATUS_SEND_REQUEST:
-				//not available
-				ps_header=0;
-				break;
-			case TP_STATUS_AVAILABLE:
-				//case TP_STATUS_LOSING: //same as TP_STATUS_WRONG_FORMAT?
-			case TP_STATUS_WRONG_FORMAT:
-				//available
-				idx=i;
-				break;
-			default:
-				LOG_WARN("Unexpected state in tx ring!"<<endl)
-				ps_header=0;
-				break;
-			}
-		}
-	}
-
-	if(ps_header)
-		tx_idx=idx+1;
-		if(tx_idx>=c_buffer_nb)
-			tx_idx=0;
-
-	return ps_header;
-}
-#endif
-#endif
-
-void Portal::sendArpResponse(MACAddress requester_mac, IPAddress requester_ip, IPAddress requested_ip, MACAddress requested_mac) {
-	LOG_DEBUG("\n"<<"Received reqquester_mac="<<requester_mac<<" requester_ip="<<requester_ip<<" requested_ip="<<requested_ip<<" requested_mac="<<requested_mac);
-
-#ifdef PRIME_SSF_MACH_X86_DARWIN
-LOG_ERROR("not supported on mac")
-#else
-	//setup the ethernet header
-#ifdef USE_TX_RING
-	struct tpacket_hdr * ps_header = nextTxFrame();
-	if(ps_header == 0) {
-		LOG_WARN("No space in tx_buffer!"<<endl);
-		return;
-	}
-	EthernetHeader* eth = (EthernetHeader*)(((byte*) ps_header) + tx_data_offset);
-	ARPHeader *arp = (ARPHeader*)(((byte*) ps_header) + tx_data_offset+sizeof(EthernetHeader));
-#else
-	EthernetHeader* eth = (EthernetHeader*)(sendbuf);
-	ARPHeader *arp = (ARPHeader*)(sendbuf+sizeof(EthernetHeader));
-#endif
-/*      //This one is almost there 
-	mac.toRawMac(eth->getSrc());  //obaida- src_hw_hwaddr  for {Ethernet
-	requester_mac.toRawMac(eth->getDst()); //obaida- tgt_mac for the {Ethernet
-
-	eth->setFrameType(ETH_P_ARP);
-
-	requester_mac.toRawMac(arp->getSrcMac());
-	requested_mac.toRawMac(arp->getDstMac());  //Obaida- tgt_mac for the {ARP_REPLY that is prepared by the simulator
-	
-	arp->setDstIP((uint32)requested_ip);
-	arp->setSrcIP((uint32)requester_ip); 	//obaida added
-	arp->setHType(ARP_TYPE_ETH);
-	arp->setHSize(6);
-	arp->setProto(ARP_PROTO_IP);
-	arp->setPSize(4);
-	arp->setOpcode(ARP_REPLY);
-*/
-
-
-        mac.toRawMac(eth->getSrc());  //obaida- src_hw_hwaddr  for {Ethernet
-        requester_mac.toRawMac(eth->getDst()); //obaida- tgt_mac for the {Ethernet
-
-        eth->setFrameType(ETH_P_ARP);
-
-        requester_mac.toRawMac(arp->getDstMac());
-        requested_mac.toRawMac(arp->getSrcMac());  //Obaida- tgt_mac for the {ARP_REPLY that is prepared by the simulator
-
-        arp->setDstIP((uint32)requester_ip);
-        arp->setSrcIP((uint32)requested_ip);    //obaida added
-        arp->setHType(ARP_TYPE_ETH);
-        arp->setHSize(6);
-        arp->setProto(ARP_PROTO_IP);
-        arp->setPSize(4);
-        arp->setOpcode(ARP_REPLY);
-
-
-	LOG_DEBUG("Sending arp reply:\n"<<*eth<<"\n"<<*arp<<"\n");
-#ifdef USE_TX_RING
-	ps_header->tp_len = sizeof(EthernetHeader)+sizeof(ARPHeader);
-	ps_header->tp_status = TP_STATUS_SEND_REQUEST;
-	if( send(tx_fd,
-			NULL,
-			0,
-			MSG_WAITALL)<0) {
-		perror("Error while sending arp!");
-		LOG_ERROR("HERE!"<<endl);
-	}
-#else
-	if( send(tx_fd,
-			sendbuf,
-			sizeof(EthernetHeader)+sizeof(ARPHeader),
-			MSG_WAITALL)<0) {
-		perror("Error while sending arp!");
-		LOG_ERROR("HERE!"<<endl);
-	}
-#endif
-#endif
-}
-
-
-void Portal::sendArpRequest(uint32 req_ip) {
-#ifdef PRIME_SSF_MACH_X86_DARWIN
-LOG_ERROR("not supported on mac")
-#else
-	//setup the ethernet header
-	//setup the ethernet header
-#ifdef USE_TX_RING
-	struct tpacket_hdr * ps_header = nextTxFrame();
-	if(ps_header == 0) {
-		LOG_WARN("No space in tx_buffer!"<<endl);
-		return;
-	}
-	EthernetHeader* eth = (EthernetHeader*)(((byte*) ps_header) + tx_data_offset);
-	ARPHeader *arp = (ARPHeader*)(((byte*) ps_header) + tx_data_offset+sizeof(EthernetHeader));
-#else
-	EthernetHeader* eth = (EthernetHeader*)(sendbuf);
-	ARPHeader *arp = (ARPHeader*)(sendbuf+sizeof(EthernetHeader));
-#endif
-	mac.toRawMac(eth->getSrc());
-	MACAddress::MACADDR_BROADCAST_FF.toRawMac(eth->getDst());
-	eth->setFrameType(ETH_P_ARP);
-
-	mac.toRawMac(arp->getSrcMac());
-	MACAddress::MACADDR_INVALID.toRawMac(arp->getDstMac());
-	arp->setDstIP(req_ip);
-	arp->setSrcIP(ip);
-	arp->setHType(ARP_TYPE_ETH);
-	arp->setHSize(6);
-	arp->setProto(ARP_PROTO_IP);
-	arp->setPSize(4);
-	arp->setOpcode(ARP_REQUEST);
-
-	LOG_DEBUG("Sending arp request for "<<mac<<":\n"<<*eth<<"\n"<<*arp<<"\n");
-
-#ifdef USE_TX_RING
-	ps_header->tp_len = sizeof(EthernetHeader)+sizeof(ARPHeader);
-	ps_header->tp_status = TP_STATUS_SEND_REQUEST;
-	if( send(tx_fd,
-			NULL,
-			0,
-			MSG_WAITALL)<0) {
-		perror("Error while sending arp!");
-		LOG_ERROR("HERE!"<<endl);
-	}
-#else
-	if( send(tx_fd,
-			sendbuf,
-			sizeof(EthernetHeader)+sizeof(ARPHeader),
-			MSG_WAITALL)<0) {
-		perror("Error while sending arp!");
-		LOG_ERROR("HERE!"<<endl);
-	}
-#endif
-#endif
-}
-
 void Portal::sendPacket(EmulationEvent* evt, MACAddress& dstmac) {
-#ifdef PRIME_SSF_MACH_X86_DARWIN
-LOG_ERROR("not supported on mac")
-#else
-#ifdef USE_TX_RING
-	int psize=evt->pkt->size()+sizeof(EthernetHeader);
-	if(c_buffer_sz < psize) {// || psize>1514) {
-		LOG_WARN("The packet is too big to send via the TX_RING! psize="<<psize<<endl);
-		return;
-	}
-
-	struct tpacket_hdr * ps_header = nextTxFrame();
-	byte * data;
-
-	if(ps_header == 0) {
-		LOG_WARN("No space in tx_buffer!"<<endl);
-		return;
-	}
-
-	EthernetHeader* eth_h = (EthernetHeader*)(((byte*) ps_header) + tx_data_offset);
-	data = ((byte*) ps_header) + tx_data_offset+sizeof(EthernetHeader);
-	int temp_size = psize-sizeof(EthernetHeader);
-	evt->pkt->getMessage()->toRawBytes(data, temp_size);
-	DEBUG_CODE(
-		data = ((byte*) ps_header) + tx_data_offset+sizeof(EthernetHeader);
-		LOG_DEBUG("Put the following in the tx buffer for "<<this->getEmuProto()->getInterface()->getName()<<":\n"<<*((IPv4RawHeader*)data)<<endl);
-	);
-	
-#else
 	//prepare the buffer to put the real bytes in
 	LOG_DEBUG("###sendPacket initiated"<<endl);
 
@@ -890,37 +484,7 @@ LOG_ERROR("not supported on mac")
 
 	LOG_DEBUG("Packet Content= "<<evt->pkt->getMessage()<<endl);
 	assert(temp_size==0);
-#endif
-	//setup the ethernet header.....
-//	mac.toRawMac(eth_h->getSrc());  //zzz
-//	dstmac.toRawMac(eth_h->getDst());//zzz
-//	eth_h->setFrameType(ETH_P_IP);//zzz
 
-
-#ifdef USE_TX_RING
-	ps_header->tp_len = psize;
-	ps_header->tp_status = TP_STATUS_SEND_REQUEST;
-
-	if( send(tx_fd,
-			NULL,
-			0,
-			MSG_DONTWAIT)<0) {
-		perror("Error while sending pkts!");
-		LOG_ERROR("HERE! psize="<<psize<<endl);
-	}
-/*zzz sending pbuff to the destination portal here*/
-#else
-/*	if( send(tx_fd,
-			temp_buf,
-			//buffer_size,
-			temp_size,
-			MSG_DONTWAIT)<0) {
-		perror("Error while sending pkts!");//zzz
-		LOG_DEBUG("HERE! buffer_size="<<buffer_size<<endl);
-	}
-	else
-	{
-*/
 		LOG_DEBUG("##**Looks like packet failed to send. Trying raw Ip socket mechanism."<<endl);
 		IPAddress tgt = ((IPv4Message*)(evt->pkt->getMessageByArchetype(SSFNET_PROTOCOL_TYPE_IPV4)))->getDst();		
 		//((IPv4Message*)(evt->pkt->getMessageByArchetype(SSFNET_PROTOCOL_TYPE_IPV4)))->getSrc();
@@ -951,15 +515,9 @@ LOG_ERROR("not supported on mac")
 		else
 			LOG_DEBUG("Packet successfully sent. Buffer size="<<buffer_size<<endl);
 	//}
-
-#endif
-#endif
 }
 
 bool Portal::process_pkts(int max_pkts) {
-#ifdef PRIME_SSF_MACH_X86_DARWIN
-LOG_ERROR("not supported on mac")
-#else
 	int rv=0;
 	while(max_pkts>0) {
 		rv=pcap_dispatch(pcap_handle, -1, process_pkt, (u_char*)this);
@@ -967,14 +525,10 @@ LOG_ERROR("not supported on mac")
 			return false;
 		max_pkts-=rv;
 	}
-#endif
 	return true;
 }
 
 void Portal::process_pkt(u_char * portal_, const struct pcap_pkthdr * pkt_meta, const u_char * pkt) {
-#ifdef PRIME_SSF_MACH_X86_DARWIN
-LOG_ERROR("not supported on mac")
-#else
 	Portal* portal = (Portal*) portal_;
 	EthernetHeader* eth=(EthernetHeader*)pkt;
 	uint16_t frame_type;
@@ -1014,7 +568,6 @@ LOG_ERROR("not supported on mac")
 	else {
 		LOG_WARN("Unknown protocol following Ethernet header!"<<endl << *eth <<endl);
 	}
-#endif
 }
 
 
@@ -1063,59 +616,7 @@ void PortalTable::dump_helper(TrieNode* root, uint32 sofar,
 	}
 }
 
-void PortalTable::setupRoutes(IPPrefix sim_net) {
-	setupRoutes(root,0,0);
-}
-
-void PortalTable::setupRoutes(TrieNode* root, uint32 sofar, int n) {
-	// Recurse on children, if any.
-	for (int i=0; i < TRIE_KEY_SPAN; i++) {
-		if(root->children[i]) {
-			setupRoutes(root->children[i], (sofar << 1) | i, n+1);
-		}
-	}
-	if(root->data) {
-		TrafficPortalPair* d = (TrafficPortalPair*)root->data;
-		d->portal->getIfaceName();
-		LOG_WARN("SETUP ROUTE FOR nic=["<<d->portal->getIfaceName()<<","<< d->portal->getIP()<<"] prefix="<<d->prefix<<endl);
-		char temp[1024];
-		//clean bad routes
-		sprintf(temp, "/sbin/ip route | /bin/grep \"%s\" | /bin/awk '{print \"/sbin/ip route del \"$1\" \"$2\" \"$3\";\"}' | /bin/sh", d->portal->getIfaceName().c_str());
-		LOG_WARN("Cleaning old routes, '"<<SSFNET_STRING(temp)<<"'\n");
-		system(temp);
-		sprintf(temp, "ip route add %s via %s dev %s",d->prefix.toString().c_str(), d->portal->getIP().toString().c_str(), d->portal->getIfaceName().c_str());
-		LOG_WARN("Adding route, '"<<SSFNET_STRING(temp)<<"'\n");
-		system(temp);
-	}
-}
-
 // used to register an event class.
 SSF_REGISTER_EVENT(ArpEvent, ArpEvent::createArpEvent);
-#else
-
-namespace prime {
-namespace ssfnet {
-
-
-void TrafficPortal::init() {
-	EmulationProtocol::init();
-	getInterface()->inHost()->registerTrafficPortal(this);
-}
-
-IPPrefix::List& TrafficPortal::getNetworks() {
-	return unshared.networks.read();
-}
-
-void TrafficPortal::transmit(Packet* pkt, VirtualTime deficit) {
-	getInterface()->receiveEmuPkt(pkt);
-}
-
-bool TrafficPortal::receive(Packet* pkt, bool pkt_was_targeted_at_iface) {
-	return false;
-}
-
-#endif /*SSFNET_EMULATION*/
-
 } //namespace ssfnet
 } //namespace prime
-
