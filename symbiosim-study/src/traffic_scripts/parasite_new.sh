@@ -9,7 +9,6 @@ START_LINE_NUM_TEMP=0
 
 while [ $START_LINE_NUM_TEMP -ge 0 ] 
 do
-    echo "temp = " $START_LINE_NUM_TEMP
     START_LINE=$(tail -n +$START_LINE_NUM $LOG | egrep -n -m 1 "^${COUNTER}\\.[0-9]*\ 10\.0\.0\.1")
     START_LINE_NUM_TEMP=$(echo $START_LINE | cut -d : -f 1)
     START_LINE_NUM_TEMP=$((START_LINE_NUM_TEMP-1))
