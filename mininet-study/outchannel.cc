@@ -311,8 +311,12 @@ Event* outChannel::getRealEvent(double& delay_in_real_sec, double timeout)
   if(_oc_realque->size() <= 0) {
     ssf_thread_cond_timedwait(&_oc_realque_cond, &_oc_realque_mutex, &ts);
   }
-  ssf_kernel_event* kevt = _oc_realque->top(); 
-  if(kevt) _oc_realque->pop();
+
+  ssf_kernel_event* kevt;
+  if(_oc_realque->size() > 0) {
+    kevt = _oc_realque->top(); assert(kevt);
+    _oc_realque->pop();
+  } else kevt = 0;
   ssf_thread_mutex_signal(&_oc_realque_mutex);
 
   if(kevt) {
