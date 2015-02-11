@@ -16,13 +16,13 @@ import jprime.util.ModelInterface;
 /**
  * @author Miguel A. Erazo
  */
-public class Portals1withEmu extends ModelInterface{
+public class Portals3 extends ModelInterface{
 
     /**
      * @param db
      * @param exp
      */
-    public Portals1withEmu(Database db, Experiment exp) {
+    public Portals3(Database db, Experiment exp) {
         super(db, exp);
     }
 
@@ -30,7 +30,7 @@ public class Portals1withEmu extends ModelInterface{
      * @param db
      * @param expName
      */
-    public Portals1withEmu(Database db, String expName) {
+    public Portals3(Database db, String expName) {
         super(db, expName);
     }
 
@@ -104,8 +104,6 @@ public class Portals1withEmu extends ModelInterface{
         IInterface net1_h2_if0 = net1_h2.createInterface("if0");
        
         IHost net1_h3 = net1.createHost("h3");
-        net1_h3.enableEmulation();
-
         IInterface net1_h3_if0 = net1_h3.createInterface("if0");
        
         IHost net1_h4 = net1.createHost("h4");
@@ -506,6 +504,7 @@ public class Portals1withEmu extends ModelInterface{
         right_portal.createTrafficPortal();       
         right_portal.setIpAddress("10.10.3.2");
         right_portal.addReachableNetwork("192.170.0.0/16");
+        right_portal.addReachableNetwork("10.10.5.0/24");
           
         return top;
     }
