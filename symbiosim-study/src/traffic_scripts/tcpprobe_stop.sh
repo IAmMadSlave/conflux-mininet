@@ -1,14 +1,19 @@
+#!/bin/bash
+
 # Stop parasite logging and unload module
 # this script needs sudo
 
-# if ubuntu or debian? use /run
-# else maybe /shm/dev
-
-# in this example we will be using /run
-
-#!/bin/bash
-
-PARASITE_PID=$(cat /run/parasite/parasite_pid)
+# kill tcp_probe logging
+LOG_PID=$(cat ./tempdisk/log_pid)
 kill -9 $PARASITE_PID
-rm /run/parasite/parasite_pid
+
+# kill any other processes using the ramdisk
+# i think this is a bad idea?
+#lsof | grep $(pwd)"/tempdisk" | awk '{if (NR!=1) {print $2}}' | xargs kill -9
+
+# unmount and delete ramdisk
+umount -l ./tempdisk
+rmdir tempdisk
+
+# unload tcp_probe kernel module
 modprobe -r tcp_probe
