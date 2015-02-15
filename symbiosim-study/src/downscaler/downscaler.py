@@ -21,9 +21,24 @@ for child in root:
 for child in root:
     if child.attrib.get('type') == 'Net':
         net['topNet'].update({child.attrib.get('name'): {}})
+        for subchild in child:
+            if subchild.attrib.get('type') == 'Host':
+                net['topNet'][child.attrib.get('name')].update( {'Host':
+                    {'name': subchild.attrib.get('name'), 'interfaces': {} }} )
+                for subsubchild in subchild:
+                    if subsubchild.attrib.get('type') == 'Interface':
+                        net['topNet'][child.attrib.get('name')][subchild.attrib.get('type')]['interfaces'].update(
+                                {'name': subsubchild.attrib.get('name')} )
+                
+            if subchild.attrib.get('type') == 'Router':
+                break; 
+
+            if subchild.attrib.get('type') == 'Link':
+                break;
 
     if child.tag == 'replica':
         net['topNet'].update({child.attrib.get('name'): {}})
 
 
 print net
+print net['topNet']['sub1']
