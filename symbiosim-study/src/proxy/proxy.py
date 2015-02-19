@@ -3,7 +3,23 @@ from mininet.topo import Topo
 import json
 from pprint import pprint
 
-class MiniSymbio( object ):
+# traffic_monitor dependencies
+import os
+import time
+import logging
+import subprocess
+from threading import Thread
+
+class Traffic_Monitor( Thread ):
+    
+    def __init__( self, val ):
+        Thread.__init__( self )
+        self.val = val
+
+    def run( self ):
+
+
+class Proxy( object ):
 
     def __init__( self, downscaled_topo ):
         # parse downscaled topology and create mappings
@@ -70,4 +86,3 @@ class MiniSymbio( object ):
         # I don't know what this does!
     
 if __name__== '__main__':
-    ms = MiniSymbio( 'downscaled_topology.json' )
