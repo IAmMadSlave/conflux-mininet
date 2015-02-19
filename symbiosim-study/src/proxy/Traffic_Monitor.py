@@ -16,7 +16,7 @@ class Traffic_Monitor( Thread ):
     def run( self ):
         # overloaded Thread.run
         for i in xrange(3):
-            self.links[i] = i
+            self.links.append(i)
 
         #while not self.cancelled:
         #    self.update()
@@ -42,14 +42,20 @@ class Traffic_Monitor( Thread ):
         loggin.info( 'update links' )
 
     def __str__( self ):
+        line = ''
         for link in self.links:
-            print link
+            line += str(link)
+            line += '\n'
+
+        return line
 
 if __name__== '__main__':
     try:
         tm = Traffic_Monitor()
         tm.start()
+
         print tm
+
         tm.join()
         print 'finished..'
 
