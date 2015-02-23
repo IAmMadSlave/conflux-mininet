@@ -2,125 +2,128 @@
 
 try:
     import xml.etree.cElementTree as ET
-    import networkx as nx
-    import pprint
+    #import pprint
     import copy
+    import sys
+    import json
 except ImportError:
     import xml.etree.ElementTree as ET
 
 net = {}
 
-def getName( node ):
+def get_name( node ):
     return node.attrib.get( 'name' )
 
-def getPath( node ):
+def get_path( node ):
     return node.attrib.get( 'path' )
 
-def getType( node ):
+def get_type( node ):
     return node.attrib.get( 'type' )
 
-def getTag( node ):
+def get_tag( node ):
     return node.tag
 
-def getValue( node ):
+def get_value( node ):
     return node.attrib.get( 'value' )
 
-def parseModel( root, top ):
+def parse_model( root, top ):
     for child in root:
-        if getName( child ) == 'routing':
-            top.update( {'routing': getType( child )} )
+        if get_name( child ) == 'routing':
+            top.update( {'routing': get_type( child )} )
             continue
 
-        if getType( child ) == 'Net':
+        if get_type( child ) == 'Net':
             if top.has_key( 'subnets' ) == False:
                 top.update( {'subnets': []} )
 
-            newSubnet = {'name': getName( child )}
-            top['subnets'].append( newSubnet )
-            subnetIndex = top['subnets'].index( newSubnet )
-            parseModel( child, top['subnets'][subnetIndex] )
+            newsubnet = {'name': get_name( child )}
+            top['subnets'].append( newsubnet )
+            subnetindex = top['subnets'].index( newsubnet )
+            parse_model( child, top['subnets'][subnetindex] )
             continue
 
-        if getTag( child ) == 'replica':
+        if get_tag( child ) == 'replica':
             for i in range( len( top['subnets'] ) ):
-                if top['subnets'][i].get( 'name' ) == getPath( child ):
+                if top['subnets'][i].get( 'name' ) == get_path( child ):
                     break
                 break
             top['subnets'].append( copy.deepcopy( top['subnets'][i] ) )
-            top['subnets'][i+1].update( {'name': getName( child )} )
+            top['subnets'][i+1].update( {'name': get_name( child )} )
             continue
 
-        if getType ( child ) == 'Host':
+        if get_type ( child ) == 'Host':
             if top.has_key( 'hosts' ) == False:
                 top.update( {'hosts': []} )
 
-            newHost = {'name': getName( child )} 
-            newHost.update( {'interfaces': []} )
+            newhost = {'name': get_name( child )} 
+            newhost.update( {'interfaces': []} )
 
             for interface in child:
-                newHost['interfaces'].append( {'name': getName( interface )} )
-                hostIndex = newHost['interfaces'].index( {'name': getName( 
+                newhost['interfaces'].append( {'name': get_name( interface )} )
+                hostindex = newhost['interfaces'].index( {'name': get_name( 
                     interface )} )
 
                 for attribute in interface:
-                    newHost['interfaces'][hostIndex].update( {getName( attribute ):
-                        getValue( attribute )} )
+                    newhost['interfaces'][hostindex].update( {get_name( attribute ):
+                        get_value( attribute )} )
 
-            top['hosts'].append( newHost )
+            top['hosts'].append( newhost )
             continue
 
-        if getType ( child ) == 'Router':
+        if get_type ( child ) == 'Router':
             if top.has_key( 'routers' ) == False:
                 top.update( {'routers': []} )
             
-            newRouter = {'name': getName( child )}
-            newRouter.update( {'interfaces': []} )
+            newrouter = {'name': get_name( child )}
+            newrouter.update( {'interfaces': []} )
 
             for interface in child:
-                newRouter['interfaces'].append( {'name': getName( interface )} )
-                routerIndex = newRouter['interfaces'].index( {'name': getName(
+                newrouter['interfaces'].append( {'name': get_name( interface )} )
+                routerindex = newrouter['interfaces'].index( {'name': get_name(
                     interface )} ) 
 
                 for attribute in interface:
-                    newRouter['interfaces'][routerIndex].update( {getName( 
-                        attribute ): getValue( attribute )} )
+                    newrouter['interfaces'][routerindex].update( {get_name( 
+                        attribute ): get_value( attribute )} )
 
-            top['routers'].append( newRouter )
+            top['routers'].append( newrouter )
             continue
 
-        if getType ( child ) == 'Link':
+        if get_type ( child ) == 'Link':
             if top.has_key( 'links' ) == False:
                 top.update( {'links': []} )
 
-            newLink = {'name': getName( child )}
-            linkPath = ''
+            newlink = {'name': get_name( child )}
+            linkpath = ''
 
             for subchild in child:
-                if getTag( subchild ) == 'attribute':
-                    newLink.update( {getName( subchild ): getValue( subchild )} )
+                if get_tag( subchild ) == 'attribute':
+                    newlink.update( {get_name( subchild ): get_value( subchild )} )
 
-                if getTag( subchild ) == 'ref':
-                    linkPath += getPath( subchild )
+                if get_tag( subchild ) == 'ref':
+                    linkpath += get_path( subchild )
 
-            newLink.update( {'path': linkPath} )
+            newlink.update( {'path': linkpath} )
 
-            top['links'].append( newLink )
+            top['links'].append( newlink )
             continue
 
-
-#tree = ET.ElementTree(file='linear.xml')
-#tree = ET.ElementTree(file='dumbbellwithreplica.xml')
-tree = ET.ElementTree(file='dumbbellnoreplica.xml')
+xmltopology = sys.argv[1]
+tree = ET.ElementTree( file=xmltopology )
 
 root = tree.getroot()
 
-# add topNet to net{} -> { 'topNet': {} }
 for child in root:
-    net.update({child.attrib.get('name'): {}})
+    net.update( {get_name( child ): {}} )
     root = child
 
-topNet = net['topNet']
+topnet = net['topNet']
 
-parseModel( root, topNet )
+parse_model( root, topnet )
 
-pprint.pprint( net )
+#pprint.pprint( net )
+
+jsontopology = xmltopology.replace( '.xml', '.json' )
+jsonfile = open( jsontopology, 'wb' )
+json.dump( net, jsonfile, sort_keys=True, indent=4, separators=('.', ': '))
+jsonfile.close()
