@@ -125,5 +125,5 @@ parse_model( root, topnet )
 
 jsontopology = xmltopology.replace( '.xml', '.json' )
 jsonfile = open( jsontopology, 'wb' )
-json.dump( net, jsonfile, sort_keys=True, indent=4, separators=('.', ': '))
+json.dump( net, jsonfile, sort_keys=True, indent=4, separators=(',', ': '))
 jsonfile.close()
