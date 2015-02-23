@@ -969,7 +969,7 @@ LOG_ERROR("not supported on mac")
 	}
 /*zzz sending pbuff to the destination portal here*/
 #else
-	if( send(tx_fd,
+/*	if( send(tx_fd,
 			temp_buf,
 			//buffer_size,
 			temp_size,
@@ -979,7 +979,7 @@ LOG_ERROR("not supported on mac")
 	}
 	else
 	{
-
+*/
 		LOG_DEBUG("##**Looks like packet failed to send. Trying raw Ip socket mechanism."<<endl);
 		IPAddress tgt = ((IPv4Message*)(evt->pkt->getMessageByArchetype(SSFNET_PROTOCOL_TYPE_IPV4)))->getDst();		
 		//((IPv4Message*)(evt->pkt->getMessageByArchetype(SSFNET_PROTOCOL_TYPE_IPV4)))->getSrc();
@@ -1009,7 +1009,7 @@ LOG_ERROR("not supported on mac")
 		}
 		else
 			LOG_DEBUG("Packet successfully sent. Buffer size="<<buffer_size<<endl);
-	}
+	//}
 
 #endif
 #endif
@@ -1058,10 +1058,11 @@ LOG_ERROR("not supported on mac")
 		return;
 	}*/
 
-	if(EthernetHeader::isARP(frame_type)) {
+	/*if(EthernetHeader::isARP(frame_type)) {
+		LOG_DEBUG(" Got ARP pkt\n");
 		//portal->dev->handleArp(portal,eth,(ARPHeader*)(pkt+sizeof(EthernetHeader)));//zzz
-	}
-	else if(EthernetHeader::isIPv4(frame_type)) {
+	}*/
+	if(EthernetHeader::isIPv4(frame_type)) {
 		LOG_DEBUG(" Got IPv4 pkt [size="<<(ip->getLen()-ip->getHdrLen())<<"]\n\t"<<*ip<<"\n");
 		//std::cout<<"["<<__LINE__<<"]"<<" Got IPv4 pkt [size="<<(ip->getLen()-ip->getHdrLen())<<"]\n\t"<<*ip<<"\n";
  		portal->dev->insertIntoSim(eth,ip,pkt_meta->caplen);
