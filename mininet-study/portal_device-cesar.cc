@@ -534,16 +534,8 @@ void Portal::process_pkt(u_char * portal_, const struct pcap_pkthdr * pkt_meta, 
 		LOG_WARN("Unable to import packet because the capture length was less the than packet length["<<pkt_meta->caplen<<"!="<<pkt_meta->len<<"]!\n"<<*eth<<"\n"<<*ip<<endl);
 		return;
 	}
-	/*else if(pkt_meta->caplen >1514) {
-		LOG_WARN("The caplen was too large! pkt_meta->caplen="<<pkt_meta->caplen<<"\n"<<*eth<<"\n"<<*ip<<endl);
-		return;
-	}*/
-
-	if(EthernetHeader::isARP(frame_type)) {
-		LOG_DEBUG(" Got ARP pkt\n");
-		//portal->dev->handleArp(portal,eth,(ARPHeader*)(pkt+sizeof(EthernetHeader)));//zzz
-	}
-	else if(EthernetHeader::isIPv4(frame_type)) {
+	
+	if(EthernetHeader::isIPv4(frame_type)) {
 		LOG_DEBUG(" Got IPv4 pkt [size="<<(ip->getLen()-ip->getHdrLen())<<"]\n\t"<<*ip<<"\n");
 		//std::cout<<"["<<__LINE__<<"]"<<" Got IPv4 pkt [size="<<(ip->getLen()-ip->getHdrLen())<<"]\n\t"<<*ip<<"\n";
  		portal->dev->insertIntoSim(eth,ip,pkt_meta->caplen);
