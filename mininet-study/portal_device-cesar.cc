@@ -182,7 +182,7 @@ void PortalDevice::reader_thread() {
 				if (FD_ISSET(sock, &fds)) {
          				// myfds[j] is readable
 					LOG_DEBUG("receive packet from portal"<<endl);
-      					rc = recvfrom(sock, buffer, sizeof(buffer), 0, cliadd, &len);
+      		/*			rc = recvfrom(sock, buffer, sizeof(buffer), 0, cliadd, &len);
 					if (rc < 0) LOG_DEBUG("error"<<endl);
 					// verify the vector of sizes of events
 					memcpy(&numberevents, buffer+8, 4);
@@ -199,6 +199,7 @@ void PortalDevice::reader_thread() {
 						memcpy(&WaitingEvent, buffer+EventSize, EventSize);
 						// type cast to WaitingEvent
 						// put back to simulator side
+		*/
 				}
 			}
 		}
