@@ -4,9 +4,11 @@ try:
     import xml.etree.cElementTree as ET
     import networkx as nx
     import pprint
+    import copy
 except ImportError:
     import xml.etree.ElementTree as ET
 
+net = {}
 
 def getName( node ):
     return node.attrib.get( 'name' )
@@ -23,10 +25,93 @@ def getTag( node ):
 def getValue( node ):
     return node.attrib.get( 'value' )
 
-net = {}
+def parseModel( root, top ):
+    for child in root:
+        if getName( child ) == 'routing':
+            top.update( {'routing': getType( child )} )
+            continue
 
-# parse <model>
-tree = ET.ElementTree(file='linear.xml')
+        if getType( child ) == 'Net':
+            if top.has_key( 'subnets' ) == False:
+                top.update( {'subnets': []} )
+
+            newSubnet = {'name': getName( child )}
+            top['subnets'].append( newSubnet )
+            subnetIndex = top['subnets'].index( newSubnet )
+            parseModel( child, top['subnets'][subnetIndex] )
+            continue
+
+        if getTag( child ) == 'replica':
+            for i in range( len( top['subnets'] ) ):
+                if top['subnets'][i].get( 'name' ) == getPath( child ):
+                    break
+                break
+            top['subnets'].append( copy.deepcopy( top['subnets'][i] ) )
+            top['subnets'][i+1].update( {'name': getName( child )} )
+            continue
+
+        if getType ( child ) == 'Host':
+            if top.has_key( 'hosts' ) == False:
+                top.update( {'hosts': []} )
+
+            newHost = {'name': getName( child )} 
+            newHost.update( {'interfaces': []} )
+
+            for interface in child:
+                newHost['interfaces'].append( {'name': getName( interface )} )
+                hostIndex = newHost['interfaces'].index( {'name': getName( 
+                    interface )} )
+
+                for attribute in interface:
+                    newHost['interfaces'][hostIndex].update( {getName( attribute ):
+                        getValue( attribute )} )
+
+            top['hosts'].append( newHost )
+            continue
+
+        if getType ( child ) == 'Router':
+            if top.has_key( 'routers' ) == False:
+                top.update( {'routers': []} )
+            
+            newRouter = {'name': getName( child )}
+            newRouter.update( {'interfaces': []} )
+
+            for interface in child:
+                newRouter['interfaces'].append( {'name': getName( interface )} )
+                routerIndex = newRouter['interfaces'].index( {'name': getName(
+                    interface )} ) 
+
+                for attribute in interface:
+                    newRouter['interfaces'][routerIndex].update( {getName( 
+                        attribute ): getValue( attribute )} )
+
+            top['routers'].append( newRouter )
+            continue
+
+        if getType ( child ) == 'Link':
+            if top.has_key( 'links' ) == False:
+                top.update( {'links': []} )
+
+            newLink = {'name': getName( child )}
+            linkPath = ''
+
+            for subchild in child:
+                if getTag( subchild ) == 'attribute':
+                    newLink.update( {getName( subchild ): getValue( subchild )} )
+
+                if getTag( subchild ) == 'ref':
+                    linkPath += getPath( subchild )
+
+            newLink.update( {'path': linkPath} )
+
+            top['links'].append( newLink )
+            continue
+
+
+#tree = ET.ElementTree(file='linear.xml')
+#tree = ET.ElementTree(file='dumbbellwithreplica.xml')
+tree = ET.ElementTree(file='dumbbellnoreplica.xml')
+
 root = tree.getroot()
 
 # add topNet to net{} -> { 'topNet': {} }
@@ -34,82 +119,8 @@ for child in root:
     net.update({child.attrib.get('name'): {}})
     root = child
 
-# for each net in topNet update net{} -> { 'topNet': {'sub1': {}, 'sub2': {} } }
-'''
-for child in root:
-    if child.attrib.get('type') == 'Net':
-        net['topNet'].update({child.attrib.get('name'): {}})
-        for subchild in child:
-            if subchild.attrib.get('type') == 'Host':
-                net['topNet'][child.attrib.get('name')].update( {'Host':
-                    {'name': subchild.attrib.get('name'), 'interfaces': {} }} )
-                for subsubchild in subchild:
-                    if subsubchild.attrib.get('type') == 'Interface':
-                        net['topNet'][child.attrib.get('name')][subchild.attrib.get('type')]['interfaces'].update(
-                                {'name': subsubchild.attrib.get('name')} )
-
-            if subchild.attrib.get('type') == 'Router':
-                break; 
-
-            if subchild.attrib.get('type') == 'Link':
-                break;
-
-    if child.tag == 'replica':
-        net['topNet'].update({child.attrib.get('name'): {}})
-'''
-
-#net['topNet'].update( {'subnets': [{}] }  )
 topNet = net['topNet']
-hasSubnets = False
-subnets = []
-hasReplicas = False
-replicas = []
 
-hosts = []
-routers = []
-links = []
+parseModel( root, topNet )
 
-for child in root:
-    if getName( child ) == 'routing':
-        topNet.update( {'routing': getType( child )} )
-
-    if hasSubnets == False and getType( child ) == 'Net':
-        topNet.update( {'subnets': [{}]} )
-        hasSubnets = True
-
-    if getTag( child ) == 'replica':
-        replicas.append( (getPath( child ), getName( child )) ) 
-        hasReplicas = True
-
-    if getType ( child ) == 'Host':
-        newHost = {'name': getName( child )} 
-        newHost.update( {'interfaces': []} )
-        for interface in child:
-            newHost['interfaces'].append( {'name': getName( interface )} )
-        hosts.append( newHost )    
-
-    if getType ( child ) == 'Router':
-        newRouter = {'name': getName( child )}
-        newRouter.update( {'interfaces': []} )
-        for interface in child:
-            newRouter['interfaces'].append( {'name': getName( interface )} )
-        routers.append( newRouter )
-
-    if getType ( child ) == 'Link':
-        newLink = {'name': getName( child )}
-        linkPath = ''
-        for subchild in child:
-            if getTag( subchild ) == 'attribute':
-                newLink.update( {getName( subchild ): getValue( subchild )} )
-
-            if getTag( subchild ) == 'ref':
-                linkPath += getPath( subchild )
-
-        newLink.update( {'path': linkPath} )
-        links.append( newLink)
-
-
-#print net
-pprint.pprint( hosts )
-pprint.pprint( routers )
-pprint.pprint( links )
+pprint.pprint( net )
