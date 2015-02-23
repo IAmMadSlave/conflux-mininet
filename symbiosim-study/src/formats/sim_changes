@@ -1,1 +1,4 @@
-LINK_ID SERVICE_RATE DROP_PROBABILITY
+OLD:
+    LINK_ID SERVICE_RATE DROP_PROBABILITY
+NEW:
+    topNet:sub1:l_h1 service_rate drop_prob

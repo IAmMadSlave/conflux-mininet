@@ -1,1 +1,6 @@
-HOST_ID SEND->UNA TCP_BUFFER_UTILIZATION
+OLD:
+    HOST_ID SEND->UNA TCP_BUFFER_UTILIZATION
+NEW:
+    source destination additional demand
+    topNet:sub1:h1 topNet:sub2:h1 100000
+
