@@ -72,7 +72,12 @@ public class MininetConfluxCastor extends ModelInterface{
 
 		//add simulated traffic
 		TrafficFactory trafficFactory = new TrafficFactory(topnet);
-		trafficFactory.createSimulatedTCP(10, 1000000000, h1, h2);
+		trafficFactory.createSimulatedTCP(10, 2, 1000000000, h1, h2);
+		trafficFactory.createSimulatedTCP(12, 2, 1000000000, h1, h2);
+                trafficFactory.createSimulatedTCP(14, 2, 1000000000, h1, h2);
+                trafficFactory.createSimulatedTCP(16, 2, 1000000000, h1, h2);
+                trafficFactory.createSimulatedTCP(18, 2, 1000000000, h1, h2);
+
 		//trafficFactory.createSimulatedTCP(12, 2, 1000000000, h2, right_h2);
 	
 		return topnet;
