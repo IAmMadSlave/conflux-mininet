@@ -1,17 +1,21 @@
 #!/bin/python
 
+import ast
 import sys
 import json
 import networkx as nx
 
-def string_to_number( string ):
+import matplotlib.pyplot as plt
+
+def str_to_num( str ):
     try:
-        return int( string )
+        return int( str )
     except ValueError:
-        return float( string )
+        return float( str )
 
 jsontopology = open( sys.argv[1] )
 net = json.load( jsontopology )
+net = ast.literal_eval( json.dumps(net) )
 
 g = nx.Graph()
 
@@ -20,8 +24,8 @@ if net['topNet'].has_key( 'hosts' ):
         g.add_node( host['name'], interfaces=len( host['interfaces'] ) )
         for interface in host['interfaces']:
             g.add_node( (host['name'], interface['name']),
-                    bit_rate=string_to_number( interface['bit_rate'] ), 
-                    latency=string_to_number( interface['latency'] ))
+                    bit_rate=str_to_num( interface['bit_rate'] ), 
+                    latency=str_to_num( interface['latency'] ))
             g.add_edge( (host['name'], interface['name']), host['name'] )
 
 if net['topNet'].has_key( 'routers' ):
@@ -29,8 +33,8 @@ if net['topNet'].has_key( 'routers' ):
         g.add_node( router['name'] )
         for interface in router['interfaces']:
             g.add_node( (router['name'], interface['name']),
-                    bit_rate=string_to_number( interface['bit_rate'] ),
-                    latency=string_to_number( interface['latency'] ) )
+                    bit_rate=str_to_num( interface['bit_rate'] ),
+                    latency=str_to_num( interface['latency'] ) )
             g.add_edge( (router['name'], interface['name']), router['name'] )
 
 if net['topNet'].has_key( 'links' ):
@@ -42,8 +46,8 @@ if net['topNet'].has_key( 'links' ):
             path[i] = path[i].replace( ':', '', 1 )
             path[i] = path[i].split( ':' )
         g.add_edge( tuple( path[0] ), tuple( path[1] ),
-        bandwidth=string_to_number( link['bandwidth'] ), 
-        delay=string_to_number( link['delay'] ),
+        bandwidth=str_to_num( link['bandwidth'] ), 
+        delay=str_to_num( link['delay'] ),
         name=link['name'],)
 
 #print '\n\n'
@@ -56,3 +60,12 @@ if net['topNet'].has_key( 'links' ):
 
 print 'SHORTEST PATH FROM H1 TO H2...'
 print nx.shortest_path( g, 'h1', 'h2', 'delay' )
+
+pos = nx.spectral_layout(g)
+nx.draw_networkx_nodes(g,pos,node_size=350)
+nx.draw_networkx_edges(g,pos,width=3)
+nx.draw_networkx_labels(g,pos,font_size=10)
+
+plt.axis('off')
+plt.savefig("test.png")
+plt.show()
