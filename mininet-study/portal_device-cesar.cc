@@ -42,6 +42,7 @@ namespace ssfnet {
 int Portal::c_mtu         = 0;
 int Portal::mode_loss     = 1;
 bool Portal::sconfiged = false;
+int server_port = 9000;
 
 LOGGING_COMPONENT(PortalDevice);
 #define BUFFSIZE 300000 // buffer up to 200 pkts of 1500 bytes
@@ -61,8 +62,12 @@ void TrafficPortal::transmit(Packet* pkt, VirtualTime deficit) {
 }
 
 bool TrafficPortal::receive(Packet* pkt, bool pkt_was_targeted_at_iface) {
-	LOG_DEBUG(getUName()<<" emu proto pkt_was_targeted_at_iface="<<(pkt_was_targeted_at_iface?"true":"false")<<
-			", ipForwardingEnabled()="<<(ipForwardingEnabled()?"true":"false")<<", isActive()="<<(isActive()?"true":"false")<<endl);
+	LOG_DEBUG(getUName()<<
+	" emu proto pkt_was_targeted_at_iface="
+	<<(pkt_was_targeted_at_iface?"true":"false")<<
+	", ipForwardingEnabled()="<<(ipForwardingEnabled()?"true":"false")
+	<<", isActive()="<<(isActive()?"true":"false")<<endl);
+
 	if(isActive()) {
 		LOG_DEBUG("exporting packet from iface "<<getInterface()->getUName()<<endl);
 		//LOG_DEBUG("pkt->size()="<<pkt->size()<<endl);
@@ -93,6 +98,8 @@ void PortalDevice::init(){
 			maxfd = i->second->getRxFD();
 		}
 		ip2mac.insert(SSFNET_MAKE_PAIR(i->second->getIP(),i->second->getMAC()));
+		LOG_DEBUG("IP->"<<i->second->getIP()<<endl);
+		LOG_DEBUG("MAC->"<<i->second->getMAC()<<endl);
 	}
 	sim_net=getCommunity()->getPartition()->getTopnet()->getIPPrefix();
 	//ip2portal.setupRoutes(sim_net);
@@ -143,36 +150,59 @@ EmulationProtocol* PortalDevice::ip2EmulationProtocol(IPAddress& ip) {
 }
 
 void PortalDevice::reader_thread() {
-	maxfd++; //it should be 1 greater than the max fd...
-	LOG_DEBUG("Starting portal read thread"<<endl)
-	//its assumed that all of the taps are opened and ready to go.... we just need to setup the FDs...
+	int result, sock;
+	char buffer[65536];
+	maxfd++;
+//it should be 1 greater than the max fd...
+	LOG_DEBUG("Starting portal read thread"<<endl);
+
+	// we assume all Portal Receive Sockets are opened
 	Portal::Map::iterator portal_it;
-
 	fd_set base_fds, fds;
-	//setup base_fd set
-	FD_ZERO(&base_fds);
 
+	// Zero out file descriptors and setup all file descriptor return 
+	FD_ZERO(&base_fds);
 	for(portal_it = uid2portal.begin();portal_it!=uid2portal.end();portal_it++) {
 		FD_SET(portal_it->second->getRxFD(),&base_fds);
 	}
-	int max_loops=500;
-	bool more_packets=false;
+
+	//int max_loops=500;
+	//bool more_packets=false;
 
 	for(;!stop;) {
-		//FD_COPY isn't standard... a simple assignment should work though....
-		//FD_ZERO(&fds);
 		fds=base_fds;
-		select(maxfd, &fds, NULL, NULL, NULL);
-		LOG_DEBUG("Got something..."<<endl);
-
-		max_loops=500;
-		more_packets=false;
-		do {
-			for(portal_it = uid2portal.begin();portal_it!=uid2portal.end();portal_it++) {
-				more_packets=more_packets || portal_it->second->process_pkts(100);
+		result = select(maxfd, &fds, NULL, NULL, NULL);
+		if (result == -1) {
+			LOG_DEBUG("select error - exit"<<endl);		
+			break;
+		} else {
+			for(portal_it = uid2portal.begin();
+				portal_it!=uid2portal.end();portal_it++) {
+				sock = portal_it->second->getRxFD();
+				if (FD_ISSET(sock, &fds)) {
+         				// myfds[j] is readable
+					LOG_DEBUG("receive packet from portal"<<endl);
+      		/*			rc = recvfrom(sock, buffer, sizeof(buffer), 0, cliadd, &len);
+					if (rc < 0) LOG_DEBUG("error"<<endl);
+					// verify the vector of sizes of events
+					memcpy(&numberevents, buffer+8, 4);
+					numberofevents = ntohl(numberofevents);
+					// loop over number of events
+					for (i=1;i<=numberofevents;i++){
+						memcpy(&eventsize, buffer+(i*4), 4);
+						eventsize = ntohl(eventsize);
+						EventSizes.push_back(size);
+					}
+					// iterate over rest of buffer parse event sizes
+					for (iterate:EventSizes)
+						buffer = buffer+(numberofevents*4);
+						memcpy(&WaitingEvent, buffer+EventSize, EventSize);
+						// type cast to WaitingEvent
+						// put back to simulator side
+		*/
+				}
 			}
-			max_loops--;
-		} while(more_packets && max_loops>0);
+		}
 	}
 }
 
@@ -217,7 +247,8 @@ void PortalDevice::writer_thread() {
 		if(watingForArps.size()>0) {
                     for(WaitingArpEvt::List::iterator arp_it=watingForArps.begin();arp_it!=watingForArps.end();) {
 			LOG_DEBUG("*arp_it="<<(*arp_it)<<endl);
-			MACAddress* mac = lookupMAC((*arp_it)->tgt);
+			//MACAddress* mac = lookupMAC((*arp_it)->tgt);
+			MACAddress* mac;
 			TrafficPortalPair* tp =ip2portal.getPortal((*arp_it)->tgt);
 			if(tp) {
 				LOG_DEBUG("Sending mac that was waiting for arp response...."<<endl);
@@ -324,108 +355,64 @@ Portal::~Portal() {
 
 void Portal::init() {
 
+	int rc;
+	char service[7];	
+	struct addrinfo hints, *res;
+
 	//setup the pcap rx channel
 	bpf_u_int32 mask;
 	bpf_u_int32 net;
 	char errbuf[PCAP_ERRBUF_SIZE];
 	SSFNET_STRING* nic=Partition::getPortalNic(emuproto->getInterface()->getUID());
-	if(!nic) {
-		LOG_ERROR("Unable to find the network interface attached to the traffic portal '"<<emuproto->getInterface()->getUName()<<"'"<<endl);
-	}
+	if(!nic) 
+		LOG_ERROR("Unable find net interface attached to the traffic portal '"
+		<<emuproto->getInterface()->getUName()<<"'"<<endl);
+
 	iface_name.clear();
 	iface_name.append(nic->c_str());
 	char dev_str[nic->length() + 1];
 	sprintf(dev_str,"%s", nic->c_str());
 
-	LOG_DEBUG("Creating pcap handle for "<<nic<<"\n");
-	if (pcap_lookupnet(dev_str, &net, &mask, errbuf) == -1) {
-		LOG_ERROR("Couldn't get netmask for device "<<nic<<", err:"<<errbuf<<endl);
-	}
-	pcap_handle = pcap_open_live(dev_str, 65535, 0, -1, errbuf); //dev name, max len, promiscuous, timeout, error buffer
-	if(!pcap_handle) {
-		LOG_ERROR("Couldn't open device "<<nic<<", err:"<<errbuf<<endl);
-	}
-	if (pcap_setnonblock(pcap_handle,1,errbuf) == -1) {
-		LOG_ERROR("Couldn't change "<<nic<<" to non-blocking! err:"<<errbuf<<endl);
-	}
-	if (pcap_getnonblock(pcap_handle,errbuf)==0) {
-		LOG_ERROR("Couldn't change "<<nic<<" to non-blocking! err:"<<errbuf<<endl);
-	}
-	rx_fd = pcap_get_selectable_fd(pcap_handle);
-	if(rx_fd == -1) {
-		LOG_ERROR("Libpcap couldn't get a selectable FD for "<<nic<<endl);
-	}
-	if(pcap_setdirection(pcap_handle,PCAP_D_IN)==-1) {
-		LOG_ERROR("Libpcap couldn't set the capture direction for "<<nic<<endl);
-	}
+	// Receiver socket configuration 
+	memset(&hints, 0, sizeof(struct addrinfo));
+	hints.ai_flags = AI_PASSIVE;
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_DGRAM;
 
-
-	struct ifreq tx_ifr; /* points to one interface returned from ioctl */
-
-	//setup the tx channel
-	tx_fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));//zzz main
+	// Every new portal will get a new server port assignment
+	server_port++; 
+	snprintf(service, sizeof(service), "%d", server_port);
+ 	if ((rc = getaddrinfo(NULL, service, &hints, &res)) != 0) {
+		LOG_ERROR("getaddrinfo(): failed" <<endl);
+ 	}
 	
-	if(tx_fd == -1) {
-		LOG_ERROR("Unable to open (tx) raw socket for "<<nic<<"!"<<endl);
-	}
+	LOG_DEBUG("Creating rx_fd for "<<nic<<"\n");
+	rx_fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	if(rx_fd == -1) LOG_ERROR("Unable open (rx) UDP socket for "<<nic<<endl);
 
-	if ((tx_fd_udp = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		LOG_ERROR("Unable to open (tx) UDP socket for "<<nic<<"!"<<endl);
-        }
-	
+	LOG_DEBUG("Binding rx_fd on "<<nic<<"\n");
+	rc = bind(rx_fd, res->ai_addr, res->ai_addrlen);
+	if (rc == -1) LOG_ERROR("Unable to bind the tx socket for "<<nic<<"!"<<endl);
+
+	/* points to one interface returned from ioctl */
+	struct ifreq tx_ifr; 
+
+	// Sender socket configuration 	
+	LOG_DEBUG("Creating tx_fd for "<<nic<<"\n");
+	tx_fd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (tx_fd == -1) LOG_ERROR("Unable open (tx) raw socket for "<<nic<<endl);
+
 	/* initialize interface struct */
 	strncpy (tx_ifr.ifr_name, dev_str, sizeof(tx_ifr.ifr_name));
-
-	/*get the mac */
-	if(ioctl(tx_fd, SIOCGIFHWADDR, &tx_ifr) == -1) {
-		perror("iotcl");
-		LOG_ERROR("Unable to ioctl the tx socket for "<<nic<<"!"<<endl);
-	}
-	mac=MACAddress((uint8_t*)(&tx_ifr.ifr_hwaddr.sa_data));
-	LOG_DEBUG("MAC for  "<<nic<<":"<<mac<<endl);
-
-	/* get the ip*/
-	if(ioctl(tx_fd, SIOCGIFADDR, &tx_ifr) == -1) {
-		perror("iotcl");
-		LOG_ERROR("Unable to ioctl the tx socket for "<<nic<<"!"<<endl);
-	}
-	{
-		struct sockaddr_in sin;
-		memcpy(&sin, &tx_ifr.ifr_addr, sizeof(struct sockaddr));
-		ip=IPAddress(ntohl((uint32)sin.sin_addr.s_addr));
-	}
-	LOG_DEBUG("IP for  "<<nic<<":"<<ip<<endl);
-
-	/* set mtu */
-	if(c_mtu) {
-		/* update the mtu through ioctl */
+	if (c_mtu) { // set MTU
 		tx_ifr.ifr_mtu = c_mtu;
-		if(ioctl(tx_fd, SIOCSIFMTU, &tx_ifr) == -1)
-		{
-			perror("iotcl");
+		if (ioctl(tx_fd, SIOCSIFMTU, &tx_ifr) < 0) 
 			LOG_ERROR("Unable to ioctl the tx socket for "<<nic<<"!"<<endl);
-		}
 	}
 
-	/* Get the iface index */
-	if(ioctl(tx_fd, SIOCGIFINDEX, &tx_ifr) == -1) {
-		perror("iotcl");
+	if (ioctl(tx_fd, SIOCGIFINDEX, &tx_ifr) < 0)  // get iface index
 		LOG_ERROR("Unable to ioctl the tx socket for "<<nic<<"!"<<endl);
-	}
-
-	/* set sockaddr info */
-	memset(&my_addr, 0, sizeof(struct sockaddr_ll));
-	my_addr.sll_family = AF_PACKET;
-	my_addr.sll_protocol = ETH_P_IP;
-	//my_addr.sll_protocol = ETH_P_ALL;
-	my_addr.sll_ifindex = tx_ifr.ifr_ifindex;
-
-	/* bind port */
-	if (bind(tx_fd, (struct sockaddr *)&my_addr,
-			sizeof(struct sockaddr_ll)) == -1) {
-		perror("iotcl");
-		LOG_ERROR("Unable to bind the tx socket for "<<nic<<"!"<<endl);
-	}
+		
 	LOG_DEBUG("Ready to send/recv on "<<nic<<"!"<<endl);
 }
 
@@ -548,16 +535,8 @@ void Portal::process_pkt(u_char * portal_, const struct pcap_pkthdr * pkt_meta, 
 		LOG_WARN("Unable to import packet because the capture length was less the than packet length["<<pkt_meta->caplen<<"!="<<pkt_meta->len<<"]!\n"<<*eth<<"\n"<<*ip<<endl);
 		return;
 	}
-	/*else if(pkt_meta->caplen >1514) {
-		LOG_WARN("The caplen was too large! pkt_meta->caplen="<<pkt_meta->caplen<<"\n"<<*eth<<"\n"<<*ip<<endl);
-		return;
-	}*/
-
-	if(EthernetHeader::isARP(frame_type)) {
-		LOG_DEBUG(" Got ARP pkt\n");
-		//portal->dev->handleArp(portal,eth,(ARPHeader*)(pkt+sizeof(EthernetHeader)));//zzz
-	}
-	else if(EthernetHeader::isIPv4(frame_type)) {
+	
+	if(EthernetHeader::isIPv4(frame_type)) {
 		LOG_DEBUG(" Got IPv4 pkt [size="<<(ip->getLen()-ip->getHdrLen())<<"]\n\t"<<*ip<<"\n");
 		//std::cout<<"["<<__LINE__<<"]"<<" Got IPv4 pkt [size="<<(ip->getLen()-ip->getHdrLen())<<"]\n\t"<<*ip<<"\n";
  		portal->dev->insertIntoSim(eth,ip,pkt_meta->caplen);
