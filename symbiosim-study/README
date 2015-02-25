@@ -1,17 +1,23 @@
-Please make sure you have Mininet install (e.g., for debian based systems "apt-get install mininet").
+Please make sure you have Mininet installed (e.g., "apt-get install mininet").
 
-clitest.py        - Starts Mininet console in seperate thread (ctrl-z does not work properly)
-clitest2.py       - Same as above with Mininet console in main thread (ctrl-z works!)
-
-parallelpings.py  - Simple example showing popen object run in parallel
-
-iperftest.py      - Logs "ss --tcp" output in parallel on seperate containers (Mininet console ctrl-z problem)
-
-ss_test.sh        - Bash script to log "ss --tcp" in specific format
-
-tcpprobetest.py   - Logs tcp_probe output in parallel on seperate containers
-
-tctest.py         - Static "tc" changes
-tctest2.py        - Dynamic "tc" changes
-
-sample_tcp_probe_log.py
+docs/  // misc documents for development
+src/   - logs/
+            - log.out                  // output from tcp_probe
+       - minisymbio/
+            - downscaled_topology.json // format for downscaled topo
+            - MiniSymbio.py            // Class for emulator side
+       - mn_scripts/
+            - clitest2.py              // threaded mn console
+            - clitest.py               // threaded mn console with issues 
+            - iperftest.py             // popen example with iperf
+            - parallelpings.py         // popen example with pings
+            - tcpprobetest.py          // log tcp_probe out with iperf on mn hosts
+            - tctest2.py
+            - tctest.py
+       - traffic_scripts/
+            - parasite_new.sh          // sample and filter tcp_probe output quickly
+            - parasite_old.sh          // sample and filter tcp_probe output
+            - ss_test.sh               // collect "ss" data 
+            - tcpprobe_start.sh 
+        
+README // this document    

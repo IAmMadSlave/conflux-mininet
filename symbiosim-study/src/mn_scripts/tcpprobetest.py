@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+"""Start logging before executing script """
 from mininet.net  import Mininet
 from mininet.topo import SingleSwitchTopo
 from mininet.cli  import CLI
