@@ -1,0 +1,88 @@
+
+
+   h1(10.10.1.2) ------(10.10.1.1)<left_portal of sim1> h2 <right_portal of sim1>-------<right_portal of sim2>h3
+												sim1 (192.168.0.0/16) running on h2   	 	sim2 (192.170/16) Running on H2
+
+
+
+PC1 (or, Castor)  -- Git clones are in home directory
+-------------------------------------------------------
+mkdir expt
+cd expt
+cp ../conflux-mininet/mininet-study/Portals1
+
+sudo ip link add h1-eth0 type veth peer name h2-eth0
+sleep 1
+sudo ip link add h2-eth1 type veth peer name pc1-ethP
+sleep 1
+sudo ip netns add h1
+sudo ip netns add h2
+sudo ip link set h1-eth0 netns h1
+sudo ip link set h2-eth0 netns h2
+sudo ip link set h2-eth1 netns h2
+sudo ip netns exec h1 ifconfig h1-eth0 10.10.1.2/24
+sudo ip netns exec h2 ifconfig h2-eth0 10.10.1.1/24
+sudo ip netns exec h2 ifconfig h2-eth1 10.1.0.73/24
+sudo ip netns exec h1 ifconfig lo up
+sudo ip netns exec h2 ifconfig lo up
+sudo ip netns exec h1 ping -c1 10.10.1.1
+sudo ip netns exec h2 ping -c1 10.10.1.2
+
+Bridging(castor and pollux needs to have bridge-utils $sudo apt-get install bridge-utils)
+----------------------------------------------------------------------------------------
+sudo brctl addbr portalbr
+sudo brctl addif portalbr eth0
+sudo brctl addif portalbr pc1-ethP
+sudo ifconfig eth0 down
+sudo ifconfig pc1-ethP down
+sudo ifconfig eth0 0.0.0.0 up
+sudo ifconfig pc1-ethP 0.0.0.0 up
+sudo ifconfig portalbr 10.1.0.29/16
+route add default gw 10.1.0.29
+
+Container Routing:
+-----------------
+sudo ip netns exec h1 ip route add 192.168.0.0/16 via 10.10.1.1
+sudo ip netns exec h1 ip route add 192.170.0.0/16 via 10.10.1.1
+*sudo ip netns exec h2 ip route add 192.170.0.0/16 via 10.1.0.28 (castor is 28)
+
+Now Compile Model:
+------------------
+java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.1.1,eth3,10.1.0.73] -DPORTAL_LINKS=c_slave1:eth2,topnet.net01.net1.r1.portal_10_1_2_0,c_slave1:eth3,topnet.net2.r5.portal_10_1_3_0 -jar ../primogeni/netscript/dist/jprime.jar create PortalsCastor PortalsCastor.java 192.168.0.0/16
+
+Run Model:
+---------
+sudo ip netns exec h2 /home/mnconflux/primogeni/netsim/primex -tp 10.1.0.73 166 -tp 10.10.1.1 605 600 /home/mnconflux/expt/PortalsCastor_part_1.tlv
+
+Testing
+------
+sudo ip netns exec h1 ping 192.168.1.50
+
+
+
+
+
+
+
+
+
+Pc2-Pollux:
+-----------
+java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.3.1] -DPORTAL_LINKS=c_slave1:eth2,topnet.net01.net1.r1.portal_10_1_2_0 -jar ../primogeni/netscript/dist/jprime.jar create PortalsPollux PortalsPollux.java 192.170.0.0/16
+
+
+Running Models:
+--------------
+/home/mnconflux/primogeni/netsim/primex -tp 10.1.0.28 166 600 /home/mnconflux/expt/PortalsPollux_part_1.tlv
+
+
+
+Editing Routes:
+--------------
+sudo ip route add 10.10.1.0/24 via 10.1.0.73
+
+
+
+
+
+kernel: Protocol 0008 is buggy
