@@ -499,12 +499,13 @@ public class Portals3 extends ModelInterface{
         left_portal.createTrafficPortal();
         left_portal.setIpAddress("10.10.1.1");
         left_portal.addReachableNetwork("10.10.1.0/24");
+        left_portal.addReachableNetwork("192.168.0.0/16");
         
 	
         right_portal.createTrafficPortal();       
         right_portal.setIpAddress("10.10.3.2");
-        right_portal.addReachableNetwork("192.170.0.0/16");
         right_portal.addReachableNetwork("10.10.5.0/24");
+        right_portal.addReachableNetwork("192.170.0.0/16");
           
         return top;
     }

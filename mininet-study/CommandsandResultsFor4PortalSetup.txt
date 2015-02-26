@@ -62,11 +62,14 @@ sudo ip netns exec h2 ifconfig h2-eth0 down
 sudo ip netns exec h2 ifconfig h2-eth0 up
 sudo ip netns exec h2 ifconfig h2-eth1 down
 sudo ip netns exec h2 ifconfig h2-eth1 up
+sudo ip netns exec h2 ip route add 192.170.0.0/16 via 10.10.3.1
 
 sudo ip netns exec h3 ifconfig h3-eth0 down
 sudo ip netns exec h3 ifconfig h3-eth0 up
 sudo ip netns exec h3 ifconfig h3-eth1 down
 sudo ip netns exec h3 ifconfig h3-eth1 up
+sudo ip netns exec h3 ip route add 192.168.0.0/16 via 10.10.3.2
+sudo ip netns exec h3 ip route add 10.10.1.0/24 via 10.10.3.2
 
 sudo ip netns exec h4 ifconfig h4-eth0 down
 sudo ip netns exec h4 ifconfig h4-eth0 up
@@ -81,598 +84,130 @@ sudo ip netns exec h3 ~/primogeni/netsim/primex -tp 10.10.3.1 166 -tp 10.10.5.1 
 					ROUTING TABLE AND INTERFACES
 ###############################################################################
 
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h1 route
+cesar@primex ~/experiments2> sudo ip netns exec h1 route
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 10.10.1.0       *               255.255.255.0   U     0      0        0 h1-eth0
+10.10.5.0       10.10.1.1       255.255.255.0   UG    0      0        0 h1-eth0
 192.168.0.0     10.10.1.1       255.255.0.0     UG    0      0        0 h1-eth0
 192.170.0.0     10.10.1.1       255.255.0.0     UG    0      0        0 h1-eth0
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h2 route
+
+cesar@primex ~/experiments2> sudo ip netns exec h2 route
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 10.10.1.0       *               255.255.255.0   U     0      0        0 h2-eth0
 10.10.3.0       *               255.255.255.0   U     0      0        0 h2-eth1
 192.170.0.0     10.10.3.1       255.255.0.0     UG    0      0        0 h2-eth1
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h3 route
+
+cesar@primex ~/experiments2> sudo ip netns exec h3 route
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 10.10.1.0       10.10.3.2       255.255.255.0   UG    0      0        0 h3-eth0
 10.10.3.0       *               255.255.255.0   U     0      0        0 h3-eth0
+10.10.5.0       *               255.255.255.0   U     0      0        0 h3-eth1
 192.168.0.0     10.10.3.2       255.255.0.0     UG    0      0        0 h3-eth0
 
+cesar@primex ~/experiments2> sudo ip netns exec h4 route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+10.10.1.0       10.10.5.1       255.255.255.0   UG    0      0        0 h4-eth0
+10.10.5.0       *               255.255.255.0   U     0      0        0 h4-eth0
+192.168.0.0     10.10.5.1       255.255.0.0     UG    0      0        0 h4-eth0
+192.170.0.0     10.10.5.1       255.255.0.0     UG    0      0        0 h4-eth0
+
 ###############################################################################
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h1 ifconfig
-h1-eth0   Link encap:Ethernet  HWaddr be:b6:75:ca:f8:db  
+cesar@primex ~/experiments2> sudo ip netns exec h1 ifconfig
+h1-eth0   Link encap:Ethernet  HWaddr c2:53:0e:f1:44:74
           inet addr:10.10.1.2  Bcast:10.10.1.255  Mask:255.255.255.0
-          
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h2 ifconfig
-h2-eth0   Link encap:Ethernet  HWaddr 22:8d:1e:76:24:24  
+
+cesar@primex ~/experiments2> sudo ip netns exec h2 ifconfig
+h2-eth0   Link encap:Ethernet  HWaddr 0e:66:49:76:98:fd
           inet addr:10.10.1.1  Bcast:10.10.1.255  Mask:255.255.255.0
 
-h2-eth1   Link encap:Ethernet  HWaddr 52:32:4c:c0:76:dc  
+h2-eth1   Link encap:Ethernet  HWaddr ba:a1:b8:5b:0f:75
           inet addr:10.10.3.2  Bcast:10.10.3.255  Mask:255.255.255.0
 
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h3 ifconfig
-h3-eth0   Link encap:Ethernet  HWaddr 06:a4:10:a8:5a:94  
+cesar@primex ~/experiments2> sudo ip netns exec h3 ifconfig
+h3-eth0   Link encap:Ethernet  HWaddr be:9f:13:d6:0c:8f
           inet addr:10.10.3.1  Bcast:10.10.3.255  Mask:255.255.255.0
+
+h3-eth1   Link encap:Ethernet  HWaddr 8e:26:6b:fa:d9:ad
+          inet addr:10.10.5.1  Bcast:10.10.5.255  Mask:255.255.255.0
+
+cesar@primex ~/experiments2> sudo ip netns exec h4 ifconfig
+h4-eth0   Link encap:Ethernet  HWaddr 7e:4e:3f:3b:df:2f
+          inet addr:10.10.5.2  Bcast:10.10.5.255  Mask:255.255.255.0
+
 ###############################################################################
-
-
-
-
-
 
 
 #################################################################################
 					SOME PING AND WGET RESULTS
 ##################################################################################
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h1 ping -c1 192.168.1.50
+cesar@primex ~/experiments2> sudo ip netns exec h1 ping -c1 192.168.1.50
 PING 192.168.1.50 (192.168.1.50) 56(84) bytes of data.
-64 bytes from 192.168.1.50: icmp_req=1 ttl=60 time=13.0 ms
+64 bytes from 192.168.1.50: icmp_req=1 ttl=60 time=1.65 ms
 
 --- 192.168.1.50 ping statistics ---
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 13.034/13.034/13.034/0.000 ms
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h1 ping -c1 192.170.1.50
+rtt min/avg/max/mdev = 1.657/1.657/1.657/0.000 ms
+
+
+###############################################################################
+IF Portal4.java has: (DOES NOT WORK)
+
+        right_portal.createTrafficPortal();
+        right_portal.setIpAddress("10.10.3.1");
+        right_portal.addReachableNetwork("192.168.0.0/16");
+        right_portal.addReachableNetwork("10.10.1.0/24");
+
+cesar@primex ~/experiments2> sudo ip netns exec h1 ping -c1 192.170.1.50
 PING 192.170.1.50 (192.170.1.50) 56(84) bytes of data.
-64 bytes from 192.170.1.50: icmp_req=1 ttl=46 time=32.2 ms
-
---- 192.170.1.50 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 32.209/32.209/32.209/0.000 ms
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h1 ping -c1 192.168.1.50
-PING 192.168.1.50 (192.168.1.50) 56(84) bytes of data.
-64 bytes from 192.168.1.50: icmp_req=1 ttl=60 time=8.97 ms
-
---- 192.168.1.50 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 8.977/8.977/8.977/0.000 ms
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h1 wget 192.168.1.50/1000
---2015-02-06 15:52:13--  http://192.168.1.50/1000
-Connecting to 192.168.1.50:80... connected.
-HTTP request sent, awaiting response... 200 
-Length: 1024000 (1000K) [text/html]
-Saving to: `1000'
-
-100%[==========================================================================================>] 1,024,000   1.33M/s   in 0.7s    
-
-2015-02-06 15:52:13 (1.33 MB/s) - `1000' saved [1024000/1024000]
-
-mnconflux@mnconflux:~/primogeni/netsim/src$ sudo ip netns exec h1 wget 192.170.1.50/1000
---2015-02-06 15:52:25--  http://192.170.1.50/1000
-Connecting to 192.170.1.50:80... connected.
-HTTP request sent, awaiting response... 200 
-Length: 1024000 (1000K) [text/html]
-Saving to: `1000.1'
-
-100%[==========================================================================================>] 1,024,000    580K/s   in 1.7s    
-
-2015-02-06 15:52:26 (580 KB/s) - `1000.1' saved [1024000/1024000]
-
-mnconflux@mnconflux:~/primogeni/netsim/src$ 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-					PREVIOUS SIMULATOR OUTPUT WITH ARP (NOT FUNCTIONAL VERSION):
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-####################################################
-
-Double Portal machine OUTPUT:
-
-####################################################
-mnconflux@mnconflux:~/expt2$ sudo ip netns exec h1 ping -c1 192.170.1.50
-PING 192.170.1.50 (192.170.1.50) 56(84) bytes of data.
-
+^C
 --- 192.170.1.50 ping statistics ---
 1 packets transmitted, 0 received, 100% packet loss, time 0ms
 
-####################################################
+###############################################################################
+IF Portal4.java has: (WORK)
 
-														H2
-														
-mnconflux@mnconflux:~/expt2$ sudo ip netns exec h2 /home/mnconflux/primogeni/netsim/primex -tp 10.10.3.2 16-tp 10.10.1.1 605 600 /home/mnconflux/expt2/Portals1_part_1.tlv
-------------------------------------------------------------
-Parallel Real-time Immersive Simulation Environment (PRIME)
-Scalable Simulation Framework (SSF) Version x1.0
-Copyright (c) 2007-2011 Florida International University.
-PRIME SSF is open source.
-See COPYRIGHT for detailed licence information.
-------------------------------------------------------------
+        right_portal.createTrafficPortal();
+        right_portal.setIpAddress("10.10.3.1");
+        right_portal.addReachableNetwork("10.10.1.0/24");
+        right_portal.addReachableNetwork("192.168.0.0/16");
 
-============================================================
-Parallel Real-time Immersive Simulation Environment (PRIME)
-SSF Network Simulator (SSFNet) Version x1.0
-Copyright (c) 2007-2011 Florida International University.
-============================================================
+cesar@primex ~/experiments2> sudo ip netns exec h1 ping -c1 192.170.1.50
+PING 192.170.1.50 (192.170.1.50) 56(84) bytes of data.
+64 bytes from 192.170.1.50: icmp_req=1 ttl=46 time=5.74 ms
 
+--- 192.170.1.50 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 5.745/5.745/5.745/0.000 ms
 
-using intial VEI of 500
-Simulation time [0, 6e+11]
-[118]PortalDevice::init() input_channel=0x923e488, output_channel=0x923e500
-[119]Portal Table:
-	[10.10.1.0/24 --> topnet:net2:r5:portal_10_1_3_0,[portal_10_1_3_0 tx_fd=-1, rx_fd=-1]]
-	[192.170.0.0/16 --> topnet:net01:net1:r1:portal_10_1_2_0,[portal_10_1_2_0 tx_fd=-1, rx_fd=-1]]
+CONCLUSION - just work with a SINGLE Reachable Network - need to fix that
 
-[490]Creating pcap handle for h2-eth1
-[529]MAC for  h2-eth1:1e:62:7c:3f:99:18
-[541]IP for  h2-eth1:10.10.3.2
-[634]Ready to send/recv on h2-eth1!
-[490]Creating pcap handle for h2-eth0
-[529]MAC for  h2-eth0:ea:55:d7:15:8a:36
-[541]IP for  h2-eth0:10.10.1.1
-[634]Ready to send/recv on h2-eth0!
-sh: 1: /bin/awk: not found
-RTNETLINK answers: File exists
-sh: 1: /bin/awk: not found
-RTNETLINK answers: File exists
-[130]Simulated network prefix is 192.168.0.0/20
-[0] setup time: user = 0.11, system = 0.1
-[0] DECADE LENGTH = 4.61169e+18
-[211]Starting portal write thread
-[178]Starting portal read thread
-[197]Got something...
-[964] Got IPv4 pkt [size=64]
-	{IPv4
-	src=10.10.1.2
-	dst=192.170.1.50
-	hdr_len=20
-	tos=0
-	toal_len=84
-	ident=3952
-	offset=16384
-	ttl=64
-	proto=1[icmp]
-	checksum=20830}
+###############################################################################
+THEN, Portal3 has to be reachable 10.10.1.0/24 and 10.10.5.0/24
 
-[965] Got IPv4 pkt [size=64]
-	{IPv4
-	src=10.10.1.2
-	dst=192.170.1.50
-	hdr_len=20
-	tos=0
-	toal_len=84
-	ident=3952
-	offset=16384
-	ttl=64
-	proto=1[icmp]
-	checksum=20830}
+        left_portal.createTrafficPortal();
+        left_portal.setIpAddress("10.10.1.1");
+        left_portal.addReachableNetwork("10.10.1.0/24");
 
-[316]insertIntoSim, len=98
-[346]created emu evt withOUT a need for async name res
-[95]topnet:net01:net1:r1:portal_10_1_2_0:TrafficPortal_1831 emu proto pkt_was_targeted_at_iface=true, ipForwardingEnabled()=false, isActive()=true
-[97]exporting packet from iface topnet:net01:net1:r1:portal_10_1_2_0
-[227]Got a evt to write out! iface=topnet:net01:net1:r1:portal_10_1_2_0, ip=10.10.3.2
-[790]Sending arp request for 1e:62:7c:3f:99:18:
-{Ethernet
-	src_hw_addr=1e:62:7c:3f:99:18
-	tgt_mac=ff:ff:ff:ff:ff:ff
-	frame_type=806[arp]}
-{ARP
-	htype=0x1[ETH], size=6
-	proto=0x800[UNKNWON], size=4
-	opcode=0x1[ARP_REQUEST]
-	src_mac=1e:62:7c:3f:99:18
-	src_ip=10.10.3.2
-	tgt_mac=00:00:00:00:00:00
-	tgt_ip=192.170.1.50}
-[277]*arp_it=0xb5a09510
-[296]can't find mac for 192.170.1.50
-[197]Got something...
-[369]Got arp
-{Ethernet
-	src_hw_addr=da:01:32:b1:27:b0
-	tgt_mac=1e:62:7c:3f:99:18
-	frame_type=806[arp]}
-{ARP
-	htype=0x1[ETH], size=6
-	proto=0x800[UNKNWON], size=4
-	opcode=0x2[ARP_REPLY]
-	src_mac=da:01:32:b1:27:b0
-	src_ip=10.10.3.1
-	tgt_mac=da:01:32:b1:27:b0
-	tgt_ip=192.170.1.50}
-[384]I think 10.10.3.1 is at da:01:32:b1:27:b0
-[271]Got an arp response... 10.10.3.1 --> da:01:32:b1:27:b0
-[277]*arp_it=0xb5a09510
-[296]can't find mac for 192.170.1.50
-[197]Got something...
-[369]Got arp
-{Ethernet
-	src_hw_addr=5a:13:ef:d0:cd:66
-	tgt_mac=ea:55:d7:15:8a:36
-	frame_type=806[arp]}
-{ARP
-	htype=0x1[ETH], size=6
-	proto=0x800[UNKNWON], size=4
-	opcode=0x1[ARP_REQUEST]
-	src_mac=5a:13:ef:d0:cd:66
-	src_ip=10.10.1.2
-	tgt_mac=00:00:00:00:00:00
-	tgt_ip=10.10.1.1}
-[372]Looking for mac of ip 10.10.1.1
-[379]Ignoring arp...
+        right_portal.createTrafficPortal();
+        right_portal.setIpAddress("10.10.3.2");
+        right_portal.addReachableNetwork("10.10.5.0/24");
 
-####################################################
+ALSO, Portal4 has to be reachable 10.10.1.0/24 and 10.10.5.0/24
 
-														H3
+        left_portal.createTrafficPortal();
+        left_portal.setIpAddress("10.10.5.1");
+        left_portal.addReachableNetwork("10.10.5.0/24");
 
-CASE (NOT WORKING) on H3 (Simulator Instance 2)
+        right_portal.createTrafficPortal();
+        right_portal.setIpAddress("10.10.3.1");
+        right_portal.addReachableNetwork("10.10.1.0/24");
 
-
-mnconflux@mnconflux:~/expt2$ sudo ip netns exec h3 /home/mnconflux/primogeni/netsim/primex -tp 10.10.3.1 16600 /home/mnconflux/expt2/Portals2_part_1.tlv
-------------------------------------------------------------
-Parallel Real-time Immersive Simulation Environment (PRIME)
-Scalable Simulation Framework (SSF) Version x1.0
-Copyright (c) 2007-2011 Florida International University.
-PRIME SSF is open source.
-See COPYRIGHT for detailed licence information.
-------------------------------------------------------------
-
-============================================================
-Parallel Real-time Immersive Simulation Environment (PRIME)
-SSF Network Simulator (SSFNet) Version x1.0
-Copyright (c) 2007-2011 Florida International University.
-============================================================
-
-
-using intial VEI of 500
-Simulation time [0, 6e+11]
-[118]PortalDevice::init() input_channel=0xa0e9b60, output_channel=0xa0e9bd8
-[119]Portal Table:
-	[10.10.1.0/24 --> topnet:net01:net1:r1:portal_10_1_2_0,[portal_10_1_2_0 tx_fd=-1, rx_fd=-1]]
-
-[490]Creating pcap handle for h3-eth0
-[529]MAC for  h3-eth0:da:01:32:b1:27:b0
-[541]IP for  h3-eth0:10.10.3.1
-[634]Ready to send/recv on h3-eth0!
-sh: 1: /bin/awk: not found
-RTNETLINK answers: File exists
-[130]Simulated network prefix is 192.170.0.0/20
-[0] setup time: user = 0.1, system = 0.08
-[0] DECADE LENGTH = 4.61169e+18
-[211]Starting portal write thread
-[178]Starting portal read thread
-[197]Got something...
-[369]Got arp
-{Ethernet
-	src_hw_addr=1e:62:7c:3f:99:18
-	tgt_mac=ff:ff:ff:ff:ff:ff
-	frame_type=806[arp]}
-{ARP
-	htype=0x1[ETH], size=6
-	proto=0x800[UNKNWON], size=4
-	opcode=0x1[ARP_REQUEST]
-	src_mac=1e:62:7c:3f:99:18
-	src_ip=10.10.3.2
-	tgt_mac=00:00:00:00:00:00
-	tgt_ip=192.170.1.50}
-[372]Looking for mac of ip 192.170.1.50
-[374]It is in the simulation, send response!
-[375]arp->getSrcIP()=10.10.3.2 arp->getSrcMac()=52:32:4c:c0:76:dc arp->getDstIP()=192.170.1.50 arp->getDstMac()=00:00:00:00:00:00[738]Sending arp reply:
-[734]Sending arp reply:
-{Ethernet
-	src_hw_addr=da:01:32:b1:27:b0
-	tgt_mac=1e:62:7c:3f:99:18
-	frame_type=806[arp]}
-{ARP
-	htype=0x1[ETH], size=6
-	proto=0x800[UNKNWON], size=4
-	opcode=0x2[ARP_REPLY]
-	src_mac=da:01:32:b1:27:b0
-	src_ip=10.10.3.1
-	tgt_mac=da:01:32:b1:27:b0
-	tgt_ip=192.170.1.50}
-
-
-#################################################################
-
-
-#
-#
-#
-#
-#
-#
-#
-#
-#
-
-
-
-
-
-
-#################################################################
-This is just an working example where h1(left portal) pings a node in the own simulator on host h2
-#################################################################
-
-mnconflux@mnconflux:~$ sudo ip netns exec h1 ping 192.168.1.50
-
-[sudo] password for mnconflux: 
-PING 192.168.1.50 (192.168.1.50) 56(84) bytes of data.
-64 bytes from 192.168.1.50: icmp_req=1 ttl=60 time=9.63 ms
-
-#################################################################
-
-
-
-mnconflux@mnconflux:~/expt2$ sudo ip netns exec h2 /home/mnconflux/primogeni/netsim/primex -tp 10.10.3.2 166 -tp 10.10.1.1 605 600 /home/mnconflux/expt2/Portals1_part_1.tlv
-------------------------------------------------------------
-Parallel Real-time Immersive Simulation Environment (PRIME)
-Scalable Simulation Framework (SSF) Version x1.0
-Copyright (c) 2007-2011 Florida International University.
-PRIME SSF is open source.
-See COPYRIGHT for detailed licence information.
-------------------------------------------------------------
-
-============================================================
-Parallel Real-time Immersive Simulation Environment (PRIME)
-SSF Network Simulator (SSFNet) Version x1.0
-Copyright (c) 2007-2011 Florida International University.
-============================================================
-
-
-using intial VEI of 500
-Simulation time [0, 6e+11]
-[118]PortalDevice::init() input_channel=0x8ae4488, output_channel=0x8ae4500
-[119]Portal Table:
-	[10.10.1.0/24 --> topnet:net2:r5:portal_10_1_3_0,[portal_10_1_3_0 tx_fd=-1, rx_fd=-1]]
-	[192.170.0.0/16 --> topnet:net01:net1:r1:portal_10_1_2_0,[portal_10_1_2_0 tx_fd=-1, rx_fd=-1]]
-
-[490]Creating pcap handle for h2-eth1
-[529]MAC for  h2-eth1:1e:62:7c:3f:99:18
-[541]IP for  h2-eth1:10.10.3.2
-[634]Ready to send/recv on h2-eth1!
-[490]Creating pcap handle for h2-eth0
-[529]MAC for  h2-eth0:ea:55:d7:15:8a:36
-[541]IP for  h2-eth0:10.10.1.1
-[634]Ready to send/recv on h2-eth0!
-sh: 1: /bin/awk: not found
-RTNETLINK answers: File exists
-sh: 1: /bin/awk: not found
-RTNETLINK answers: File exists
-[130]Simulated network prefix is 192.168.0.0/20
-[0] setup time: user = 0.15, system = 0.07
-[0] DECADE LENGTH = 4.61169e+18
-[211]Starting portal write thread
-[178]Starting portal read thread
-[197]Got something...
-[964] Got IPv4 pkt [size=64]
-	{IPv4
-	src=10.10.1.2
-	dst=192.168.1.50
-	hdr_len=20
-	tos=0
-	toal_len=84
-	ident=53165
-	offset=16384
-	ttl=64
-	proto=1[icmp]
-	checksum=5534}
-
-[965] Got IPv4 pkt [size=64]
-	{IPv4
-	src=10.10.1.2
-	dst=192.168.1.50
-	hdr_len=20
-	tos=0
-	toal_len=84
-	ident=53165
-	offset=16384
-	ttl=64
-	proto=1[icmp]
-	checksum=5534}
-
-[316]insertIntoSim, len=98
-[346]created emu evt withOUT a need for async name res
-[95]topnet:net2:r5:portal_10_1_3_0:TrafficPortal_1830 emu proto pkt_was_targeted_at_iface=true, ipForwardingEnabled()=false, isActive()=true
-[97]exporting packet from iface topnet:net2:r5:portal_10_1_3_0
-[227]Got a evt to write out! iface=topnet:net2:r5:portal_10_1_3_0, ip=10.10.1.1
-[790]Sending arp request for ea:55:d7:15:8a:36:
-{Ethernet
-	src_hw_addr=ea:55:d7:15:8a:36
-	tgt_mac=ff:ff:ff:ff:ff:ff
-	frame_type=806[arp]}
-{ARP
-	htype=0x1[ETH], size=6
-	proto=0x800[UNKNWON], size=4
-	opcode=0x1[ARP_REQUEST]
-	src_mac=ea:55:d7:15:8a:36
-	src_ip=10.10.1.1
-	tgt_mac=00:00:00:00:00:00
-	tgt_ip=10.10.1.2}
-[277]*arp_it=0xb5a09500
-[296]can't find mac for 10.10.1.2
-[369]Got arp
-{Ethernet
-	src_hw_addr=5a:13:ef:d0:cd:66
-	tgt_mac=ea:55:d7:15:8a:36
-	frame_type=806[arp]}
-{ARP
-	htype=0x1[ETH], size=6
-	proto=0x800[UNKNWON], size=4
-	opcode=0x2[ARP_REPLY]
-	src_mac=5a:13:ef:d0:cd:66
-	src_ip=10.10.1.2
-	tgt_mac=ea:55:d7:15:8a:36
-	tgt_ip=10.10.1.1}
-[384]I think 10.10.1.2 is at 5a:13:ef:d0:cd:66
-[271]Got an arp response... 10.10.1.2 --> 5a:13:ef:d0:cd:66
-[277]*arp_it=0xb5a09500
-[283]Sending mac that was waiting for arp response....
-[197]Got something...
-[964] Got IPv4 pkt [size=64]
-	{IPv4
-	src=10.10.1.2
-	dst=192.168.1.50
-	hdr_len=20
-	tos=0
-	toal_len=84
-	ident=53166
-	offset=16384
-	ttl=64
-	proto=1[icmp]
-	checksum=5278}
-
-[965] Got IPv4 pkt [size=64]
-	{IPv4
-	src=10.10.1.2
-	dst=192.168.1.50
-	hdr_len=20
-	tos=0
-	toal_len=84
-	ident=53166
-	offset=16384
-	ttl=64
-	proto=1[icmp]
-	checksum=5278}
-
-[316]insertIntoSim, len=98
-[346]created emu evt withOUT a need for async name res
-[95]topnet:net2:r5:portal_10_1_3_0:TrafficPortal_1830 emu proto pkt_was_targeted_at_iface=true, ipForwardingEnabled()=false, isActive()=true
-[97]exporting packet from iface topnet:net2:r5:portal_10_1_3_0
-[227]Got a evt to write out! iface=topnet:net2:r5:portal_10_1_3_0, ip=10.10.1.1
-[197]Got something...
-[369]Got arp
-{Ethernet
-	src_hw_addr=5a:13:ef:d0:cd:66
-	tgt_mac=ea:55:d7:15:8a:36
-	frame_type=806[arp]}
-{ARP
-	htype=0x1[ETH], size=6
-	proto=0x800[UNKNWON], size=4
-	opcode=0x1[ARP_REQUEST]
-	src_mac=5a:13:ef:d0:cd:66
-	src_ip=10.10.1.2
-	tgt_mac=00:00:00:00:00:00
-	tgt_ip=10.10.1.1}
-[372]Looking for mac of ip 10.10.1.1
-[379]Ignoring arp..
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Just the Second Log from one implementation:
-^Cmnconflux@mnconflux:~/primogeni/netsim/src/ssfnet/os$ sudo ip netns exec h3 /home/mnconflux/primogeni/netsim/primex -tp 110.3.1 166 600 /home/mnconflux/expt2/Portals2_part_1.tlv
-------------------------------------------------------------
-Parallel Real-time Immersive Simulation Environment (PRIME)
-Scalable Simulation Framework (SSF) Version x1.0
-Copyright (c) 2007-2011 Florida International University.
-PRIME SSF is open source.
-See COPYRIGHT for detailed licence information.
-------------------------------------------------------------
-
-============================================================
-Parallel Real-time Immersive Simulation Environment (PRIME)
-SSF Network Simulator (SSFNet) Version x1.0
-Copyright (c) 2007-2011 Florida International University.
-============================================================
-
-
-using intial VEI of 500
-Simulation time [0, 6e+11]
-[284]BlockingEmulationDevice::init(), getCommunity()=0x8e0b900
-[118]PortalDevice::init() input_channel=0x8e8fb60, output_channel=0x8e8fbd8
-[119]Portal Table:
-	[10.10.1.0/24 --> topnet:net01:net1:r1:portal_10_1_2_0,[portal_10_1_2_0 tx_fd=-1, rx_fd=-1]]
-
-[493]Creating pcap handle for h3-eth0
-[532]MAC for  h3-eth0:06:a4:10:a8:5a:94
-[544]IP for  h3-eth0:10.10.3.1
-[637]Ready to send/recv on h3-eth0!
-sh: 1: /bin/awk: not found
-RTNETLINK answers: File exists
-[130]Simulated network prefix is 192.170.0.0/20
-[0] setup time: user = 0.12, system = 0.08
-[0] DECADE LENGTH = 4.61169e+18
-[140]EmulationArrivalProcess::action(): waitOn()
-[409]BlockingEmulationDevice::write(0x8e8fbd8,0x8e03560)
-[211]Starting portal write thread
-[404]BlockingEmulationDevice::read(0x8e8fb60,0x8e03560)
-[178]Starting portal read thread
-[197]Got something...
-[369]Got arp
-{Ethernet
-	src_hw_addr=52:32:4c:c0:76:dc
-	tgt_mac=ff:ff:ff:ff:ff:ff
-	frame_type=806[arp]}
-{ARP
-	htype=0x1[ETH], size=6
-	proto=0x800[UNKNWON], size=4
-	opcode=0x1[ARP_REQUEST]
-	src_mac=52:32:4c:c0:76:dc
-	src_ip=10.10.3.2
-	tgt_mac=00:00:00:00:00:00
-	tgt_ip=192.170.1.50}
-[372]Looking for mac of ip 192.170.1.50
-[374]It is in the simulation, send response![375]
-arp->getSrcIP()=10.10.3.2 arp->getSrcMac()=52:32:4c:c0:76:dc arp->getDstIP()=192.170.1.50 arp->getDstMac()=00:00:00:00:00:00[705]
-Received reqquester_mac=52:32:4c:c0:76:dc requester_ip=10.10.3.2 requested_ip=192.170.1.50 requested_mac=06:a4:10:a8:5a:94[726]
-requester_mac.toRawMac(eth->getDst())=52:32:4c:c0:76:dc
-[732]
-requested_mac.toRawMac(arp->getDstMac())=06:a4:10:a8:5a:94
-[746]Sending arp reply:
-{Ethernet
-	src_hw_addr=06:a4:10:a8:5a:94
-	tgt_mac=52:32:4c:c0:76:dc
-	frame_type=806[arp]}
-{ARP
-	htype=0x1[ETH], size=6
-	proto=0x800[UNKNWON], size=4
-	opcode=0x2[ARP_REPLY]
-	src_mac=06:a4:10:a8:5a:94
-	src_ip=10.10.3.2
-	tgt_mac=06:a4:10:a8:5a:94
-	tgt_ip=192.170.1.50}
-
-
+###############################################################################
+remove all static routes to simulated networks
+add only routes to the networks that matter 10.10.1.0 and 10.10.5.0
 
 
