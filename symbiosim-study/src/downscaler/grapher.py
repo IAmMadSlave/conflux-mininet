@@ -66,7 +66,7 @@ def json_to_networkx( g, top, s=None ):
                     break
             else:
                 nodename = router['name']
-            g.add_node( nodename )
+            g.add_node( nodename, interfaces=len( router['interface'] ) )
             for interface in router['interfaces']:
                 interfacename = nodename+':'+interface['name']
                 if s is not None and nodename.find( top['name'] ) > -1:
@@ -94,7 +94,7 @@ def json_to_networkx( g, top, s=None ):
                     break
             else:
                 for i in range( len( path ) ):
-                    path[i] = path[i].replace( ':', '', 1)
+                    path[i] = path[i].replace( ':', '', 1 )
 '''
             g.add_edge( path[0], path[1],
                 bandwidth=str_to_num( link['bandwidth'] ), 
