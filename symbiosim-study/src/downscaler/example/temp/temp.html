@@ -41,7 +41,10 @@ var size = d3.scale.pow().exponent(1)
 	
 var force = d3.layout.force()
   .linkDistance(60)
-  .charge(-300)
+  //attraction -6
+  //gravity 0.20
+  .gravity(0.03)
+  .charge(-200)
   .size([w,h]);
 
 var default_node_color = "#ccc";
