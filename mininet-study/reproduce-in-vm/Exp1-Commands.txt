@@ -1,0 +1,92 @@
+# 2 emulated nodes within simulation
+java -jar ../primogeni/netscript/dist/jprime.jar create AThirdJavaModel AThirdJavaModel.java 192.168.0.0/16
+
+# check the interfaces UID of the emulated nodes, and capture the UID numbers 
+# and capture the IP addresses, and calculate UID in hexa to put as hardware addresses
+# in my case, one side is UID 55 and 192.168.0.9
+# in my case, other side is UID 216 and 192.168.0.41
+
+sudo ip link add h1-eth0 type veth peer name veth55
+sudo ip link add veth216 type veth peer name h3-eth0
+
+sudo ip netns add h1
+sudo ip link set h1-eth0 netns h1
+
+sudo ip netns add h3
+sudo ip link set h3-eth0 netns h3
+
+sudo ip netns add h2
+sudo ip link set veth55 netns h2
+sudo ip link set veth216 netns h2
+
+# configure the emulated host h3-left
+sudo ip netns exec h1 ifconfig h1-eth0 down
+sudo ip netns exec h1 ifconfig h1-eth0 hw ether 00:00:00:00:00:37
+sudo ip netns exec h1 ifconfig h1-eth0 192.168.0.9/24
+sudo ip netns exec h1 ifconfig lo up
+sudo ip netns exec h1 ifconfig h1-eth0 up
+
+# configure the emulated host h3-right
+sudo ip netns exec h3 ifconfig h3-eth0 down
+sudo ip netns exec h3 ifconfig h3-eth0 hw ether 00:00:00:00:00:d8
+sudo ip netns exec h3 ifconfig h3-eth0 192.168.0.41/24
+sudo ip netns exec h3 ifconfig lo up
+sudo ip netns exec h3 ifconfig h3-eth0 up
+
+# configure the simulator container
+sudo ip netns exec h2 ifconfig veth55 hw ether 66:00:00:00:00:37
+sudo ip netns exec h2 ifconfig veth55 down
+sudo ip netns exec h2 ifconfig veth55 up
+sudo ip netns exec h2 ifconfig veth216 hw ether 66:00:00:00:00:d8
+sudo ip netns exec h2 ifconfig veth216 down
+sudo ip netns exec h2 ifconfig veth216 up
+
+===========================================
+sudo ip netns exec h3 ping -c1 192.168.0.9
+PING 192.168.0.9 (192.168.0.9) 56(84) bytes of data.
+^C
+--- 192.168.0.9 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+===========================================
+sudo ip netns exec h1 ping -c1 192.168.0.41
+PING 192.168.0.41 (192.168.0.41) 56(84) bytes of data.
+^C
+--- 192.168.0.41 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+===========================================
+
+sudo ip netns exec h2 ~/primogeni/netsim/primex 600 AThirdJavaModel_part_1.tlv
+
+===========================================
+sudo ip netns exec h3 ping -c1 192.168.0.9
+PING 192.168.0.9 (192.168.0.9) 56(84) bytes of data.
+64 bytes from 192.168.0.9: icmp_req=1 ttl=61 time=6.30 ms
+
+--- 192.168.0.9 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+
+===========================================
+sudo ip netns exec h1 ping -c1 192.168.0.41
+PING 192.168.0.41 (192.168.0.41) 56(84) bytes of data.
+64 bytes from 192.168.0.41: icmp_req=1 ttl=61 time=6.23 ms
+
+--- 192.168.0.41 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 6.236/6.236/6.236/0.000 ms
+
+===========================================
+(works only in global - not within containers)
+
+sudo sysctl -w net.core.rmem_default=20097152
+sudo sysctl -w net.core.wmem_default=20097152
+sudo sysctl -w net.core.rmem_max=40485760
+sudo sysctl -w net.core.wmem_max=40485760
+
+sudo ip netns exec h3 iperf -s -i 1
+sudo ip netns exec h1 iperf -c 192.168.0.41
+DOES NOT WORK
+
+sudo ip netns exec h3 python -m SimpleHTTPServer
+sudo ip netns exec h1 wget http://192.168.0.41/
+DOES NOT WORK EITHER

@@ -1,0 +1,61 @@
+#STEP 1(Creating namespaces and links)
+#-------------------------------------
+sudo ip link add h1-eth0 type veth peer name eth1
+sleep 1
+sudo ip netns add h1
+sudo ip link set h1-eth0 netns h1
+sudo ip netns exec h1 ifconfig h1-eth0 10.10.2.2/24
+#sudo stop network-manager
+sudo ifconfig eth1 10.10.2.1/24
+#(Anothern portal interface would be real interface. 10.1.0.13  : Set the PortalsVega.java like that)
+sudo ip netns exec h1 ifconfig lo up
+sudo ip netns exec h1 ping -c1 10.10.2.1
+sudo ping -c1 10.10.2.2
+
+#STEP2 (SETTING ROUTES):
+#----------------------
+#sudo ip netns exec h1 ifconfig h1-eth1 down
+#sudo ip netns exec h1 ifconfig h1-eth1 up
+sudo ip netns exec h1 ip route add 192.168.0.0/16 via 10.10.2.1
+sudo ip netns exec h1 ip route add 192.170.0.0/16 via 10.10.2.1
+sudo ip netns exec h1 ip route add 10.10.1.0/24 via 10.10.2.1
+
+#sudo ifconfig eth2 down
+#sudo ifconfig eth2 up
+
+
+#Compile Model
+#--------------
+java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.2.1,eth3,10.1.0.28] -DPORTAL_LINKS=c_slave1:eth2,topnet.net01.net1.r1.portal_10_1_2_0,c_slave1:eth3,topnet.net2.r5.portal_10_1_3_0 -jar ../primogeni/netscript/dist/jprime.jar create Portals1 Portals1.java 192.170.0.0/16
+
+
+#Run Model
+#---------
+cd /root/expt/
+../primogeni/netsim/primex -tp 10.1.0.28 166 -tp 10.10.2.1 605 600 Portals1_part_1.tlv
+
+
+#Test:
+#----
+sudo ip netns exec h1 ping 10.10.2.1
+sudo ip netns exec h1 ping 192.170.1.50
+
+
+
+#On pollux (add route) -clean route before
+ip route del 10.10.1.0/24
+# point to castor
+ip route add 10.10.1.0/24 via 10.1.0.29
+
+
+root@pollux:~# sudo ip netns exec h1 ping 10.10.1.2
+PING 10.10.1.2 (10.10.1.2) 56(84) bytes of data.
+64 bytes from 10.10.1.2: icmp_req=4 ttl=47 time=486 ms
+64 bytes from 10.10.1.2: icmp_req=7 ttl=47 time=120 ms
+64 bytes from 10.10.1.2: icmp_req=9 ttl=47 time=113 ms
+64 bytes from 10.10.1.2: icmp_req=16 ttl=47 time=260 ms
+^C
+--- 10.10.1.2 ping statistics ---
+17 packets transmitted, 4 received, 76% packet loss, time 16098ms
+rtt min/avg/max/mdev = 113.781/245.282/486.465/151.051 ms
+
