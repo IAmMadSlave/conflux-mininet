@@ -26,8 +26,8 @@ class Parser():
     def __init__( self, xmlfile ):
         self.net = {}
 
-        xmltopology = xmlfile
-        tree = ET.ElementTree( file=xmltopology )
+        self.xmltopology = xmlfile
+        tree = ET.ElementTree( file=self.xmltopology )
 
         self.root = tree.getroot()
 
@@ -123,3 +123,9 @@ class Parser():
         self.parse_model( self.root, self.topnet )
         
         return self.net
+
+    def write_json( self ):
+        jsonfile = self.xmltopology.replace( 'xml', 'json' )
+
+        with open( jsonfile, 'w') as jsonout:
+            json.dump( self.net, jsonout )
