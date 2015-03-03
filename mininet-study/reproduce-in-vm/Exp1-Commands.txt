@@ -83,10 +83,24 @@ sudo sysctl -w net.core.wmem_default=20097152
 sudo sysctl -w net.core.rmem_max=40485760
 sudo sysctl -w net.core.wmem_max=40485760
 
-sudo ip netns exec h3 iperf -s -i 1
-sudo ip netns exec h1 iperf -c 192.168.0.41
-DOES NOT WORK
-
-sudo ip netns exec h3 python -m SimpleHTTPServer
-sudo ip netns exec h1 wget http://192.168.0.41/
-DOES NOT WORK EITHER
+sudo ip netns exec h3 iperf -s -i 1 -w 32M
+sudo ip netns exec h1 iperf -c 192.168.0.41 -w 32M
+------------------------------------------------------------
+Client connecting to 192.168.0.41, TCP port 5001
+TCP window size: 64.0 MByte (WARNING: requested 32.0 MByte)
+------------------------------------------------------------
+[  5] local 192.168.0.9 port 39411 connected with 192.168.0.41 port 5001
+[  6] local 192.168.0.41 port 5001 connected with 192.168.0.9 port 39411
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  24.3 MBytes   204 Mbits/sec
+[  6]  1.0- 2.0 sec  36.7 MBytes   308 Mbits/sec
+[  6]  2.0- 3.0 sec  34.8 MBytes   292 Mbits/sec
+[  6]  3.0- 4.0 sec  42.7 MBytes   358 Mbits/sec
+[  6]  4.0- 5.0 sec  42.1 MBytes   353 Mbits/sec
+[  6]  5.0- 6.0 sec  45.9 MBytes   385 Mbits/sec
+[  6]  6.0- 7.0 sec  36.6 MBytes   307 Mbits/sec
+[  6]  7.0- 8.0 sec  27.1 MBytes   227 Mbits/sec
+[  6]  8.0- 9.0 sec  36.3 MBytes   305 Mbits/sec
+[  6]  9.0-10.0 sec  36.0 MBytes   302 Mbits/sec
+[ ID] Interval       Transfer     Bandwidth
+[  5]  0.0-10.2 sec   396 MBytes   327 Mbits/sec
