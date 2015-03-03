@@ -43,18 +43,22 @@ public class AThirdJavaModel extends ModelInterface{
 		ILink l1 = left_net.createLink();
 		l1.createInterface(if1);
 		l1.createInterface(r.createInterface("if1"));
+		l1.setBandwidth("500000000");	
 
 		ILink l2 = left_net.createLink();
 		l2.createInterface(if2);
 		l2.createInterface(r.createInterface("if2"));
+		l2.setBandwidth("500000000");	
 
 		ILink l3 = left_net.createLink();
 		l3.createInterface(if3);
 		l3.createInterface(r.createInterface("if3"));
+		l3.setBandwidth("500000000");	
 
 		ILink l4 = left_net.createLink();
 		l4.createInterface(if4);
 		l4.createInterface(r.createInterface("if4"));
+		l4.setBandwidth("500000000");	
 		
 		//create the right network
 		INet right_net = (INet)left_net.copy("right_net",topnet);
@@ -63,7 +67,7 @@ public class AThirdJavaModel extends ModelInterface{
 		ILink toplink = topnet.createLink("toplink");
 		toplink.createInterface(((IRouter)left_net.get("r")).createInterface("if0"));
 		toplink.createInterface(((IRouter)right_net.get("r")).createInterface("if0"));	
-		toplink.setBandwidth("10000000");	
+		toplink.setBandwidth("500000000");	
 		//add simulated traffic
 		//IHost right_h2 = (IHost)right_net.get("h1");
 		//TrafficFactory trafficFactory = new TrafficFactory(topnet);
