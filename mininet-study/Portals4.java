@@ -502,7 +502,6 @@ public class Portals4 extends ModelInterface{
 	
         right_portal.createTrafficPortal();       
         right_portal.setIpAddress("10.10.3.1");
-        right_portal.addReachableNetwork("192.168.0.0/16");
         right_portal.addReachableNetwork("10.10.1.0/24");
           
         return top;

@@ -24,12 +24,12 @@ Container Routing:
 -----------------
 sudo ip netns exec h1 ip route add 192.168.0.0/16 via 10.10.1.1
 sudo ip netns exec h1 ip route add 192.170.0.0/16 via 10.10.1.1
-sudo ip netns exec h1 ip route add 10.10.2.0/16 via 10.10.1.1
+sudo ip netns exec h1 ip route add 10.10.2.0/24 via 10.10.1.1
 
 
 Now Compile Model:
 ------------------
-java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.1.1,eth3,10.10.3.1] -DPORTAL_LINKS=c_slave1:eth2,topnet.portal_router.portal_10_10_1_0,c_slave1:eth3,topnet.center_router.portal_10_10_2_0 -jar ../primogeni/netscript/dist/jprime.jar create MininetConfluxCastor MininetConfluxCastor.java 192.168.0.0/16
+java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.1.1,eth3,10.10.3.1] -DPORTAL_LINKS=c_slave1:eth2,topnet.portal_router.portal_if_10_10_1_0,c_slave1:eth3,topnet.center_router.portal_if_10_10_3_0 -jar ../primogeni/netscript/dist/jprime.jar create MininetConfluxCastor MininetConfluxCastor.java 192.168.0.0/16
 
 Run Model:
 ---------
