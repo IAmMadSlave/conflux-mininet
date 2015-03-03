@@ -1,7 +1,7 @@
 #!/bin/python
 
-import fuckit
-import itertools
+from pprint import pprint
+from itertools import combinations
 from sets import Set
 
 f1 = Set(['A', 'C', 'D', 'E'])
@@ -12,30 +12,28 @@ flows = [f1, f2, f3]
 
 universe = f1 | f2 | f3
 
+intersections = []
 
-intersects = []
+for c in combinations( flows, 2 ):
+    intersect = c[0] & c[1]    
+    if len( intersect ) != 0:
+        intersections.append( intersect )
 
-for i in range( len( flows ) ):
-    for j in range( len( flows ) -1 ):
-        if i != j:
-            intersects.append( flows[i] & flows[j] )
-
-for i in intersects:
-    if len(i) == 0:
-        intersects.remove(i)
-
-for i in intersects:
+for i in intersections:
     universe -= i
 
-universe = list(universe)
+universe = list( universe )
 
-for i in intersects:
-    i = list(i)
+for i in range( len( universe ) ):
+    universe[i] = [ universe[i] ]
+
+for i in intersections:
     try:
-        if universe.index(i) != -1:
-            universe.append(i)
+        universe.index( list( i ) )
     except Exception:
-        pass
+        universe.append( list( i ) )
 
-print universe
-
+i = 0
+for u in universe:
+    print 'flow', str( i ) + ': ' + '%s' % ', '.join( map( str, u ) )
+    i = i + 1
