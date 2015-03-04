@@ -1,8 +1,7 @@
 #!/bin/python
 
-from pprint import pprint
-from itertools import combinations
-from itertools import permutations
+from itertools import combinations, permutations
+from itertools import takewhile, dropwhile
 from sets import Set
 import networkx as nx
 
@@ -23,33 +22,67 @@ class Flows():
 
     def get_flows( self ):
         universe = set().union( *self.paths )
+        
+        print 'UNIVERSE...'
+        for u in universe:
+            print u
 
         intersections = []
 
         for c in combinations( self.paths, 2 ):
             intersect = set( c[0] ) & set( c[1] )
-
             if len( intersect ) != 0:
                 intersections.append( intersect )
 
+        if len( intersections) == 0:
+            print 'NO INTERSECTIONS...'
+        else:
+            for i in range( len( self.paths ) ):
+                for intersect in intersections:
+                    flag = False
+                    for element in intersect:
+                        ind = self.paths[i].index( element )
+                        self.paths[i].remove( element )
+                        if flag == False:
+                            self.paths[i].insert( ind, '' )
+                            flag = True
+
+
+        for p in self.paths:
+        # do something here
+
+            self.flows.append( p )
+
         for i in intersections:
-            universe -= i
+            self.flows.append( list( i ) )
 
-        universe = list( universe )
+            '''
+            print 'INTERSECTIONS...'
+            for i in intersections:
+                universe -= i
+                print i
 
-        for i in range( len( universe ) ):
-            universe[i] = [ universe[i] ]
+            universe = list( universe )
+            print 'UNIVERSE-INTERSECTIONS...'
+            for u in universe:
+                print u
 
-        for i in intersections:
-            try:
-                universe.index( list( i ) )
-            except Exception:
-                universe.append( list( i ) )
+            for i in range( len( universe ) ):
+                universe[i] = [ universe[i] ]
 
-        self.flows = universe
+            for i in intersections:
+                try:
+                    universe.index( list( i ) )
+                except Exception:
+                    universe.append( list( i ) )
 
+            self.flows = universe
+            '''
+
+        print 'FLOWS...'
         for f in self.flows:
             print f
+
 '''
     f1 = Set(['A', 'C', 'D', 'E'])
     f2 = Set(['B', 'C', 'D', 'E'])

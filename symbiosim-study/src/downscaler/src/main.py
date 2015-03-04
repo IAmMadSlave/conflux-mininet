@@ -32,9 +32,8 @@ if __name__ == "__main__":
     f = Flows(flows, graph)
     paths = f.get_path()
 
-    print '\n'
+    print '\nPATHS...'
     for p in paths:
         print p
 
-    print '\n'
     f.get_flows()
