@@ -6,23 +6,22 @@ from threading import Thread
 
 class Traffic_Monitor( Thread ):
     
-    def __init__( self ):
+    def __init__( self, flows ):
         Thread.__init__( self )
-
-        # open downscaled topo
-        # parse links and create table
-        self.links = []
+        
+        self.flows = flows
+        self.flow_table = []
+        for f in self.flows:
+            self.flow_table.append( {'old': None, 'new': None} )
         
     def run( self ):
-        # overloaded Thread.run
-        for i in xrange(3):
-            self.links.append(i)
+        for f in self.flow_table:
+            print f
 
-        #while not self.cancelled:
-        #    self.update()
-
-            # add drift control to sleep
-        #    time.sleep(1)
+        i = 0
+        for f in self.flow_table:
+            f['old'] = i
+            i = i + 1
 
     def start_module( self ):
         logging.info( 'unload kernel module' )
@@ -43,20 +42,20 @@ class Traffic_Monitor( Thread ):
 
     def __str__( self ):
         line = ''
-        for link in self.links:
-            line += str(link)
-            line += '\n'
+
+        for f in self.flow_table:
+            line = line + str( f ) + '\n'
 
         return line
 
 if __name__== '__main__':
     try:
-        tm = Traffic_Monitor()
+        flows = [1, 2, 3]
+        tm = Traffic_Monitor( flows )
         tm.start()
-
-        print tm
-
         tm.join()
+        print '\n'
+        print tm
         print 'finished..'
 
     except IOError as e:
