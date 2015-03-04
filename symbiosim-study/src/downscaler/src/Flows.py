@@ -14,9 +14,12 @@ class Flows():
         self.graph = graph
 
     def get_path( self ):
-        for p in permutations( self.emu_nodes, 2 ):
+        #for p in permutations( self.emu_nodes, 2 ):
+        for p in self.emu_nodes:
             path = nx.shortest_path( self.graph, p[0].strip(), p[1].strip() )
             self.paths.append( path )
+
+        return self.paths
 
     def get_flows( self ):
         universe = set().union( *self.paths )

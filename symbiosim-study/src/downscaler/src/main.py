@@ -14,17 +14,27 @@ if __name__ == "__main__":
     g = Grapher( net )
     graph = g.json_to_graph()
 
-    print 'Please select nodes to be emulated (e.g., h1, h2, h3)..'
+    print 'Enter a flow between two hosts (e.g., h1, h2)'
     i = 1
     for n in graph.nodes( data=True ):
         if n[1].get( 'type' ) == 'host':
             print str(i)+'. '+n[0]
             i = i + 1
 
-    emu_nodes = raw_input( 'Emulated nodes: ')
-    emu_nodes = emu_nodes.split( ',' )
+    flows = []
+    flow = 'default'
+    while flow != '':
+        flow = raw_input( 'Flow: ')
+        if flow != '':
+            flows.append( flow.split( ',' ) )
     # perhaps we should sanitize the list here?
 
-    f = Flows(emu_nodes, graph)
-    f.get_path()
+    f = Flows(flows, graph)
+    paths = f.get_path()
+
+    print '\n'
+    for p in paths:
+        print p
+
+    print '\n'
     f.get_flows()
