@@ -35,7 +35,7 @@ class Parser():
             self.net.update( { self.get_name( child ): {}} )
             self.root = child
 
-        self.topnet = self.net['topNet']
+        self.topnet = self.net['topnet']
     
     def parse_model( self, root, top ):
         for child in root:
@@ -70,13 +70,15 @@ class Parser():
                 newhost.update( {'interfaces': []} )
 
                 for interface in child:
-                    newhost['interfaces'].append( {'name': self.get_name( interface )} )
-                    hostindex = newhost['interfaces'].index( {'name': self.get_name( 
-                        interface )} )
+                    if self.get_type( interface ) == 'Interface':
+                        newhost['interfaces'].append( {'name': self.get_name( interface )} )
+                        hostindex = newhost['interfaces'].index( {'name': self.get_name( 
+                            interface )} )
 
-                    for attribute in interface:
-                        newhost['interfaces'][hostindex].update( {self.get_name( attribute ):
-                            self.get_value( attribute )} )
+                        for attribute in interface:
+                            if self.get_name( attribute ) == 'latency' or 'bit_rate' or 'emu':
+                                newhost['interfaces'][hostindex].update( {self.get_name( attribute ):
+                                    self.get_value( attribute )} )
 
                 top['hosts'].append( newhost )
                 continue
@@ -94,8 +96,9 @@ class Parser():
                         interface )} ) 
 
                     for attribute in interface:
-                        newrouter['interfaces'][routerindex].update( {self.get_name( 
-                            attribute ): self.get_value( attribute )} )
+                        if self.get_name( attribute ) == 'latency' or 'bit_rate' or 'emu':
+                            newrouter['interfaces'][routerindex].update( {self.get_name( 
+                                attribute ): self.get_value( attribute )} )
 
                 top['routers'].append( newrouter )
                 continue

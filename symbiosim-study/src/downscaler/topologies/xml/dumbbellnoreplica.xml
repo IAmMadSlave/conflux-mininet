@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model xmlns:xsi="http://www.w3.org/2001/XMLSchema_instance"
         xsi:noNamespaceSchemaLocation="primex.xsd">
-        <node name="topNet" type="Net">
+        <node name="topnet" type="Net">
                 <node name="routing" type="ShortestPath" />
                 <node name="sub1" type="Net">
                         <node name="routing" type="ShortestPath" />

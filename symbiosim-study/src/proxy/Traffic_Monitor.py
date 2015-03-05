@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import logging
 import subprocess
@@ -6,18 +7,23 @@ from threading import Thread
 
 class Traffic_Monitor( Thread ):
     
-    def __init__( self, flows ):
+    def __init__( self, flows_file ):
         Thread.__init__( self )
-        
-        self.flows = flows
+       
+        self.flows = []
+        with open( flows_file, 'r') as openfile:
+            for line in openfile:
+                self.flows.append( line )
+
+        i = 0
+        for i in range( len( self.flows ) ):
+            self.flows[i] = self.flows[i].split( ' ' )
+            
         self.flow_table = []
         for f in self.flows:
-            self.flow_table.append( {'old': None, 'new': None} )
+            self.flow_table.append( {'name': f[0], 'old': None, 'new': None} )
         
     def run( self ):
-        for f in self.flow_table:
-            print f
-
         i = 0
         for f in self.flow_table:
             f['old'] = i
@@ -50,11 +56,15 @@ class Traffic_Monitor( Thread ):
 
 if __name__== '__main__':
     try:
-        flows = [1, 2, 3]
-        tm = Traffic_Monitor( flows )
+        #flows = [1, 2, 3]
+
+        tm = Traffic_Monitor( 'flows' )
+        print 'OLD...'
+        print tm
         tm.start()
         tm.join()
         print '\n'
+        print 'NEW...'
         print tm
         print 'finished..'
 
