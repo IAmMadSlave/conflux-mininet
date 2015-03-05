@@ -1,1 +1,1 @@
-flow1: sub1:h1:if_0 sub1:r:if_h1 sub1:r:if_gateway sub2:r:if_gateway sub2:r:if_h1 
+flow1: 10.0.0.2 10.0.0.1
