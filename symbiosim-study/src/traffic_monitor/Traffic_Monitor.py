@@ -5,18 +5,11 @@ import time
 import logging
 import subprocess
 from threading import Thread
-import threading
 
-def threaded( fn ):
-    def wrapper(*args, **kwargs):
-        threading.Thread(target=fn, args=args, kwargs=kwargs).start()
-    return wrapper
 
-class Traffic_Monitor( Thread ):
+class Traffic_Monitor():
     
     def __init__( self, flows_file ):
-        Thread.__init__( self )
-
         self.readloop = True
 
         self.flows = []
@@ -30,11 +23,23 @@ class Traffic_Monitor( Thread ):
             
         self.flow_table = []
         for f in self.flows:
-            self.flow_table.append( {'dest': f[2].strip(), 'src': f[1].strip(), 'old': None, 'new': None, 'name': f[0].replace( ':', '' ) } )
+            self.flow_table.append( {'dest': f[2].strip(), 'src': f[1].strip(),
+                'nxt': 0, 'name': f[0].replace( ':', '' ) } )
+
         
     def run( self ):
-        for f in self.flow_table:
-            f['old'] = 0
+        # do main stuff here
+        print 'OLD...'
+        print self
+
+        # module loading and unloading, etc
+        self.start_module()
+
+        # logging as well
+        t1 = threading.Thread( target=self.continous_update
+
+        self.stop_module()
+
 
     def start_module( self ):
         logging.info( 'unload kernel module' )
@@ -57,18 +62,16 @@ class Traffic_Monitor( Thread ):
             #try:
                 while (not stop_event.is_set):
                     for line in tcplog:
-                        if re.match( '^[0-9]*\.[0-9]*\ '+self.flow_table[0]['src']+':[0-9]*\ '+self.flow_table[0]['dest'], line ):
+                        if re.match( '^[0-9]*\.[0-9]*\ '+flow_table[0]['src']+':[0-9]*\ '+flow_table[0]['dest'], line ):
                             lineparts = line.split( ' ' )
-                            self.flow_table[0]['new'] = lineparts[4]
+                            flow_table[0]['new'] = lineparts[4]
             #except KeyboardInterrupt:
             #    print 'done'
-
+   
     def timed_update( self ):
         logging.info( 'print flows' ) 
         # print flows every 1 second
         # add drift control here
-        t1_stop = threading.Event()
-        t1 = threading( target=self.continous_update, args=t1_stop )
 
         count = 0
         for count in range( 20 ):
@@ -87,18 +90,4 @@ class Traffic_Monitor( Thread ):
 
 if __name__== '__main__':
         tm = Traffic_Monitor( 'flows' )
-
-        print 'OLD...'
-        print tm
-
-        tm.start()
-        tm.start_module()
-        
-        tm.timed_update()
-        
-        tm.stop_module()
-        tm.join()
-
-        print 'NEW...'
-        print tm
-        print 'finished..'
+        tm.run()
