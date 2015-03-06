@@ -4,23 +4,21 @@ import sys
 import time
 import logging
 import subprocess
-from threading import Thread
 import threading
-
 
 class Traffic_Monitor():
     
-    def __init__( self, flows_file ):
-        self.readloop = True
-
-        self.flows = []
-        with open( flows_file, 'r') as openfile:
+    def __init__( self, mn_flows_file, demand_file ):
+        flows = []
+        self.demand_file = demand_file
+        
+        with open( mn_flows_file, 'r') as openfile:
             for line in openfile:
                 self.flows.append( line )
 
         i = 0
         for i in range( len( self.flows ) ):
-            self.flows[i] = self.flows[i].split( ' ' )
+            flows[i] = flows[i].split( ' ' )
             
         self.flow_table = []
         for f in self.flows:
@@ -28,36 +26,19 @@ class Traffic_Monitor():
                 'nxt': 0, 'name': f[0].replace( ':', '' ) } )
 
     def run( self ):
-        # do main stuff here
-        print 'OLD...'
-        print self.__str__()
-
         # module loading and unloading, etc
         self.start_module()
 
-        # logging as well
+        # start continous logging
         t1_stop = threading.Event()
-        t1 = threading.Thread( target=self.testing, args=(t1_stop,) )
+        t1 = threading.Thread( target=self.continous_update, args=(t1_stop,) )
         t1.start()
 
-        i = 0
-        for i in range(5):
-            print 'MAIN...'
-            time.sleep(0.5)
-
-        t1_stop.set()
-
-        self.stop_module()
-        print 'NEW...'
-        print self.__str__()
-
+        # start timed updates
+        self.timed_update( t1_stop )
         t1.join()
 
-    def testing( self, stop_event ):
-        while( not stop_event.is_set() ):
-            for t in self.flow_table:
-                print t['nxt']
-            time.sleep(0.3)
+        self.stop_module()
 
     def start_module( self ):
         logging.info( 'unload kernel module' )
@@ -76,25 +57,32 @@ class Traffic_Monitor():
     def continous_update( self, stop_event ):
         logging.info( 'update flows' )
         # continuously read /proc/net/tcpprobe
+        i = 0
         with open( '/proc/net/tcpprobe' ) as tcplog:
-            #try:
-                while (not stop_event.is_set):
-                    for line in tcplog:
-                        if re.match( '^[0-9]*\.[0-9]*\ '+flow_table[0]['src']+':[0-9]*\ '+flow_table[0]['dest'], line ):
+            #while (not stop_event.is_set() ):
+                for line in tcplog:
+                    for flow in self.flow_table:
+                        if re.match( '^[0-9]*\.[0-9]*\ '
+                                +str(flow['src']).strip()
+                                +'\:[0-9]*\ '
+                                +str(flow['dest']).strip(), line ):
                             lineparts = line.split( ' ' )
-                            flow_table[0]['new'] = lineparts[4]
-            #except KeyboardInterrupt:
-            #    print 'done'
+                            flow['nxt'] = int( lineparts[4], 16 )
+                            if stop_event.is_set():
+                                break;
+                    
    
-    def timed_update( self ):
+    def timed_update( self, stop_event ):
         logging.info( 'print flows' ) 
-        # print flows every 1 second
-        # add drift control here
 
-        count = 0
-        for count in range( 20 ):
-            print self.flow_table[0]['new']
-            time.sleep(1)
+        with open( self.demand_file, 'w') as demand:
+            # print flows every 1 second
+            i= 0
+            for i in range( 5 ):
+                for flow in self.flow_table:
+                    demand.write( flow['nxt'] )
+                time.sleep(1)
+                # add drift control here
 
         stop_event.set()
 

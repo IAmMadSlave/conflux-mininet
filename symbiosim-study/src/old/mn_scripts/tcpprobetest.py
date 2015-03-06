@@ -1,14 +1,16 @@
 #!/usr/bin/python
 
-"""Start logging before executing script """
-from mininet.net  import Mininet
 from mininet.topo import SingleSwitchTopo
+from mininet.net  import Mininet
+from mininet.node import CPULimitedHost
 from mininet.cli  import CLI
+from mininet.util import custom
 
 import threading
 import time
 import sys
-        
+
+
 def tcpprobe_log( tid, net ):
     hosts = {}
     h1, h2, h3 = net.getNodeByName( 'h1', 'h2', 'h3' )
@@ -26,9 +28,12 @@ def tcpprobe_log( tid, net ):
     popens[2].terminate()
     popens[3].terminate()
 
+
 if __name__ == '__main__':
     mytopo = SingleSwitchTopo( 3 )
-    net = Mininet( topo=mytopo )
+    cpu = .5/3
+    myhost = custom( CPULimitedHost, cpu=cpu )
+    net = Mininet( topo=mytopo, host=myhost )
 
     net.start()
 
