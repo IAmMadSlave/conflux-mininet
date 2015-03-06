@@ -31,9 +31,9 @@ def tcpprobe_log( tid, net ):
 
 if __name__ == '__main__':
     mytopo = SingleSwitchTopo( 3 )
-    cpu = .5/3
-    myhost = custom( CPULimitedHost, cpu=cpu )
-    net = Mininet( topo=mytopo, host=myhost )
+    #cpu = .5/3
+    #myhost = custom( CPULimitedHost, cpu=cpu )
+    net = Mininet( topo=mytopo )
 
     net.start()
 

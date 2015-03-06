@@ -1,2 +1,0 @@
-cat log.out | LC_ALL=C grep "^44.[0-9]*\ 10\.0\.0\.2" | head -n 100 | awk
-'{print $5}'| xargs printf "%d\n" > file
