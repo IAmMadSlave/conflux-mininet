@@ -37,5 +37,4 @@ sudo ip netns exec h1 ping -c1 10.10.1.1
 sudo ip netns exec h2 ping -c1 10.10.1.2
 sudo ip netns exec h2 ping -c1 10.10.2.1
 
-sudo ip netns exec h1 ping -c1 10.10.2.1 (connect: Network is unreachable)
-sudo ip netns exec h3 ping -c1 10.10.1.2 (connect: Network is unreachable)
+
