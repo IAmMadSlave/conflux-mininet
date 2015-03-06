@@ -5,6 +5,7 @@ import time
 import logging
 import subprocess
 from threading import Thread
+import threading
 
 
 class Traffic_Monitor():
@@ -26,20 +27,37 @@ class Traffic_Monitor():
             self.flow_table.append( {'dest': f[2].strip(), 'src': f[1].strip(),
                 'nxt': 0, 'name': f[0].replace( ':', '' ) } )
 
-        
     def run( self ):
         # do main stuff here
         print 'OLD...'
-        print self
+        print self.__str__()
 
         # module loading and unloading, etc
         self.start_module()
 
         # logging as well
-        t1 = threading.Thread( target=self.continous_update
+        t1_stop = threading.Event()
+        t1 = threading.Thread( target=self.testing, args=(t1_stop,) )
+        t1.start()
+
+        i = 0
+        for i in range(5):
+            print 'MAIN...'
+            time.sleep(0.5)
+
+        t1_stop.set()
 
         self.stop_module()
+        print 'NEW...'
+        print self.__str__()
 
+        t1.join()
+
+    def testing( self, stop_event ):
+        while( not stop_event.is_set() ):
+            for t in self.flow_table:
+                print t['nxt']
+            time.sleep(0.3)
 
     def start_module( self ):
         logging.info( 'unload kernel module' )
