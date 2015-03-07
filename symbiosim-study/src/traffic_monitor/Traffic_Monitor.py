@@ -4,6 +4,15 @@ import sys
 import time
 import subprocess
 import threading
+from subprocess import Popen, PIPE
+from Queue import Queue, Empty
+
+ON_POSIX = 'posix' in sys.builtin_module_names
+
+def enqueue_output( out, queue ):
+    for line in iter( out.readline, b'' ):
+            queue.put( line )
+    out.close()
 
 class Traffic_Monitor():
     
@@ -33,21 +42,26 @@ class Traffic_Monitor():
         self.start_module()
         print 'start module'
 
-        # start continous logging
-        t1_stop = threading.Event()
-        t1 = threading.Thread( target=self.continous_update, args=(t1_stop,) )
+        cat = Popen( ['cat', '/proc/net/tcpprobe'], stdout=PIPE, bufsize=1,
+            close_fds=ON_POSIX )
+        q = Queue()
+        t1 = threading.Thread( target=enqueue_output, args=(cat.stdout, q) )
+        t1.daemon = True
         t1.start()
-        print 'start t1'
 
-        # start timed updates
-        # change timeout from interval based to mininet finish?
-        self.timed_update( t1_stop, 20)
-        print 'start timed_update'
-        t1_stop.set()
-        t1.join()
+        t2 = threading.Thread( target=self.continous_update, args=(q,) )
+        t2.daemon = True
+        t2.start()
+       
+        t3 = threading.Thread( target=self.timed_update )
+        t3.start()
 
+        t3.join()
+        cat.terminate()
         # module unloading
         self.stop_module()
+        print 'mod stop'
+        return
 
     def start_module( self ):
         # unload kernel module
@@ -63,33 +77,28 @@ class Traffic_Monitor():
         # unload kernel module
         subprocess.call( ['modprobe', '-r', 'tcp_probe'] )
 
-    def continous_update( self, stop_event ):
-        # continuously read /proc/net/tcpprobe and update pipe info
-        with open( '/proc/net/tcpprobe' ) as tcplog:
-                for line in tcplog:
-                    for pipe in self.pipes_table:
-                        if re.match( '^[0-9]*\.[0-9]*\ '
-                                +str(pipe['src']).strip()
-                                +'\:[0-9]*\ '
-                                +str(pipe['dest']).strip(), line ):
-                            lineparts = line.split( ' ' )
-                            pipe['nxt'] = int( lineparts[4], 16 )
-                    if stop_event.is_set():
-                        break;
-   
-    def timed_update( self, probe_stop_event, timeout ):
+    def continous_update( self, q ):
+        while True:
+            try:
+                line = q.get_nowait()
+            except Empty:
+                line = None
+            else:
+                lineparts = line.split( ' ' )
+                self.pipes_table[0]['nxt'] = lineparts[4]
+
+    def timed_update( self ):
         # write periodic traffic demand to file
         with open( self.demand_file, 'w') as demand:
             # write demand once per second
             i= 0
-            for i in range( timeout ):
+            for i in range( 50 ):
                 for pipe in self.pipes_table:
                     demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(
                         pipe['nxt'] ) +'\n' )
                 time.sleep(1)
                 # add drift control here
-
-        probe_stop_event.set()
+            return
 
 if __name__== '__main__':
         tm = Traffic_Monitor( 'mn_pipes_file', 'demand_file' )
