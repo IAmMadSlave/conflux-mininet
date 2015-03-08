@@ -5,6 +5,7 @@ from Parser import Parser
 from Grapher import Grapher
 from Downscaler import Downscaler
 
+from SymbioTopo import SymbioTopo
 from TrafficMonitor import TrafficMonitor
 
 import networkx as nx
@@ -30,3 +31,7 @@ if __name__ == "__main__":
 
     for p in pipes:
         print p
+    print '\n'
+
+    st = SymbioTopo( net, pipes )
+    st.getHosts()
