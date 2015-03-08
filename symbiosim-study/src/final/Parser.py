@@ -27,6 +27,7 @@ class Parser():
         self.net = {}
 
         self.xmltopology = xmlfile
+        
         tree = ET.ElementTree( file=self.xmltopology )
 
         self.root = tree.getroot()
@@ -35,7 +36,9 @@ class Parser():
             self.net.update( { self.get_name( child ): {}} )
             self.root = child
 
-        self.topnet = self.net['topNet']
+        self.topnet = self.net['topnet']
+
+        self.emuhosts = []
     
     def parse_model( self, root, top ):
         for child in root:
@@ -70,13 +73,38 @@ class Parser():
                 newhost.update( {'interfaces': []} )
 
                 for interface in child:
-                    newhost['interfaces'].append( {'name': self.get_name( interface )} )
-                    hostindex = newhost['interfaces'].index( {'name': self.get_name( 
-                        interface )} )
+                    if self.get_type( interface ) == 'Sender':
+                        for attribute in interface:
+                            found = False
+                            for e in self.emuhosts:
+                                if e.get( 'id') == self.get_value( attribute ):
+                                    e.update( {'src': self.get_name( child ) } )
+                                    found = True
+                            if not found:
+                                self.emuhosts.append( {'id': self.get_value(
+                                    attribute ), 'src': self.get_name( child )
+                                    } )
 
-                    for attribute in interface:
-                        newhost['interfaces'][hostindex].update( {self.get_name( attribute ):
-                            self.get_value( attribute )} )
+                    if self.get_type( interface ) == 'Receiver':
+                        for attribute in interface:
+                            found = False
+                            for e in self.emuhosts:
+                                if e.get( 'id' ) == self.get_value( attribute ):
+                                    e.update( {'dest': self.get_name( child ) } )
+                                    found = True
+                            if not found:
+                                self.emuhosts.append( {'id': self.get_value(
+                                    attribute ), 'dest': self.get_name( child )
+                                    } )
+
+                    if self.get_type( interface ) == 'Interface':
+                        newhost['interfaces'].append( {'name': self.get_name( interface )} )
+                        hostindex = newhost['interfaces'].index( {'name': self.get_name( 
+                            interface )} )
+
+                        for attribute in interface:
+                            newhost['interfaces'][hostindex].update( {self.get_name( attribute ):
+                                self.get_value( attribute )} )
 
                 top['hosts'].append( newhost )
                 continue
@@ -129,3 +157,6 @@ class Parser():
 
         with open( jsonfile, 'w') as jsonout:
             json.dump( self.net, jsonout )
+
+    def get_emuhosts( self ):
+        return self.emuhosts
