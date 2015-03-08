@@ -46,23 +46,23 @@ class Grapher():
 
         if top.has_key( 'hosts' ):
             for host in top['hosts']:
-                if s is not None:
-                    for i in range( len( s ) ):
-                        if self.subnets[i]['name'] == top['name']:
-                            nodename = top['name']+':'+host['name']
-                            self.subnets[i]['nodes'].append( nodename )
-                            break
-                        else:
-                            continue
-                        break
-                else:
-                    nodename = host['name']
+                #if s is not None:
+                #    for i in range( len( s ) ):
+                #        if self.subnets[i]['name'] == top['name']:
+                #            nodename = top['name']+':'+host['name']
+                #            self.subnets[i]['nodes'].append( nodename )
+                #            break
+                #        else:
+                #            continue
+                #        break
+                #else:
+                nodename = host['name'].strip()
                 g.add_node( nodename, type='host',
                         interfaces=len( host['interfaces'] ) )
                 for interface in host['interfaces']:
                     interfacename = nodename+':'+interface['name']
-                    if s is not None and nodename.find( top['name'] ) > -1:
-                        self.subnets[i]['nodes'].append( interfacename )
+                    #if s is not None and nodename.find( top['name'] ) > -1:
+                    #    self.subnets[i]['nodes'].append( interfacename )
 
                     g.add_node( interfacename, type='interface',
                         bit_rate=self.str_to_num( interface['bit_rate'] ), 
@@ -71,23 +71,23 @@ class Grapher():
 
         if top.has_key( 'routers' ):
             for router in top['routers']:
-                if s is not None:
-                    for i in range( len( s ) ):
-                        if self.subnets[i]['name'] == top['name']:
-                            nodename = top['name']+':'+router['name']
-                            self.subnets[i]['nodes'].append( nodename )
-                            break
-                        else:
-                            continue
-                        break
-                else:
-                    nodename = router['name']
+                #if s is not None:
+                #    for i in range( len( s ) ):
+                #        if self.subnets[i]['name'] == top['name']:
+                #            nodename = top['name']+':'+router['name']
+                #            self.subnets[i]['nodes'].append( nodename )
+                #            break
+                #        else:
+                #            continue
+                #        break
+                #else:
+                nodename = router['name']
                 g.add_node( nodename, type='router', 
                         interfaces=len( router['interfaces'] ) )
                 for interface in router['interfaces']:
                     interfacename = nodename+':'+interface['name']
-                    if s is not None and nodename.find( top['name'] ) > -1:
-                        self.subnets[i]['nodes'].append( interfacename )
+                    #if s is not None and nodename.find( top['name'] ) > -1:
+                    #    self.subnets[i]['nodes'].append( interfacename )
                     
                     g.add_node( interfacename, type='interface',
                         bit_rate=self.str_to_num( interface['bit_rate'] ),

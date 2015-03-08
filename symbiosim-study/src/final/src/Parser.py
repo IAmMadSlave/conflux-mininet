@@ -50,7 +50,11 @@ class Parser():
                 if top.has_key( 'subnets' ) == False:
                     top.update( {'subnets': []} )
 
-                newsubnet = {'name': self.get_name( child )}
+                fullname = 'topnet:'
+                if self.get_name( root ) != 'topnet':
+                    fullname = fullname + self.get_name( root ) + ':'
+                
+                newsubnet = {'name': fullname + self.get_name( child )}
                 top['subnets'].append( newsubnet )
                 subnetindex = top['subnets'].index( newsubnet )
                 self.parse_model( child, top['subnets'][subnetindex] )
@@ -69,7 +73,13 @@ class Parser():
                 if top.has_key( 'hosts' ) == False:
                     top.update( {'hosts': []} )
 
-                newhost = {'name': self.get_name( child )} 
+                fullname = 'topnet:'
+                if self.get_name( root ) != 'topnet':
+                    fullname = fullname + self.get_name( root ) + ':'
+
+                fullname = fullname + self.get_name( child )
+
+                newhost = {'name': fullname } 
                 newhost.update( {'interfaces': []} )
 
                 for interface in child:
@@ -78,11 +88,11 @@ class Parser():
                             found = False
                             for e in self.emuhosts:
                                 if e.get( 'id') == self.get_value( attribute ):
-                                    e.update( {'src': self.get_name( child ) } )
+                                    e.update( {'src': fullname + self.get_name( child ) } )
                                     found = True
                             if not found:
                                 self.emuhosts.append( {'id': self.get_value(
-                                    attribute ), 'src': self.get_name( child )
+                                    attribute ), 'src': fullname + self.get_name( child )
                                     } )
 
                     if self.get_type( interface ) == 'Receiver':
@@ -90,17 +100,18 @@ class Parser():
                             found = False
                             for e in self.emuhosts:
                                 if e.get( 'id' ) == self.get_value( attribute ):
-                                    e.update( {'dest': self.get_name( child ) } )
+                                    e.update( {'dest': fullname + self.get_name( child ) } )
                                     found = True
                             if not found:
                                 self.emuhosts.append( {'id': self.get_value(
-                                    attribute ), 'dest': self.get_name( child )
+                                    attribute ), 'dest': fullname + self.get_name( child )
                                     } )
 
                     if self.get_type( interface ) == 'Interface':
-                        newhost['interfaces'].append( {'name': self.get_name( interface )} )
-                        hostindex = newhost['interfaces'].index( {'name': self.get_name( 
-                            interface )} )
+                        intfullname = fullname + ':' + self.get_name( interface )
+                        newhost['interfaces'].append( {'name': intfullname} )
+                        hostindex = newhost['interfaces'].index( {'name':
+                            intfullname} )
 
                         for attribute in interface:
                             newhost['interfaces'][hostindex].update( {self.get_name( attribute ):
@@ -112,14 +123,21 @@ class Parser():
             if self.get_type ( child ) == 'Router':
                 if top.has_key( 'routers' ) == False:
                     top.update( {'routers': []} )
+
+                fullname = 'topnet:'
+                if self.get_name( root ) != 'topnet':
+                    fullname = fullname + self.get_name( root ) + ':'
+
+                fullname = fullname + self.get_name( child )
             
-                newrouter = {'name': self.get_name( child )}
+                newrouter = {'name':  fullname}
                 newrouter.update( {'interfaces': []} )
 
                 for interface in child:
-                    newrouter['interfaces'].append( {'name': self.get_name( interface )} )
-                    routerindex = newrouter['interfaces'].index( {'name': self.get_name(
-                        interface )} ) 
+                    intfullname = fullname + ':' + self.get_name( interface )
+                    newrouter['interfaces'].append( {'name': intfullname} )
+                    routerindex = newrouter['interfaces'].index( {'name':
+                        intfullname} ) 
 
                     for attribute in interface:
                         newrouter['interfaces'][routerindex].update( {self.get_name( 
@@ -129,10 +147,14 @@ class Parser():
                 continue
 
             if self.get_type ( child ) == 'Link':
+                fullname = 'topnet:'
+                if self.get_name( root ) != 'topnet':
+                    fullname = fullname + self.get_name( root ) + ':'
+
                 if top.has_key( 'links' ) == False:
                     top.update( {'links': []} )
 
-                newlink = {'name': self.get_name( child )}
+                newlink = {'name': fullname + self.get_name( child )}
                 linkpath = ''
 
                 for subchild in child:
@@ -140,7 +162,12 @@ class Parser():
                         newlink.update( {self.get_name( subchild ): self.get_value( subchild )} )
 
                     if self.get_tag( subchild ) == 'ref':
-                        linkpath += self.get_path( subchild )
+                        link = self.get_path( subchild )
+                        link = link.replace( '..', '', 1 )
+                        link = link.replace( ':', '', 1 )
+                        link = fullname + link
+                        link = '..' +  link
+                        linkpath += link
 
                 newlink.update( {'path': linkpath} )
 

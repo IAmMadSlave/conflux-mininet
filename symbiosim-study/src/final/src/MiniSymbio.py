@@ -19,10 +19,19 @@ if __name__ == "__main__":
     # list of emulated flows
     emuflows = p.emuflows()
 
-    # translate to networkx
+    from pprint import pprint
+    pprint( net, width=1 )
+   
+    print '\n' 
+
+    # translate to networkx 
     graph = Grapher( net )
-    g = graph.json_to_graph()
     
+    g = graph.json_to_graph()
+  
+    for n in g.nodes():
+        print n
+    '''
     d = Downscaler( emuflows, g ) 
     paths = d.get_paths()
 
@@ -32,3 +41,4 @@ if __name__ == "__main__":
     print '\n'
 
     d.get_flows()
+    '''

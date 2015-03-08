@@ -43,3 +43,11 @@ class Downscaler():
         for u in universe:
             print u
 
+        pipes = []
+        for path in self.paths:
+            pipes.append( path['path'] )
+
+        print '\n'
+
+        for p in permutations( pipes, 2 ):
+            print set( p[0] ) & set( p[1] )
