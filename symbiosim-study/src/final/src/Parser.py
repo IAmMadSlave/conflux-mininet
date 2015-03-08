@@ -88,24 +88,22 @@ class Parser():
                             found = False
                             for e in self.emuhosts:
                                 if e.get( 'id') == self.get_value( attribute ):
-                                    e.update( {'src': fullname + self.get_name( child ) } )
+                                    e.update( {'src': fullname} )
                                     found = True
                             if not found:
                                 self.emuhosts.append( {'id': self.get_value(
-                                    attribute ), 'src': fullname + self.get_name( child )
-                                    } )
+                                    attribute ), 'src': fullname} )
 
                     if self.get_type( interface ) == 'Receiver':
                         for attribute in interface:
                             found = False
                             for e in self.emuhosts:
                                 if e.get( 'id' ) == self.get_value( attribute ):
-                                    e.update( {'dest': fullname + self.get_name( child ) } )
+                                    e.update( {'dest': fullname} )
                                     found = True
                             if not found:
                                 self.emuhosts.append( {'id': self.get_value(
-                                    attribute ), 'dest': fullname + self.get_name( child )
-                                    } )
+                                    attribute ), 'dest': fullname} )
 
                     if self.get_type( interface ) == 'Interface':
                         intfullname = fullname + ':' + self.get_name( interface )
