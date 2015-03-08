@@ -158,5 +158,5 @@ class Parser():
         with open( jsonfile, 'w') as jsonout:
             json.dump( self.net, jsonout )
 
-    def get_emuhosts( self ):
+    def emuflows( self ):
         return self.emuhosts

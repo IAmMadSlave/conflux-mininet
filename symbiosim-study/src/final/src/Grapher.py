@@ -29,14 +29,15 @@ class Grapher():
         #net = ast.literal_eval( json.dumps(net) )
         self.net = net
 
-        self.g = nx.Graph( routing=self.routing_type( self.net['topNet'] ) )
+        #self.g = nx.Graph( routing=self.routing_type( self.net['topnet'] ) )
+        self.g = nx.Graph()
 
-        self.subnets = self.has_subnets( self.net['topNet'] )
+        self.subnets = self.has_subnets( self.net['topnet'] )
 
         if self.subnets is None:
-            self.json_to_networkx(self.g, self.net['topNet'])
+            self.json_to_networkx(self.g, self.net['topnet'])
         else:
-            self.json_to_networkx(self.g, self.net['topNet'], self.subnets)
+            self.json_to_networkx(self.g, self.net['topnet'], self.subnets)
 
     def json_to_networkx( self, g, top, s=None ):
         if top.has_key( 'subnets' ):
@@ -99,7 +100,7 @@ class Grapher():
                 path = path.replace( '..', '', 1 )
                 path = path.split( '..' )
 
-                if top != self.net['topNet'] and s is not None:
+                if top != self.net['topnet'] and s is not None:
                     for i in range( len( s ) ):
                         if self.subnets[i]['name'] == top['name']:
                             for i in range( len( path ) ):
@@ -124,7 +125,6 @@ class Grapher():
         return subnets
 
     def json_to_graph( self ):
-
         return self.g
 
     
