@@ -25,12 +25,8 @@ if __name__ == "__main__":
     g = graph.json_to_graph()
  
     d = Downscaler( emuflows, g ) 
-   
-    paths = d.get_paths()
 
-    for p in paths:
+    pipes = d.get_pipes()
+
+    for p in pipes:
         print p
-
-    print '\n'
-
-    d.get_flows()

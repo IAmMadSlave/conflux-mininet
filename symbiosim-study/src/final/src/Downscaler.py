@@ -3,6 +3,7 @@
 from itertools import combinations, permutations
 from itertools import takewhile, dropwhile
 from sets import Set
+from copy import copy
 import networkx as nx
 
 class Downscaler():
@@ -11,6 +12,7 @@ class Downscaler():
         self.graph = graph
         
         self.paths = []
+        self.get_paths()
 
     def get_paths( self ):
         for flow in self.emu_nodes:
@@ -33,21 +35,37 @@ class Downscaler():
 
         return self.paths
 
-    def get_flows( self ):
-        universe = set()
-
-        for path in self.paths:
-            universe = universe | set( path['path'] )
-        
-        print 'UNIVERSE...'
-        for u in universe:
-            print u
-
+    def get_pipes( self ):
         pipes = []
+
+        path_perms = []
         for path in self.paths:
-            pipes.append( path['path'] )
+            path_perms.append( set( path['path'] ) )
 
-        print '\n'
+        intersections = []
+        for p in permutations( path_perms, 2 ):
+            temp = set( p[0] ) & set( p[1] )
+            if len( temp ) != 0:
+                try:
+                    intersections.index( temp )
+                except:
+                    intersections.append( temp )
+                    pipes.append( temp )
 
-        for p in permutations( pipes, 2 ):
-            print set( p[0] ) & set( p[1] )
+        for path in self.paths:
+            for inter in intersections:
+                temp = set( path['path'] ) - inter
+                if len( temp ) != 0 and temp != set( path['path'] ):
+                    try:
+                        pipes.index( temp )
+                    except:
+                        pipes.append( temp )
+
+        if len( pipes ) == 0:
+            pipes = copy( path_perms )    
+
+        i = 0
+        for i in range( len( pipes ) ):
+            pipes[i] = list( pipes[i] )
+
+        return pipes
