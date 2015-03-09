@@ -1,0 +1,111 @@
+
+
+#**************************************************************************
+#							FINAL WORKING COPY
+#**************************************************************************
+#Installing MPI and hydra:
+
+#C Compliler (gcc) needs to be in the system before trying to compile hydra and mpich
+wget -O ~/Downloads/hydra-1.3.2p1.tar.gz http://www.mpich.org/static/tarballs/1.3.2p1/hydra-1.3.2p1.tar.gz
+wget -O ~/Downloads/mpich2-1.3.2p1.tar.gz http://www.mpich.org/static/downloads/1.3.2p1/mpich2-1.3.2p1.tar.gz
+for i in ~/Downloads/*.tar.gz; do tar xvzf $i -C ~/Downloads/; done
+~/Downloads/hydra-1.3.2p1/configure
+#cd ~/Downloads/hydra-1.3.2p1/
+#make install
+make clean -C  ~/Downloads/hydra-1.3.2p1/
+make distclean -C  ~/Downloads/hydra-1.3.2p1/
+#~/Downloads/hydra-1.3.2p1/configure
+make install -C  ~/Downloads/hydra-1.3.2p1/
+if [ ! -d /usr/mpich]; then
+    echo -e "\n**************************************************************************\nCreating mpich folder!\n**************************************************************************\n"
+    #rm -rf /usr/mpich
+    mkdir -p /usr/mpich
+fi
+~/Downloads/mpich2-1.3.2p1/configure --disable-f77  --disable-fc
+
+#./configure --disable-f77  --disable-fc
+#cd ~/Downloads/mpich2-1.3.2p1/
+make clean -C  ~/Downloads/mpich2-1.3.2p1/
+make distclean -C  ~/Downloads/mpich2-1.3.2p1/
+~/Downloads/mpich2-1.3.2p1/configure --disable-f77  --disable-fc
+make -C ~/Downloads/mpich2-1.3.2p1/
+#cd ~/Downloads/mpich2-1.3.2p1/
+make install -C  ~/Downloads/mpich2-1.3.2p1/  PREFIX=/usr/mpich
+#make install -C  ~/Downloads/mpich2-1.3.2p1/
+
+
+
+
+#Setting Environment Variable(so that mpiexec and mpicc is recognized):
+export PATH=$PATH:/usr/mpich/bin
+
+#Making Primex with MPI option: 
+./configure --with-ssf-sync=mpi --disable-lzo
+
+#Running a model with MPI (command executed from geni1):
+/usr/mpich/bin/mpiexec -f /primex/machineFile -n 1 /primex/primogeni/netsim/primex -enable_state_stream 600 /primex/exps/MySecondJavaModel_TrafficTest/MySecondJavaModel_TrafficTest_part_1.tlv : -n 1 /primex/primogeni/netsim/primex -enable_state_stream 600 /primex/exps/MySecondJavaModel_TrafficTest/MySecondJavaModel_TrafficTest_part_2.tlv -v /primex/exps/MySecondJavaModel_TrafficTest/runtime_symbols.txt
+
+#Deployment lopology was:
+#             geni1(10.10.1.1)
+#      		   	 /
+#	 		    / \geni-lan
+#   	   	   /   \
+#        	  /     \
+#geni2(10.10.1.2)   geni3(10.10.1.3)
+
+
+#Contents of machineFile
+#  On geni1:     10.10.1.2:1
+#                10.10.1.3:1
+#  On geni2:     10.10.1.2:1
+#  On geni3:     10.10.1.3:1
+
+#**************************************************************************
+#					Partitioning(Each partition one portal)
+#**************************************************************************
+java -DPART_STR="2::1:1,2:1" -DRUNTIME_ENV="[c_slave1,d_slave1,eth2,10.10.1.1],[c_slave2,d_slave2,eth3,10.1.0.29]" -DPORTAL_LINKS="c_slave1:eth2,topnet.portal_router.portal_if_10_10_1_0,c_slave2:eth3,topnet.center_router.portal_if_10_1_0_0" -jar ~/primogeni/netscript/dist/jprime.jar create hello3 MininetConfluxCastorEmulated.java
+
+
+
+
+
+
+
+
+
+
+
+#Rough:
+
+
+
+K Model file  has no portal in 
+java -DPART_STR="2::1:1,2:1" -DRUNTIME_ENV="[c_slave1,d_slave1,eth2,10.10.1.1],[c_slave2,d_slave2,eth3,10.10.2.2]" -DPORTAL_LINKS="c_slave1:eth2,topnet.portal_router.portal_if_10_10_1_0,c_slave2:eth3,topnet.center_router.portal_if_10_1_0_0" -jar ~/primogeni/netscript/dist/jprime.jar create hello3 MininetConfluxCastorEmulated.java
+
+
+K with portals:(castor, root)
+~/expt/test/
+java -DPART_STR="2::1:1,2:1" -DRUNTIME_ENV="[c_slave1,d_slave1,eth2,10.10.1.1],[c_slave2,d_slave2,eth3,10.1.0.29]" -DPORTAL_LINKS="c_slave1:eth2,topnet.portal_router.portal_if_10_10_1_0,c_slave2:eth3,topnet.center_router.portal_if_10_1_0_0" -jar ~/primogeni/netscript/dist/jprime.jar create hello3 MininetConfluxCastorEmulated.java
+
+/usr/mpich/bin/mpiexec -f /primex/machineFile -n 1 /primex/primogeni/netsim/primex -enable_state_stream 1800 /primex/exps/AThirdJavaModel/AThirdJavaModel_part_1.tlv -v /primex/exps/AThirdJavaModel/runtime_symbols.txt
+
+
+
+/usr/mpich/bin/mpiexec -f /primex/machineFile -n 1 /primex/primogeni/netsim/primex  -enable_state_stream  30 /primex/exps/MySecondJavaModel/secondjava_part_1.tlv : -n 1 /primex/primogeni/netsim/primex  -enable_state_stream  30 /primex/exps/MySecondJavaModel/secondjava_part_2.tlv -v /primex/exps/MySecondJavaModel/runtime_symbols.txt 
+
+
+Works with 1 Machine:
+	/usr/mpich/bin/mpiexec -f /primex/machineFile -n 1 /primex/primogeni/netsim/primex  -enable_state_stream  30 /primex/exps/MySecondJavaModel_1Partition/MySecondJavaModel_NoPartition_part_1.tlv -v /primex/exps/MySecondJavaModel_1Partition/runtime_symbols.txt
+
+Normal Run:
+	/primex/primogeni/netsim/primex  -enable_state_stream  30 /primex/exps/MySecondJavaModel_1Partition/MySecondJavaModel_NoPartition_part_1.tlv
+
+
+MPI one machine self(machine file contains only the machine_ipv4_ip_octets:1 itself where one is how many instances this machine will run):
+	/usr/mpich/bin/mpiexec -f /primex/machineFile -n 1 /primex/primogeni/netsim/primex  -enable_state_stream  30 /primex/exps/MySecondJavaModel_1Partition/MySecondJavaModel_NoPartition_part_1.tlv -v /primex/exps/MySecondJavaModel_1Partition/runtime_symbols.txt
+
+
+Two part(Running from geni1 with geni3):
+	/usr/mpich/bin/mpiexec -f /primex/machineFile /primex/primogeni/netsim/primex  -enable_state_stream  30 /primex/exps/MySecondJavaModel/secondjava_part_1.tlv : -n 1 /primex/primogeni/netsim/primex  -enable_state_stream  30 /primex/exps/MySecondJavaModel/secondjava_part_2.tlv -v /primex/exps/MySecondJavaModel/runtime_symbols.txt
+	/usr/mpich/bin/mpiexec -f /primex/machineFile /primex/primogeni/netsim/primex  -enable_state_stream  30 /primex/exps/MySecondJavaModel/secondjava_part_1.tlv : -n 1 /primex/primogeni/netsim/primex  -enable_state_stream  30 /primex/exps/MySecondJavaModel/secondjava_part_2.tlv
+	

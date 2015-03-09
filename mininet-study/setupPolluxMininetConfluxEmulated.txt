@@ -19,6 +19,7 @@ sudo ping -c1 10.10.2.2
 sudo ip netns exec h1 ip route add 192.168.0.0/16 via 10.10.2.1
 sudo ip netns exec h1 ip route add 192.170.0.0/16 via 10.10.2.1
 sudo ip netns exec h1 ip route add 10.10.2.0/24 via 10.10.2.1
+sudo ip netns exec h1 ip route add 10.10.1.0/24 via 10.10.2.1
 
 #sudo ifconfig eth2 down
 #sudo ifconfig eth2 up
@@ -51,7 +52,7 @@ sudo ifconfig veth52 up
 
 #Run Model
 #---------
-../primogeni/netsim/primex -tp 10.1.0.28 82 -tp 10.10.2.1 110 600 MininetConfluxPolluxEmulated_part_1.tlv
+../primogeni/netsim/primex -tp 10.1.0.28 82 -tp 10.10.2.1 110 1800 MininetConfluxPolluxEmulated_part_1.tlv
 
 
 #Test:

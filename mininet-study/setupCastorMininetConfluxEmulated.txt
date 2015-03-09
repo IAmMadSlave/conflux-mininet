@@ -55,7 +55,7 @@ sudo ifconfig veth52 up
 
 #Run Model
 #---------
-../primogeni/netsim/primex -tp 10.1.0.29 82 -tp 10.10.1.1 110 600 MininetConfluxCastorEmulated_part_1.tlv
+../primogeni/netsim/primex -tp 10.1.0.29 82 -tp 10.10.1.1 110 1800 MininetConfluxCastorEmulated_part_1.tlv
 
 
 #Test:
