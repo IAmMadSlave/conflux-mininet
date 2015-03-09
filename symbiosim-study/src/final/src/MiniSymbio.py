@@ -34,4 +34,7 @@ if __name__ == "__main__":
     print '\n'
 
     st = SymbioTopo( net, pipes )
-    st.getHosts()
+    st.getNodes()
+
+    for e in emuflows:
+        print e

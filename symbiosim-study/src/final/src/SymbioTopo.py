@@ -20,7 +20,7 @@ class SymbioTopo( Topo ):
         self.hosts = []
         self.switches = []
 
-    def getHosts( self ):
+    def getNodes( self ):
         if self.topo.has_key( 'subnets' ):
             for subnet in self.topo['subnets']:
                 if subnet.has_key( 'hosts' ):
@@ -47,7 +47,33 @@ class SymbioTopo( Topo ):
                                                 self.switches.index( routername )
                                             except:
                                                 self.switches.append( routername )
-                        
+
+        if self.topo.has_key( 'hosts' ):             
+            for host in self.topo['hosts']:
+                if host.has_key( 'interfaces' ):
+                    for interface in host['interfaces']:
+                        for pipe in self.pipes:
+                            for p in pipe:
+                                if interface['name'] == p:
+                                    hostname = host.get( 'name' )
+                                    try:
+                                        self.hosts.index( hostname )
+                                    except:
+                                        self.hosts.append( hostname )
+        
+        if self.topo.has_key( 'routers' ):
+            for router in self.topo['routers']:
+                if host.has_key( 'interfaces' ):
+                    for interface in router['interfaces']:
+                        for pipe in self.pipes:
+                            for p in pipe:
+                                if interface['name'] == p:
+                                    routername = router.get( 'name' )
+                                    try:
+                                        self.switches.index( routername )
+                                    except:
+                                        self.switches.append( routername )
+
         for h in self.hosts:
             print h
 
