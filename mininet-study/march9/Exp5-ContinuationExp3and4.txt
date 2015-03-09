@@ -1,0 +1,19 @@
+(on pollux - h1, h2) 
+java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.1.1,eth3,10.10.2.2] -DPORTAL_LINKS=c_slave1:eth2,topnet.portal_router.portal_if_10_10_1_0,c_slave1:eth3,topnet.center_router.portal_if_10_1_0_0 -jar ../primogeni/netscript/dist/jprime.jar create SolvingPortalTCP1 SolvingPortalTCP1.java 192.168.0.0/16
+
+(on castor - h3, h4)
+java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.2.1,eth3,10.10.3.2] -DPORTAL_LINKS=c_slave1:eth2,topnet.portal_router.portal_if_10_10_2_0,c_slave1:eth3,topnet.center_router.portal_if_10_1_0_0 -jar ../primogeni/netscript/dist/jprime.jar create SolvingPortalTCP2 SolvingPortalTCP2.java 192.170.0.0/16
+
+(continuation)
+(on pollux - h2) 
+sudo ip netns exec h2 sysctl -w net.ipv4.ip_forward=0
+sudo ip netns exec h2 /root/primogeni/netsim/primex -tp 10.10.2.2 81 -tp 10.10.1.1 109 600 SolvingPortalTCP1_part_1.tlv
+
+(on castor - h3)
+sudo ip netns exec h3 sysctl -w net.ipv4.ip_forward=0
+sudo ip netns exec h3 /root/primogeni/netsim/primex -tp 10.10.3.2 81 -tp 10.10.2.1 109 600 SolvingPortalTCP2_part_1.tlv
+
+(on pollux)
+sudo ip netns exec h1 ping -c1 10.10.3.1 (didn’t work)
+/root/primogeni works !!!
+
