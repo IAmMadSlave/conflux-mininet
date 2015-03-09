@@ -1,0 +1,79 @@
+# USING LXC Containers
+
+# 2 emulated nodes within simulation
+java -jar ../primogeni/netscript/dist/jprime.jar create AThirdJavaModel AThirdJavaModel.java 192.168.0.0/16
+
+# check the interfaces UID of the emulated nodes, and capture the UID numbers 
+# and capture the IP addresses, and calculate UID in hexa to put as hardware addresses
+# in my case, one side is UID 55 and 192.168.0.9
+# in my case, other side is UID 216 and 192.168.0.41
+# UID of the nodes should be 76 and 237
+
+# Create LXC Hosts
+sudo lxc-create -t ubuntu -n 76
+sudo lxc-create -t ubuntu -n 237
+
+# Install IPERF first on both VMs !!!
+sudo lxc-start -d -n 76
+sudo lxc-attach -n 76
+apt-get update
+apt-get install iperf 
+
+# Edit configurations
+sudo vi /var/lib/lxc/76/config
+remove lxc.network.link=lxcbr0
+lxc.network.hwaddr = 00:00:00:00:00:37
+lxc.network.veth.pair = veth55
+
+sudo vi /var/lib/lxc/237/config
+remove lxc.network.link=lxcbr0
+lxc.network.hwaddr = 00:00:00:00:00:d8
+lxc.network.veth.pair = veth216
+
+# Initialize the VMs
+sudo lxc-start -d -n 76
+sudo lxc-start -d -n 237
+
+# Configure IP interfaces
+sudo lxc-attach -n 76
+ifconfig eth0 192.168.0.9 netmask 255.255.255.0 up
+sudo lxc-attach -n 237
+ifconfig eth0 192.168.0.41 netmask 255.255.255.0 up
+
+=========================================== (TESTS)
+sudo lxc-attach -n 237 
+root@237:/# ping 192.168.0.9
+PING 192.168.0.9 (192.168.0.9) 56(84) bytes of data.
+^C
+--- 192.168.0.9 ping statistics ---
+2 packets transmitted, 0 received, 100% packet loss, time 999ms
+
+=========================================== (FIRE SIMULATOR)
+
+sudo ~/primogeni/netsim/primex 600 AThirdJavaMel_part_1.tlv
+
+=========================================== (TEST AGAIN)
+
+sudo lxc-attach -n 76
+root@76:/# ping -c1 192.168.0.41
+PING 192.168.0.41 (192.168.0.41) 56(84) bytes of data.
+64 bytes from 192.168.0.41: icmp_req=1 ttl=61 time=6.43 ms
+
+--- 192.168.0.41 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 6.436/6.436/6.436/0.000 ms
+
+===========================================
+(works only in global - not within containers)
+
+sudo sysctl -w net.core.rmem_default=20097152
+sudo sysctl -w net.core.wmem_default=20097152
+sudo sysctl -w net.core.rmem_max=40485760
+sudo sysctl -w net.core.wmem_max=40485760
+
+sudo lxc-attach -n 237
+root@237:/# iperf -s -i 1
+
+sudo lxc-attach -n 76
+root@76:/# iperf -c 192.168.0.41
+DOES NOT WORK

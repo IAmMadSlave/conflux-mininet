@@ -1,0 +1,1911 @@
+sudo sysctl -w net.core.rmem_max=16777216
+sudo sysctl -w net.core.wmem_max=16777216
+sudo sysctl -w net.ipv4.tcp_rmem="4096 87380 16777216"
+sudo sysctl -w net.ipv4.tcp_wmem="4096 65536 16777216"
+sudo sysctl -w net.core.netdev_max_backlog=250000 
+
+First test evaluate PCI-E bandwidth by running server and client in the same computer
+iperf -c 127.0.0.1 -P 1 -i 1 -p 5001 -t 10
+iperf -s -i 1
+
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 5001
+TCP window size:  167 KByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 37709 connected with 127.0.0.1 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0- 1.0 sec  3.42 GBytes  29.4 Gbits/sec
+[  3]  1.0- 2.0 sec  3.44 GBytes  29.5 Gbits/sec
+[  3]  2.0- 3.0 sec  3.54 GBytes  30.4 Gbits/sec
+[  3]  3.0- 4.0 sec  3.55 GBytes  30.5 Gbits/sec
+[  3]  4.0- 5.0 sec  3.55 GBytes  30.5 Gbits/sec
+[  3]  5.0- 6.0 sec  3.55 GBytes  30.5 Gbits/sec
+[  3]  6.0- 7.0 sec  3.56 GBytes  30.5 Gbits/sec
+[  3]  7.0- 8.0 sec  3.55 GBytes  30.5 Gbits/sec
+[  3]  8.0- 9.0 sec  3.55 GBytes  30.5 Gbits/sec
+[  3]  9.0-10.0 sec  3.55 GBytes  30.5 Gbits/sec
+[  3]  0.0-10.0 sec  35.3 GBytes  30.3 Gbits/sec
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 1G)
+iperf -s -u -i 1 -w 16M
+iperf -c 127.0.0.1 -u -w 16M -b 1000m
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 1470 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 58108
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec  96.1 MBytes   806 Mbits/sec   0.012 ms    0/68575 (0%)
+[  3]  1.0- 2.0 sec  95.7 MBytes   803 Mbits/sec   0.091 ms    0/68254 (0%)
+[  3]  2.0- 3.0 sec  95.9 MBytes   804 Mbits/sec   0.089 ms    0/68404 (0%)
+[  3]  3.0- 4.0 sec  95.9 MBytes   804 Mbits/sec   0.089 ms    0/68404 (0%)
+[  3]  4.0- 5.0 sec  95.9 MBytes   804 Mbits/sec   0.091 ms    0/68404 (0%)
+[  3]  5.0- 6.0 sec  95.9 MBytes   804 Mbits/sec   0.088 ms    0/68404 (0%)
+[  3]  6.0- 7.0 sec  96.9 MBytes   813 Mbits/sec   0.088 ms    0/69102 (0%)
+[  3]  7.0- 8.0 sec  95.9 MBytes   804 Mbits/sec   0.090 ms    0/68404 (0%)
+[  3]  8.0- 9.0 sec  95.9 MBytes   805 Mbits/sec   0.461 ms    0/68411 (0%)
+[  3]  9.0-10.0 sec  96.9 MBytes   813 Mbits/sec   0.089 ms    0/69095 (0%)
+[  3]  0.0-10.0 sec   963 MBytes   806 Mbits/sec   0.011 ms    0/687031 (0%)
+[  3]  0.0-10.0 sec  1 datagrams received out-of-order
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 2G)
+iperf -s -u -i 1 -w 16M
+iperf -c 127.0.0.1 -u -w 16M -b 2000m
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 1470 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 34983
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec  95.9 MBytes   805 Mbits/sec   0.093 ms    0/68431 (0%)
+[  3]  1.0- 2.0 sec  96.4 MBytes   809 Mbits/sec   0.004 ms    0/68799 (0%)
+[  3]  2.0- 3.0 sec  96.3 MBytes   808 Mbits/sec   0.206 ms    0/68707 (0%)
+[  3]  3.0- 4.0 sec  95.9 MBytes   804 Mbits/sec   0.240 ms    0/68404 (0%)
+[  3]  4.0- 5.0 sec  95.9 MBytes   804 Mbits/sec   0.250 ms    0/68404 (0%)
+[  3]  5.0- 6.0 sec  96.9 MBytes   813 Mbits/sec   0.250 ms    0/69102 (0%)
+[  3]  6.0- 7.0 sec  95.9 MBytes   804 Mbits/sec   0.251 ms    0/68404 (0%)
+[  3]  7.0- 8.0 sec  96.9 MBytes   813 Mbits/sec   0.251 ms    0/69102 (0%)
+[  3]  8.0- 9.0 sec  95.9 MBytes   804 Mbits/sec   0.252 ms    0/68404 (0%)
+[  3]  9.0-10.0 sec  96.0 MBytes   805 Mbits/sec   0.018 ms    0/68468 (0%)
+[  3]  0.0-10.0 sec   963 MBytes   808 Mbits/sec   0.268 ms    0/686857 (0%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 1G)
+- larger packet size (double size = 3000 bytes)
+iperf -s -u -w 16M -l 3000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 1000m -l 3000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 3000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 53939
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec   124 MBytes  1.04 Gbits/sec   0.005 ms    0/43392 (0%)
+[  3]  1.0- 2.0 sec   124 MBytes  1.04 Gbits/sec   0.005 ms    0/43404 (0%)
+[  3]  2.0- 3.0 sec   124 MBytes  1.04 Gbits/sec   0.004 ms    0/43423 (0%)
+[  3]  3.0- 4.0 sec   124 MBytes  1.04 Gbits/sec   0.004 ms    0/43409 (0%)
+[  3]  4.0- 5.0 sec   124 MBytes  1.04 Gbits/sec   0.004 ms    0/43385 (0%)
+[  3]  5.0- 6.0 sec   124 MBytes  1.04 Gbits/sec   0.007 ms    0/43413 (0%)
+[  3]  6.0- 7.0 sec   124 MBytes  1.04 Gbits/sec   0.004 ms    0/43393 (0%)
+[  3]  7.0- 8.0 sec   124 MBytes  1.04 Gbits/sec   0.006 ms    0/43390 (0%)
+[  3]  8.0- 9.0 sec   124 MBytes  1.04 Gbits/sec   0.006 ms    0/43405 (0%)
+[  3]  0.0-10.0 sec  1.21 GBytes  1.04 Gbits/sec   0.004 ms    0/434006 (0%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 5G)
+- larger packet size (double size = 3000 bytes)
+iperf -s -u -w 16M -l 3000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 5000m -l 3000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 3000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 33595
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec   196 MBytes  1.64 Gbits/sec   0.011 ms    0/68526 (0%)
+[  3]  1.0- 2.0 sec   195 MBytes  1.64 Gbits/sec   0.001 ms    0/68317 (0%)
+[  3]  2.0- 3.0 sec   196 MBytes  1.64 Gbits/sec   0.004 ms    0/68404 (0%)
+[  3]  3.0- 4.0 sec   198 MBytes  1.66 Gbits/sec   0.002 ms    0/69102 (0%)
+[  3]  4.0- 5.0 sec   196 MBytes  1.64 Gbits/sec   0.003 ms    0/68404 (0%)
+[  3]  5.0- 6.0 sec   196 MBytes  1.64 Gbits/sec   0.002 ms    0/68404 (0%)
+[  3]  6.0- 7.0 sec   198 MBytes  1.66 Gbits/sec   0.002 ms    0/69102 (0%)
+[  3]  7.0- 8.0 sec   196 MBytes  1.64 Gbits/sec   0.002 ms    0/68404 (0%)
+[  3]  8.0- 9.0 sec   196 MBytes  1.64 Gbits/sec   0.002 ms    0/68404 (0%)
+[  3]  9.0-10.0 sec   197 MBytes  1.65 Gbits/sec   0.005 ms    0/68740 (0%)
+[  3]  0.0-10.0 sec  1.92 GBytes  1.65 Gbits/sec   0.728 ms    0/686877 (0%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 2G)
+- larger packet size (double size = 6000 bytes)
+iperf -s -u -w 16M -l 6000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 2000m -l 6000
+
+[  4] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 53077
+[  4]  0.0- 1.0 sec   248 MBytes  2.08 Gbits/sec   0.004 ms    0/43428 (0%)
+[  4]  1.0- 2.0 sec   248 MBytes  2.08 Gbits/sec   0.004 ms    0/43397 (0%)
+[  4]  2.0- 3.0 sec   248 MBytes  2.08 Gbits/sec   0.004 ms    0/43422 (0%)
+[  4]  3.0- 4.0 sec   248 MBytes  2.08 Gbits/sec   0.006 ms    0/43363 (0%)
+[  4]  4.0- 5.0 sec   249 MBytes  2.09 Gbits/sec   0.004 ms    0/43445 (0%)
+[  4]  5.0- 6.0 sec   248 MBytes  2.08 Gbits/sec   0.004 ms    0/43413 (0%)
+[  4]  6.0- 7.0 sec   248 MBytes  2.08 Gbits/sec   0.004 ms    0/43417 (0%)
+[  4]  7.0- 8.0 sec   248 MBytes  2.08 Gbits/sec   0.004 ms    0/43410 (0%)
+[  4]  8.0- 9.0 sec   248 MBytes  2.08 Gbits/sec   0.004 ms    0/43412 (0%)
+[  4]  0.0-10.0 sec  2.43 GBytes  2.08 Gbits/sec   0.008 ms    0/434132 (0%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 5G)
+- larger packet size (double size = 6000 bytes)
+iperf -s -u -w 16M -l 6000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 5000m -l 6000
+
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 54467
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec   396 MBytes  3.32 Gbits/sec   0.004 ms    0/69126 (0%)
+[  3]  1.0- 2.0 sec   391 MBytes  3.28 Gbits/sec   0.004 ms    0/68411 (0%)
+[  3]  2.0- 3.0 sec   395 MBytes  3.32 Gbits/sec   0.011 ms    0/69095 (0%)
+[  3]  3.0- 4.0 sec   391 MBytes  3.28 Gbits/sec   0.006 ms    0/68411 (0%)
+[  3]  4.0- 5.0 sec   394 MBytes  3.30 Gbits/sec   0.007 ms    0/68788 (0%)
+[  3]  5.0- 6.0 sec   393 MBytes  3.30 Gbits/sec   0.058 ms    0/68718 (0%)
+[  3]  6.0- 7.0 sec   391 MBytes  3.28 Gbits/sec   0.086 ms    0/68404 (0%)
+[  3]  7.0- 8.0 sec   395 MBytes  3.32 Gbits/sec   0.102 ms    0/69102 (0%)
+[  3]  8.0- 9.0 sec   391 MBytes  3.28 Gbits/sec   0.130 ms    0/68404 (0%)
+[  3]  9.0-10.0 sec   395 MBytes  3.32 Gbits/sec   0.154 ms    0/69102 (0%)
+[  3]  0.0-10.0 sec  3.84 GBytes  3.30 Gbits/sec   0.009 ms    0/687715 (0%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 4G)
+- larger packet size (double size = 12000 bytes)
+iperf -s -u -w 16M -l 12000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 4000m -l 12000
+
+Server listening on UDP port 5001
+Receiving 12000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 38724
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec   496 MBytes  4.16 Gbits/sec   0.007 ms    0/43378 (0%)
+[  3]  1.0- 2.0 sec   496 MBytes  4.16 Gbits/sec   0.008 ms    0/43355 (0%)
+[  3]  2.0- 3.0 sec   496 MBytes  4.16 Gbits/sec   0.013 ms    0/43356 (0%)
+[  3]  3.0- 4.0 sec   497 MBytes  4.17 Gbits/sec   0.008 ms    0/43403 (0%)
+[  3]  4.0- 5.0 sec   496 MBytes  4.16 Gbits/sec   0.004 ms    0/43379 (0%)
+[  3]  5.0- 6.0 sec   496 MBytes  4.16 Gbits/sec   0.010 ms    0/43381 (0%)
+[  3]  6.0- 7.0 sec   496 MBytes  4.16 Gbits/sec   0.004 ms    0/43377 (0%)
+[  3]  7.0- 8.0 sec   497 MBytes  4.17 Gbits/sec   0.009 ms    0/43398 (0%)
+[  3]  8.0- 9.0 sec   497 MBytes  4.17 Gbits/sec   0.004 ms    0/43393 (0%)
+[  3]  0.0-10.0 sec  4.85 GBytes  4.16 Gbits/sec   0.009 ms    0/433818 (0%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 8G)
+- larger packet size (double size = 12000 bytes)
+iperf -s -u -w 16M -l 12000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 8000m -l 12000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 12000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 45399
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec   783 MBytes  6.57 Gbits/sec   0.034 ms    0/68433 (0%)
+[  3]  1.0- 2.0 sec   783 MBytes  6.57 Gbits/sec   0.063 ms    0/68404 (0%)
+[  3]  2.0- 3.0 sec   783 MBytes  6.57 Gbits/sec   0.062 ms    0/68404 (0%)
+[  3]  3.0- 4.0 sec   783 MBytes  6.57 Gbits/sec   0.060 ms    0/68404 (0%)
+[  3]  4.0- 5.0 sec   775 MBytes  6.50 Gbits/sec   0.006 ms  126/67832 (0.19%)
+[  3]  5.0- 6.0 sec   783 MBytes  6.57 Gbits/sec   0.010 ms  624/69028 (0.9%)
+[  3]  6.0- 7.0 sec   783 MBytes  6.57 Gbits/sec   0.006 ms  454/68858 (0.66%)
+[  3]  7.0- 8.0 sec   778 MBytes  6.53 Gbits/sec   0.008 ms  459/68475 (0.67%)
+[  3]  8.0- 9.0 sec   779 MBytes  6.54 Gbits/sec   0.011 ms  483/68577 (0.7%)
+[  3]  9.0-10.0 sec   783 MBytes  6.57 Gbits/sec   0.010 ms  698/69102 (1%)
+[  3]  0.0-10.0 sec  7.65 GBytes  6.55 Gbits/sec   0.092 ms 2843/686940 (0.41%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 8G)
+- larger packet size (double size = 24000 bytes)
+iperf -s -u -w 16M -l 24000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 8000m -l 24000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 24000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 59359
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec   992 MBytes  8.32 Gbits/sec   0.006 ms    0/43346 (0%)
+[  3]  1.0- 2.0 sec   992 MBytes  8.32 Gbits/sec   0.004 ms    0/43349 (0%)
+[  3]  2.0- 3.0 sec   992 MBytes  8.33 Gbits/sec   0.007 ms    0/43360 (0%)
+[  3]  3.0- 4.0 sec   992 MBytes  8.32 Gbits/sec   0.008 ms    0/43325 (0%)
+[  3]  4.0- 5.0 sec   993 MBytes  8.33 Gbits/sec   0.008 ms    0/43371 (0%)
+[  3]  5.0- 6.0 sec   993 MBytes  8.33 Gbits/sec   0.005 ms    0/43364 (0%)
+[  3]  6.0- 7.0 sec   992 MBytes  8.32 Gbits/sec   0.004 ms    0/43329 (0%)
+[  3]  7.0- 8.0 sec   992 MBytes  8.32 Gbits/sec   0.009 ms    0/43356 (0%)
+[  3]  8.0- 9.0 sec   993 MBytes  8.33 Gbits/sec   0.004 ms    0/43380 (0%)
+[  3]  0.0-10.0 sec  9.69 GBytes  8.32 Gbits/sec   0.004 ms    0/433528 (0%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 16G)
+- larger packet size (double size = 24000 bytes)
+iperf -s -u -w 16M -l 24000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 16000m -l 24000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 24000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 45983
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec  1.53 GBytes  13.2 Gbits/sec   0.007 ms    0/68549 (0%)
+[  3]  1.0- 2.0 sec  1.53 GBytes  13.1 Gbits/sec   0.156 ms    0/68268 (0%)
+[  3]  2.0- 3.0 sec  1.53 GBytes  13.1 Gbits/sec   0.050 ms   54/68422 (0.079%)
+[  3]  3.0- 4.0 sec  1.52 GBytes  13.1 Gbits/sec   0.005 ms  616/68594 (0.9%)
+[  3]  4.0- 5.0 sec  1.52 GBytes  13.1 Gbits/sec   0.004 ms  265/68433 (0.39%)
+[  3]  5.0- 6.0 sec  1.53 GBytes  13.1 Gbits/sec   0.015 ms  516/68909 (0.75%)
+[  3]  6.0- 7.0 sec  1.52 GBytes  13.0 Gbits/sec   0.004 ms  697/68629 (1%)
+[  3]  7.0- 8.0 sec  1.52 GBytes  13.1 Gbits/sec   0.007 ms  601/68790 (0.87%)
+[  3]  8.0- 9.0 sec  1.53 GBytes  13.1 Gbits/sec   0.005 ms  428/68813 (0.62%)
+[  3]  9.0-10.0 sec  1.52 GBytes  13.0 Gbits/sec   0.004 ms  367/68315 (0.54%)
+[  3]  0.0-10.0 sec  15.3 GBytes  13.1 Gbits/sec   0.066 ms 3543/686921 (0.52%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 16G)
+- larger packet size (double size = 48000 bytes)
+iperf -s -u -w 16M -l 48000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 16000m -l 48000
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 48000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 51477
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec  1.94 GBytes  16.6 Gbits/sec   0.007 ms    0/43308 (0%)
+[  3]  1.0- 2.0 sec  1.94 GBytes  16.6 Gbits/sec   0.005 ms    0/43358 (0%)
+[  3]  2.0- 3.0 sec  1.93 GBytes  16.6 Gbits/sec   0.007 ms    0/43284 (0%)
+[  3]  3.0- 4.0 sec  1.94 GBytes  16.6 Gbits/sec   0.005 ms    0/43311 (0%)
+[  3]  4.0- 5.0 sec  1.94 GBytes  16.6 Gbits/sec   0.008 ms    0/43327 (0%)
+[  3]  5.0- 6.0 sec  1.94 GBytes  16.7 Gbits/sec   0.005 ms    0/43365 (0%)
+[  3]  6.0- 7.0 sec  1.94 GBytes  16.6 Gbits/sec   0.006 ms    0/43294 (0%)
+[  3]  7.0- 8.0 sec  1.94 GBytes  16.6 Gbits/sec   0.005 ms    0/43324 (0%)
+[  3]  8.0- 9.0 sec  1.94 GBytes  16.6 Gbits/sec   0.004 ms    0/43307 (0%)
+[  3]  0.0-10.0 sec  19.4 GBytes  16.6 Gbits/sec   0.006 ms    0/433212 (0%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 32G)
+- larger packet size (double size = 48000 bytes)
+iperf -s -u -w 16M -l 48000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 32000m -l 48000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 48000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 33568
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec  3.06 GBytes  26.3 Gbits/sec   0.003 ms    0/68364 (0%)
+[  3]  1.0- 2.0 sec  3.06 GBytes  26.3 Gbits/sec   0.063 ms    0/68458 (0%)
+[  3]  2.0- 3.0 sec  3.06 GBytes  26.3 Gbits/sec   0.086 ms    0/68410 (0%)
+[  3]  3.0- 4.0 sec  3.06 GBytes  26.3 Gbits/sec   0.054 ms    0/68400 (0%)
+[  3]  4.0- 5.0 sec  2.99 GBytes  25.7 Gbits/sec   0.003 ms 1231/68142 (1.8%)
+[  3]  5.0- 6.0 sec  2.97 GBytes  25.5 Gbits/sec   0.007 ms 2215/68585 (3.2%)
+[  3]  6.0- 7.0 sec  3.00 GBytes  25.7 Gbits/sec   0.009 ms 1409/68415 (2.1%)
+[  3]  7.0- 8.0 sec  2.99 GBytes  25.7 Gbits/sec   0.009 ms 1556/68462 (2.3%)
+[  3]  8.0- 9.0 sec  3.00 GBytes  25.7 Gbits/sec   0.036 ms 1423/68421 (2.1%)
+[  3]  9.0-10.0 sec  3.00 GBytes  25.7 Gbits/sec   0.004 ms 1449/68473 (2.1%)
+[  3]  0.0-10.0 sec  30.2 GBytes  25.9 Gbits/sec   0.109 ms 9306/684743 (1.4%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 32G)
+- larger packet size (double size = 65000 bytes)
+iperf -s -u -w 16M -l 65000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 32000m -l 65000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 65000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 54109
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec  3.62 GBytes  31.1 Gbits/sec   0.004 ms    0/59812 (0%)
+[  3]  1.0- 2.0 sec  3.67 GBytes  31.5 Gbits/sec   0.005 ms    0/60575 (0%)
+[  3]  2.0- 3.0 sec  3.63 GBytes  31.2 Gbits/sec   0.004 ms    0/60027 (0%)
+[  3]  3.0- 4.0 sec  3.66 GBytes  31.4 Gbits/sec   0.004 ms    0/60393 (0%)
+[  3]  4.0- 5.0 sec  3.69 GBytes  31.7 Gbits/sec   0.006 ms    0/60934 (0%)
+[  3]  5.0- 6.0 sec  3.66 GBytes  31.5 Gbits/sec   0.004 ms    0/60501 (0%)
+[  3]  6.0- 7.0 sec  3.64 GBytes  31.2 Gbits/sec   0.004 ms    0/60077 (0%)
+[  3]  7.0- 8.0 sec  3.66 GBytes  31.5 Gbits/sec   0.003 ms    0/60529 (0%)
+[  3]  8.0- 9.0 sec  3.69 GBytes  31.7 Gbits/sec   0.004 ms    0/60966 (0%)
+[  3]  0.0-10.0 sec  36.6 GBytes  31.4 Gbits/sec   0.005 ms    0/604302 (0%)
+[  3]  0.0-10.0 sec  1 datagrams received out-of-order
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 35G)
+- larger packet size (double size = 65000 bytes)
+iperf -s -u -w 16M -l 65000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 35000m -l 65000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 65000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 37388
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec  3.91 GBytes  33.6 Gbits/sec   0.003 ms    0/64591 (0%)
+[  3]  1.0- 2.0 sec  4.06 GBytes  34.8 Gbits/sec   0.005 ms    0/66987 (0%)
+[  3]  2.0- 3.0 sec  4.01 GBytes  34.5 Gbits/sec   0.003 ms    0/66256 (0%)
+[  3]  3.0- 4.0 sec  4.08 GBytes  35.0 Gbits/sec   0.003 ms    0/67369 (0%)
+[  3]  4.0- 5.0 sec  4.04 GBytes  34.7 Gbits/sec   0.004 ms    0/66776 (0%)
+[  3]  5.0- 6.0 sec  4.05 GBytes  34.8 Gbits/sec   0.005 ms    0/66965 (0%)
+[  3]  6.0- 7.0 sec  4.01 GBytes  34.4 Gbits/sec   0.003 ms    0/66231 (0%)
+[  3]  7.0- 8.0 sec  4.08 GBytes  35.0 Gbits/sec   0.003 ms    0/67382 (0%)
+[  3]  8.0- 9.0 sec  4.04 GBytes  34.7 Gbits/sec   0.004 ms    0/66759 (0%)
+[  3]  0.0-10.0 sec  40.3 GBytes  34.6 Gbits/sec   0.005 ms    0/665953 (0%)
+
+Evaluate PCI-E bandwidth by running UDP tests in the same computer (setting 40G)
+- larger packet size (double size = 65000 bytes)
+iperf -s -u -w 16M -l 65000 -i 1
+iperf -c 127.0.0.1 -u -w 16M -b 40000m -l 65000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 65000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 53135
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0- 1.0 sec  2.94 GBytes  25.3 Gbits/sec   0.005 ms    0/48647 (0%)
+[  3]  1.0- 2.0 sec  3.65 GBytes  31.4 Gbits/sec   0.003 ms    0/60339 (0%)
+[  3]  2.0- 3.0 sec  4.15 GBytes  35.6 Gbits/sec   0.003 ms    0/68510 (0%)
+[  3]  3.0- 4.0 sec  4.15 GBytes  35.6 Gbits/sec   0.003 ms    0/68556 (0%)
+[  3]  4.0- 5.0 sec  4.15 GBytes  35.6 Gbits/sec   0.003 ms    0/68485 (0%)
+[  3]  5.0- 6.0 sec  4.15 GBytes  35.6 Gbits/sec   0.002 ms    0/68485 (0%)
+[  3]  6.0- 7.0 sec  4.15 GBytes  35.7 Gbits/sec   0.005 ms    0/68573 (0%)
+[  3]  7.0- 8.0 sec  4.15 GBytes  35.7 Gbits/sec   0.004 ms    0/68635 (0%)
+[  3]  8.0- 9.0 sec  3.50 GBytes  30.1 Gbits/sec   0.010 ms 9795/67684 (14%)
+[  3]  9.0-10.0 sec  2.98 GBytes  25.6 Gbits/sec   0.010 ms 19417/68594 (28%)
+[  3]  0.0-10.0 sec  38.0 GBytes  32.6 Gbits/sec   0.009 ms 29406/657200 (4.5%)
+
+Second test evaluate bandwidth by running server and client in 2 containers
+1) 
+sudo ip netns exec h2 iperf -s
+sudo ip netns exec h1 iperf -c 10.10.1.1 -P 1 -i 1 -p 5001 -t 10
+
+------------------------------------------------------------
+Client connecting to 10.10.1.1, TCP port 5001
+TCP window size: 64.0 KByte (default)
+------------------------------------------------------------
+[  5] local 10.10.1.2 port 32986 connected with 10.10.1.1 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  5]  0.0- 1.0 sec   559 MBytes  4.69 Gbits/sec
+[  5]  1.0- 2.0 sec   562 MBytes  4.72 Gbits/sec
+[  5]  2.0- 3.0 sec   644 MBytes  5.40 Gbits/sec
+[  5]  3.0- 4.0 sec   646 MBytes  5.42 Gbits/sec
+[  5]  4.0- 5.0 sec   645 MBytes  5.41 Gbits/sec
+[  5]  5.0- 6.0 sec   646 MBytes  5.42 Gbits/sec
+[  5]  6.0- 7.0 sec   646 MBytes  5.42 Gbits/sec
+[  5]  7.0- 8.0 sec   648 MBytes  5.44 Gbits/sec
+[  5]  8.0- 9.0 sec   649 MBytes  5.44 Gbits/sec
+[  5]  9.0-10.0 sec   650 MBytes  5.45 Gbits/sec
+[  5]  0.0-10.0 sec  6.15 GBytes  5.28 Gbits/sec
+
+2) 
+sudo ip netns exec h2 iperf -s -u -i 1 -w 16M
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 1000m
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 1470 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 59945
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec  96.3 MBytes   808 Mbits/sec   0.003 ms    0/68718 (0%)
+[  5]  1.0- 2.0 sec  96.4 MBytes   809 Mbits/sec   0.004 ms    0/68780 (0%)
+[  5]  2.0- 3.0 sec  96.1 MBytes   806 Mbits/sec   0.003 ms    0/68572 (0%)
+[  5]  3.0- 4.0 sec  96.4 MBytes   809 Mbits/sec   0.004 ms    0/68772 (0%)
+[  5]  4.0- 5.0 sec  96.2 MBytes   807 Mbits/sec   0.004 ms    0/68592 (0%)
+[  5]  5.0- 6.0 sec  96.4 MBytes   809 Mbits/sec   0.004 ms    0/68759 (0%)
+[  5]  6.0- 7.0 sec  96.4 MBytes   808 Mbits/sec   0.004 ms    0/68747 (0%)
+[  5]  7.0- 8.0 sec  96.2 MBytes   807 Mbits/sec   0.004 ms    0/68586 (0%)
+[  5]  8.0- 9.0 sec  96.4 MBytes   809 Mbits/sec   0.004 ms    0/68784 (0%)
+[  5]  0.0-10.0 sec   963 MBytes   808 Mbits/sec   0.005 ms    0/686851 (0%)
+
+3) 
+sudo ip netns exec h2 iperf -s -u -i 1 -w 16M
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 2000m
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 1470 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 48737
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec  96.9 MBytes   813 Mbits/sec   0.003 ms    0/69105 (0%)
+[  5]  1.0- 2.0 sec  95.9 MBytes   804 Mbits/sec   0.010 ms    0/68407 (0%)
+[  5]  2.0- 3.0 sec  96.9 MBytes   813 Mbits/sec   0.006 ms    0/69102 (0%)
+[  5]  3.0- 4.0 sec  95.9 MBytes   804 Mbits/sec   0.004 ms    0/68404 (0%)
+[  5]  4.0- 5.0 sec  96.7 MBytes   811 Mbits/sec   0.004 ms    0/69001 (0%)
+[  5]  5.0- 6.0 sec  96.0 MBytes   806 Mbits/sec   0.002 ms    0/68505 (0%)
+[  5]  6.0- 7.0 sec  96.7 MBytes   811 Mbits/sec   0.004 ms    0/69001 (0%)
+[  5]  7.0- 8.0 sec  95.9 MBytes   804 Mbits/sec   0.005 ms    0/68404 (0%)
+[  5]  8.0- 9.0 sec  96.9 MBytes   813 Mbits/sec   0.003 ms    0/69102 (0%)
+[  5]  9.0-10.0 sec  95.9 MBytes   804 Mbits/sec   0.003 ms    0/68404 (0%)
+[  5]  0.0-10.0 sec   964 MBytes   808 Mbits/sec   0.391 ms    0/687537 (0%)
+
+4) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 3000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 1000m -l 3000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 3000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 59380
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   124 MBytes  1.04 Gbits/sec   0.012 ms    0/43335 (0%)
+[  5]  1.0- 2.0 sec   124 MBytes  1.04 Gbits/sec   0.001 ms    0/43442 (0%)
+[  5]  2.0- 3.0 sec   124 MBytes  1.04 Gbits/sec   0.001 ms    0/43441 (0%)
+[  5]  3.0- 4.0 sec   124 MBytes  1.04 Gbits/sec   0.010 ms    0/43473 (0%)
+[  5]  4.0- 5.0 sec   124 MBytes  1.04 Gbits/sec   0.002 ms    0/43476 (0%)
+[  5]  5.0- 6.0 sec   124 MBytes  1.04 Gbits/sec   0.002 ms    0/43478 (0%)
+[  5]  6.0- 7.0 sec   124 MBytes  1.04 Gbits/sec   0.002 ms    0/43475 (0%)
+[  5]  7.0- 8.0 sec   124 MBytes  1.04 Gbits/sec   0.011 ms    0/43478 (0%)
+[  5]  8.0- 9.0 sec   124 MBytes  1.04 Gbits/sec   0.010 ms    0/43477 (0%)
+[  5]  0.0-10.0 sec  1.21 GBytes  1.04 Gbits/sec   0.011 ms    0/434548 (0%)
+
+5) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 3000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 5000m -l 3000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 3000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 48919
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   198 MBytes  1.66 Gbits/sec   0.003 ms    0/69124 (0%)
+[  5]  1.0- 2.0 sec   197 MBytes  1.65 Gbits/sec   0.004 ms    0/68835 (0%)
+[  5]  2.0- 3.0 sec   196 MBytes  1.65 Gbits/sec   0.004 ms    0/68671 (0%)
+[  5]  3.0- 4.0 sec   198 MBytes  1.66 Gbits/sec   0.001 ms    0/69102 (0%)
+[  5]  4.0- 5.0 sec   196 MBytes  1.64 Gbits/sec   0.000 ms    0/68404 (0%)
+[  5]  5.0- 6.0 sec   197 MBytes  1.65 Gbits/sec   0.000 ms    0/68815 (0%)
+[  5]  6.0- 7.0 sec   197 MBytes  1.65 Gbits/sec   0.003 ms    0/68691 (0%)
+[  5]  7.0- 8.0 sec   196 MBytes  1.65 Gbits/sec   0.000 ms    0/68619 (0%)
+[  5]  8.0- 9.0 sec   197 MBytes  1.65 Gbits/sec   0.000 ms    0/68887 (0%)
+[  5]  0.0-10.0 sec  1.92 GBytes  1.65 Gbits/sec   0.003 ms    0/687577 (0%)
+
+6) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 6000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 2000m -l 6000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 6000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 34959
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   247 MBytes  2.08 Gbits/sec   0.003 ms    0/43235 (0%)
+[  5]  1.0- 2.0 sec   247 MBytes  2.07 Gbits/sec   0.003 ms    0/43218 (0%)
+[  5]  2.0- 3.0 sec   247 MBytes  2.07 Gbits/sec   0.010 ms    0/43197 (0%)
+[  5]  3.0- 4.0 sec   247 MBytes  2.07 Gbits/sec   0.003 ms    0/43225 (0%)
+[  5]  4.0- 5.0 sec   247 MBytes  2.07 Gbits/sec   0.003 ms    0/43195 (0%)
+[  5]  5.0- 6.0 sec   247 MBytes  2.07 Gbits/sec   0.011 ms    0/43211 (0%)
+[  5]  6.0- 7.0 sec   247 MBytes  2.08 Gbits/sec   0.003 ms    0/43244 (0%)
+[  5]  7.0- 8.0 sec   247 MBytes  2.08 Gbits/sec   0.003 ms    0/43239 (0%)
+[  5]  8.0- 9.0 sec   247 MBytes  2.07 Gbits/sec   0.003 ms    0/43216 (0%)
+[  5]  0.0-10.0 sec  2.42 GBytes  2.07 Gbits/sec   0.011 ms    0/432190 (0%)
+
+7) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 6000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 5000m -l 6000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 6000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 50156
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   395 MBytes  3.32 Gbits/sec   0.005 ms    0/69118 (0%)
+[  5]  1.0- 2.0 sec   393 MBytes  3.30 Gbits/sec   0.006 ms    0/68685 (0%)
+[  5]  2.0- 3.0 sec   394 MBytes  3.30 Gbits/sec   0.008 ms    0/68822 (0%)
+[  5]  3.0- 4.0 sec   395 MBytes  3.32 Gbits/sec   0.006 ms    0/69101 (0%)
+[  5]  4.0- 5.0 sec   391 MBytes  3.28 Gbits/sec   0.007 ms    0/68405 (0%)
+[  5]  5.0- 6.0 sec   395 MBytes  3.32 Gbits/sec   0.006 ms    0/69101 (0%)
+[  5]  6.0- 7.0 sec   391 MBytes  3.28 Gbits/sec   0.007 ms    0/68405 (0%)
+[  5]  7.0- 8.0 sec   395 MBytes  3.32 Gbits/sec   0.006 ms    0/69101 (0%)
+[  5]  8.0- 9.0 sec   393 MBytes  3.30 Gbits/sec   0.006 ms    0/68745 (0%)
+[  5]  9.0-10.0 sec   393 MBytes  3.30 Gbits/sec   0.009 ms    0/68762 (0%)
+[  5]  0.0-10.0 sec  3.85 GBytes  3.30 Gbits/sec   0.007 ms    0/688349 (0%)
+
+8) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 12000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 4000m -l 12000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 12000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 37639
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   486 MBytes  4.07 Gbits/sec   0.002 ms    0/42432 (0%)
+[  5]  1.0- 2.0 sec   483 MBytes  4.05 Gbits/sec   0.002 ms    0/42221 (0%)
+[  5]  2.0- 3.0 sec   483 MBytes  4.05 Gbits/sec   0.008 ms    0/42191 (0%)
+[  5]  3.0- 4.0 sec   484 MBytes  4.06 Gbits/sec   0.009 ms    0/42307 (0%)
+[  5]  4.0- 5.0 sec   485 MBytes  4.07 Gbits/sec   0.002 ms    0/42417 (0%)
+[  5]  5.0- 6.0 sec   484 MBytes  4.06 Gbits/sec   0.002 ms    0/42294 (0%)
+[  5]  6.0- 7.0 sec   484 MBytes  4.06 Gbits/sec   0.006 ms    0/42280 (0%)
+[  5]  7.0- 8.0 sec   487 MBytes  4.08 Gbits/sec   0.009 ms    0/42542 (0%)
+[  5]  8.0- 9.0 sec   488 MBytes  4.09 Gbits/sec   0.008 ms    0/42616 (0%)
+[  5]  0.0-10.0 sec  4.73 GBytes  4.07 Gbits/sec   0.002 ms    0/423658 (0%)
+
+9) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 12000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 8000m -l 12000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 12000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 40916
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   697 MBytes  5.85 Gbits/sec   0.001 ms    0/60902 (0%)
+[  5]  1.0- 2.0 sec   700 MBytes  5.88 Gbits/sec   0.000 ms    0/61205 (0%)
+[  5]  2.0- 3.0 sec   696 MBytes  5.84 Gbits/sec   0.001 ms    0/60806 (0%)
+[  5]  3.0- 4.0 sec   694 MBytes  5.82 Gbits/sec   0.000 ms    0/60651 (0%)
+[  5]  4.0- 5.0 sec   700 MBytes  5.88 Gbits/sec   0.000 ms    0/61198 (0%)
+[  5]  5.0- 6.0 sec   696 MBytes  5.84 Gbits/sec   0.000 ms    0/60860 (0%)
+[  5]  6.0- 7.0 sec   698 MBytes  5.86 Gbits/sec   0.001 ms    0/60997 (0%)
+[  5]  7.0- 8.0 sec   695 MBytes  5.83 Gbits/sec   0.000 ms    0/60755 (0%)
+[  5]  8.0- 9.0 sec   696 MBytes  5.84 Gbits/sec   0.001 ms    0/60801 (0%)
+[  5]  0.0-10.0 sec  6.80 GBytes  5.84 Gbits/sec   0.001 ms    0/608829 (0%)
+
+10) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 24000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 8000m -l 24000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 24000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 39580
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   837 MBytes  7.02 Gbits/sec   0.001 ms    0/36556 (0%)
+[  5]  1.0- 2.0 sec   841 MBytes  7.05 Gbits/sec   0.001 ms    0/36724 (0%)
+[  5]  2.0- 3.0 sec   844 MBytes  7.08 Gbits/sec   0.001 ms    0/36860 (0%)
+[  5]  3.0- 4.0 sec   837 MBytes  7.02 Gbits/sec   0.001 ms    0/36577 (0%)
+[  5]  4.0- 5.0 sec   840 MBytes  7.04 Gbits/sec   0.002 ms    0/36692 (0%)
+[  5]  5.0- 6.0 sec   843 MBytes  7.08 Gbits/sec   0.001 ms    0/36851 (0%)
+[  5]  6.0- 7.0 sec   843 MBytes  7.07 Gbits/sec   0.001 ms    0/36844 (0%)
+[  5]  7.0- 8.0 sec   840 MBytes  7.05 Gbits/sec   0.001 ms    0/36695 (0%)
+[  5]  8.0- 9.0 sec   843 MBytes  7.07 Gbits/sec   0.001 ms    0/36831 (0%)
+[  5]  0.0-10.0 sec  8.21 GBytes  7.06 Gbits/sec   0.001 ms    0/367465 (0%)
+
+11) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 24000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 16000m -l 24000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 24000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 43938
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   854 MBytes  7.16 Gbits/sec   0.001 ms    0/37290 (0%)
+[  5]  1.0- 2.0 sec   851 MBytes  7.14 Gbits/sec   0.001 ms    0/37200 (0%)
+[  5]  2.0- 3.0 sec   954 MBytes  8.00 Gbits/sec   0.002 ms    0/41690 (0%)
+[  5]  3.0- 4.0 sec   975 MBytes  8.18 Gbits/sec   0.001 ms    0/42607 (0%)
+[  5]  4.0- 5.0 sec   978 MBytes  8.21 Gbits/sec   0.001 ms    0/42736 (0%)
+[  5]  5.0- 6.0 sec   977 MBytes  8.19 Gbits/sec   0.002 ms    0/42667 (0%)
+[  5]  6.0- 7.0 sec   969 MBytes  8.13 Gbits/sec   0.001 ms    0/42343 (0%)
+[  5]  7.0- 8.0 sec   944 MBytes  7.92 Gbits/sec   0.001 ms    0/41251 (0%)
+[  5]  8.0- 9.0 sec   979 MBytes  8.21 Gbits/sec   0.001 ms    0/42774 (0%)
+[  5]  0.0-10.0 sec  9.24 GBytes  7.93 Gbits/sec   0.001 ms    0/413196 (0%)
+
+12) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 48000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 16000m -l 48000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 48000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 34380
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   935 MBytes  7.85 Gbits/sec   0.005 ms    0/20432 (0%)
+[  5]  1.0- 2.0 sec   936 MBytes  7.86 Gbits/sec   0.001 ms    0/20456 (0%)
+[  5]  2.0- 3.0 sec  1.05 GBytes  9.01 Gbits/sec   0.005 ms    0/23476 (0%)
+[  5]  3.0- 4.0 sec  1.05 GBytes  9.01 Gbits/sec   0.005 ms    0/23464 (0%)
+[  5]  4.0- 5.0 sec  1.05 GBytes  9.01 Gbits/sec   0.004 ms    0/23458 (0%)
+[  5]  5.0- 6.0 sec  1.05 GBytes  9.06 Gbits/sec   0.001 ms    0/23599 (0%)
+[  5]  6.0- 7.0 sec  1.06 GBytes  9.08 Gbits/sec   0.002 ms    0/23637 (0%)
+[  5]  7.0- 8.0 sec  1.05 GBytes  9.04 Gbits/sec   0.004 ms    0/23541 (0%)
+[  5]  8.0- 9.0 sec  1.05 GBytes  9.04 Gbits/sec   0.005 ms    0/23544 (0%)
+[  5]  0.0-10.0 sec  10.2 GBytes  8.80 Gbits/sec   0.006 ms    0/229144 (0%)
+
+13) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 48000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 32000m -l 48000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 48000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 37048
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   927 MBytes  7.77 Gbits/sec   0.002 ms    0/20246 (0%)
+[  5]  1.0- 2.0 sec   925 MBytes  7.76 Gbits/sec   0.002 ms    0/20210 (0%)
+[  5]  2.0- 3.0 sec  1.04 GBytes  8.89 Gbits/sec   0.002 ms    0/23157 (0%)
+[  5]  3.0- 4.0 sec  1.04 GBytes  8.90 Gbits/sec   0.001 ms    0/23171 (0%)
+[  5]  4.0- 5.0 sec  1.04 GBytes  8.91 Gbits/sec   0.001 ms    0/23193 (0%)
+[  5]  5.0- 6.0 sec  1.04 GBytes  8.93 Gbits/sec   0.002 ms    0/23257 (0%)
+[  5]  6.0- 7.0 sec  1.04 GBytes  8.93 Gbits/sec   0.002 ms    0/23250 (0%)
+[  5]  7.0- 8.0 sec  1.04 GBytes  8.93 Gbits/sec   0.001 ms    0/23254 (0%)
+[  5]  8.0- 9.0 sec  1.03 GBytes  8.87 Gbits/sec   0.001 ms    0/23106 (0%)
+[  5]  0.0-10.0 sec  10.1 GBytes  8.68 Gbits/sec   0.001 ms    0/226163 (0%)
+
+14) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 65000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 32000m -l 65000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 65000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 56473
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   961 MBytes  8.06 Gbits/sec   0.005 ms    0/15497 (0%)
+[  5]  1.0- 2.0 sec   960 MBytes  8.05 Gbits/sec   0.004 ms    0/15484 (0%)
+[  5]  2.0- 3.0 sec  1.08 GBytes  9.25 Gbits/sec   0.003 ms    0/17786 (0%)
+[  5]  3.0- 4.0 sec  1.07 GBytes  9.22 Gbits/sec   0.003 ms    0/17730 (0%)
+[  5]  4.0- 5.0 sec  1.07 GBytes  9.23 Gbits/sec   0.003 ms    0/17741 (0%)
+[  5]  5.0- 6.0 sec  1.08 GBytes  9.30 Gbits/sec   0.002 ms    0/17876 (0%)
+[  5]  6.0- 7.0 sec  1.08 GBytes  9.27 Gbits/sec   0.002 ms    0/17824 (0%)
+[  5]  7.0- 8.0 sec  1.08 GBytes  9.28 Gbits/sec   0.003 ms    0/17839 (0%)
+[  5]  8.0- 9.0 sec  1.08 GBytes  9.27 Gbits/sec   0.006 ms    0/17821 (0%)
+[  5]  0.0-10.0 sec  10.5 GBytes  9.02 Gbits/sec   0.004 ms    0/173433 (0%)
+
+15) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 65000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 35000m -l 65000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 65000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 49803
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   963 MBytes  8.08 Gbits/sec   0.002 ms    0/15529 (0%)
+[  5]  1.0- 2.0 sec   962 MBytes  8.07 Gbits/sec   0.002 ms    0/15523 (0%)
+[  5]  2.0- 3.0 sec  1.08 GBytes  9.28 Gbits/sec   0.002 ms    0/17855 (0%)
+[  5]  3.0- 4.0 sec  1.08 GBytes  9.29 Gbits/sec   0.002 ms    0/17874 (0%)
+[  5]  4.0- 5.0 sec  1.08 GBytes  9.27 Gbits/sec   0.002 ms    0/17824 (0%)
+[  5]  5.0- 6.0 sec  1.09 GBytes  9.33 Gbits/sec   0.002 ms    0/17949 (0%)
+[  5]  6.0- 7.0 sec  1.09 GBytes  9.35 Gbits/sec   0.002 ms    0/17977 (0%)
+[  5]  7.0- 8.0 sec  1.09 GBytes  9.34 Gbits/sec   0.002 ms    0/17953 (0%)
+[  5]  8.0- 9.0 sec  1.09 GBytes  9.34 Gbits/sec   0.001 ms    0/17959 (0%)
+[  5]  0.0-10.0 sec  10.6 GBytes  9.07 Gbits/sec   0.002 ms    0/174396 (0%)
+
+16) 
+sudo ip netns exec h2 iperf -s -u -w 16M -l 65000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.1.1 -u -w 16M -b 40000m -l 65000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 65000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 40516
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   958 MBytes  8.04 Gbits/sec   0.001 ms    0/15462 (0%)
+[  5]  1.0- 2.0 sec   958 MBytes  8.04 Gbits/sec   0.001 ms    0/15459 (0%)
+[  5]  2.0- 3.0 sec  1.07 GBytes  9.21 Gbits/sec   0.001 ms    0/17704 (0%)
+[  5]  3.0- 4.0 sec  1.06 GBytes  9.07 Gbits/sec   0.001 ms    0/17448 (0%)
+[  5]  4.0- 5.0 sec  1.06 GBytes  9.12 Gbits/sec   0.001 ms    0/17531 (0%)
+[  5]  5.0- 6.0 sec  1.07 GBytes  9.21 Gbits/sec   0.001 ms    0/17703 (0%)
+[  5]  6.0- 7.0 sec  1.07 GBytes  9.21 Gbits/sec   0.001 ms    0/17720 (0%)
+[  5]  7.0- 8.0 sec  1.07 GBytes  9.18 Gbits/sec   0.001 ms    0/17654 (0%)
+[  5]  8.0- 9.0 sec  1.07 GBytes  9.19 Gbits/sec   0.001 ms    0/17668 (0%)
+[  5]  0.0-10.0 sec  10.4 GBytes  8.94 Gbits/sec   0.002 ms    0/172009 (0%)
+
+sudo ip netns exec h2 sysctl -w net.ipv4.ip_forward=1
+
+1) 
+sudo ip netns exec h1 ping -c1 10.10.3.1
+PING 10.10.3.1 (10.10.3.1) 56(84) bytes of data.
+64 bytes from 10.10.3.1: icmp_req=1 ttl=63 time=0.021 ms
+
+--- 10.10.3.1 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.021/0.021/0.021/0.000 ms
+
+sudo ip netns exec h1 traceroute 10.10.3.1
+traceroute to 10.10.3.1 (10.10.3.1), 30 hops max, 60 byte packets
+ 1  10.10.1.1 (10.10.1.1)  0.034 ms  0.004 ms  0.004 ms
+ 2  10.10.3.1 (10.10.3.1)  0.011 ms  0.005 ms  0.005 ms
+
+sudo ip netns exec h3 iperf -s -w 16M -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -P 1 -i 1 -p 5001 -w 16M -t 10
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46523
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   309 MBytes  2.59 Gbits/sec
+[  6]  1.0- 2.0 sec   346 MBytes  2.91 Gbits/sec
+[  6]  2.0- 3.0 sec   382 MBytes  3.20 Gbits/sec
+[  6]  3.0- 4.0 sec   379 MBytes  3.18 Gbits/sec
+[  6]  4.0- 5.0 sec   378 MBytes  3.17 Gbits/sec
+[  6]  5.0- 6.0 sec   384 MBytes  3.22 Gbits/sec
+[  6]  6.0- 7.0 sec   389 MBytes  3.26 Gbits/sec
+[  6]  7.0- 8.0 sec   388 MBytes  3.25 Gbits/sec
+[  6]  8.0- 9.0 sec   388 MBytes  3.25 Gbits/sec
+[  6]  9.0-10.0 sec   397 MBytes  3.33 Gbits/sec
+[  6]  0.0-10.0 sec  3.67 GBytes  3.14 Gbits/sec
+
+2) 
+sudo ip netns exec h3 iperf -s -u -i 1 -w 16M
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 1000m
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 1470 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 38954
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec  96.9 MBytes   813 Mbits/sec   0.004 ms    0/69104 (0%)
+[  5]  1.0- 2.0 sec  95.9 MBytes   805 Mbits/sec   0.042 ms    0/68429 (0%)
+[  5]  2.0- 3.0 sec  95.9 MBytes   804 Mbits/sec   0.042 ms    0/68404 (0%)
+[  5]  3.0- 4.0 sec  95.9 MBytes   804 Mbits/sec   0.044 ms    0/68404 (0%)
+[  5]  4.0- 5.0 sec  96.9 MBytes   813 Mbits/sec   0.042 ms    0/69102 (0%)
+[  5]  5.0- 6.0 sec  95.9 MBytes   804 Mbits/sec   0.042 ms    0/68404 (0%)
+[  5]  6.0- 7.0 sec  95.9 MBytes   804 Mbits/sec   0.043 ms    0/68404 (0%)
+[  5]  7.0- 8.0 sec  96.9 MBytes   813 Mbits/sec   0.044 ms    0/69102 (0%)
+[  5]  8.0- 9.0 sec  95.9 MBytes   804 Mbits/sec   0.043 ms    0/68404 (0%)
+[  5]  9.0-10.0 sec  95.9 MBytes   804 Mbits/sec   0.044 ms    0/68404 (0%)
+[  5]  0.0-10.0 sec   964 MBytes   807 Mbits/sec   0.011 ms    0/687327 (0%)
+
+3) 
+sudo ip netns exec h3 iperf -s -u -i 1 -w 16M
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 2000m
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 1470 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 51491
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec  96.9 MBytes   813 Mbits/sec   0.004 ms    0/69148 (0%)
+[  5]  1.0- 2.0 sec  95.9 MBytes   805 Mbits/sec   0.002 ms    0/68420 (0%)
+[  5]  2.0- 3.0 sec  96.9 MBytes   812 Mbits/sec   0.004 ms    0/69086 (0%)
+[  5]  3.0- 4.0 sec  95.9 MBytes   805 Mbits/sec   0.004 ms    0/68421 (0%)
+[  5]  4.0- 5.0 sec  96.9 MBytes   812 Mbits/sec   0.008 ms    0/69085 (0%)
+[  5]  5.0- 6.0 sec  95.9 MBytes   805 Mbits/sec   0.003 ms    0/68421 (0%)
+[  5]  6.0- 7.0 sec  96.9 MBytes   812 Mbits/sec   0.003 ms    0/69085 (0%)
+[  5]  7.0- 8.0 sec  95.9 MBytes   804 Mbits/sec   0.002 ms    0/68404 (0%)
+[  5]  8.0- 9.0 sec  96.9 MBytes   813 Mbits/sec   0.003 ms    0/69102 (0%)
+[  5]  9.0-10.0 sec  95.9 MBytes   804 Mbits/sec   0.002 ms    0/68404 (0%)
+[  5]  0.0-10.0 sec   964 MBytes   809 Mbits/sec   0.073 ms    0/687577 (0%)
+
+4) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 3000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 1000m -l 3000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 3000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 44444
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   123 MBytes  1.03 Gbits/sec   0.012 ms    0/43086 (0%)
+[  5]  1.0- 2.0 sec   124 MBytes  1.04 Gbits/sec   0.013 ms    0/43237 (0%)
+[  5]  2.0- 3.0 sec   124 MBytes  1.04 Gbits/sec   0.013 ms    0/43351 (0%)
+[  5]  3.0- 4.0 sec   124 MBytes  1.04 Gbits/sec   0.012 ms    0/43240 (0%)
+[  5]  4.0- 5.0 sec   124 MBytes  1.04 Gbits/sec   0.012 ms    0/43292 (0%)
+[  5]  5.0- 6.0 sec   124 MBytes  1.04 Gbits/sec   0.013 ms    0/43272 (0%)
+[  5]  6.0- 7.0 sec   124 MBytes  1.04 Gbits/sec   0.013 ms    0/43277 (0%)
+[  5]  7.0- 8.0 sec   124 MBytes  1.04 Gbits/sec   0.014 ms    0/43196 (0%)
+[  5]  8.0- 9.0 sec   124 MBytes  1.04 Gbits/sec   0.014 ms    0/43278 (0%)
+[  5]  0.0-10.0 sec  1.21 GBytes  1.04 Gbits/sec   0.013 ms    0/432468 (0%)
+
+5) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 3000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 2000m -l 3000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 3000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 37803
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   196 MBytes  1.65 Gbits/sec   0.001 ms    0/68672 (0%)
+[  5]  1.0- 2.0 sec   197 MBytes  1.65 Gbits/sec   0.001 ms    0/68742 (0%)
+[  5]  2.0- 3.0 sec   196 MBytes  1.64 Gbits/sec   0.000 ms    0/68495 (0%)
+[  5]  3.0- 4.0 sec   197 MBytes  1.65 Gbits/sec   0.007 ms    0/68879 (0%)
+[  5]  4.0- 5.0 sec   196 MBytes  1.65 Gbits/sec   0.000 ms    0/68627 (0%)
+[  5]  5.0- 6.0 sec   196 MBytes  1.64 Gbits/sec   0.011 ms    0/68404 (0%)
+[  5]  6.0- 7.0 sec   196 MBytes  1.64 Gbits/sec   0.012 ms    0/68404 (0%)
+[  5]  7.0- 8.0 sec   194 MBytes  1.62 Gbits/sec   0.011 ms    0/67706 (0%)
+[  5]  8.0- 9.0 sec   196 MBytes  1.64 Gbits/sec   0.008 ms    0/68404 (0%)
+[  5]  9.0-10.0 sec   196 MBytes  1.64 Gbits/sec   0.011 ms    0/68404 (0%)
+[  5]  0.0-10.0 sec  1.92 GBytes  1.64 Gbits/sec   0.357 ms    0/686845 (0%)
+
+6) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 6000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 2000m -l 6000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 6000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 39404
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   245 MBytes  2.06 Gbits/sec   0.003 ms    0/42897 (0%)
+[  5]  1.0- 2.0 sec   247 MBytes  2.07 Gbits/sec   0.010 ms    0/43092 (0%)
+[  5]  2.0- 3.0 sec   247 MBytes  2.07 Gbits/sec   0.003 ms    0/43080 (0%)
+[  5]  3.0- 4.0 sec   247 MBytes  2.07 Gbits/sec   0.009 ms    0/43091 (0%)
+[  5]  4.0- 5.0 sec   246 MBytes  2.07 Gbits/sec   0.003 ms    0/43028 (0%)
+[  5]  5.0- 6.0 sec   247 MBytes  2.07 Gbits/sec   0.009 ms    0/43192 (0%)
+[  5]  6.0- 7.0 sec   247 MBytes  2.07 Gbits/sec   0.003 ms    0/43179 (0%)
+[  5]  7.0- 8.0 sec   247 MBytes  2.08 Gbits/sec   0.008 ms    0/43241 (0%)
+[  5]  8.0- 9.0 sec   247 MBytes  2.07 Gbits/sec   0.003 ms    0/43205 (0%)
+[  5]  0.0-10.0 sec  2.41 GBytes  2.07 Gbits/sec   0.003 ms    0/431111 (0%)
+
+7) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 6000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 5000m -l 6000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 6000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46397
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   393 MBytes  3.30 Gbits/sec   0.000 ms    0/68766 (0%)
+[  5]  1.0- 2.0 sec   393 MBytes  3.30 Gbits/sec   0.001 ms    0/68714 (0%)
+[  5]  2.0- 3.0 sec   393 MBytes  3.30 Gbits/sec   0.000 ms    0/68709 (0%)
+[  5]  3.0- 4.0 sec   393 MBytes  3.30 Gbits/sec   0.001 ms    0/68741 (0%)
+[  5]  4.0- 5.0 sec   393 MBytes  3.30 Gbits/sec   0.000 ms    0/68722 (0%)
+[  5]  5.0- 6.0 sec   393 MBytes  3.30 Gbits/sec   0.000 ms    0/68695 (0%)
+[  5]  6.0- 7.0 sec   393 MBytes  3.30 Gbits/sec   0.000 ms    0/68685 (0%)
+[  5]  7.0- 8.0 sec   393 MBytes  3.30 Gbits/sec   0.000 ms    0/68712 (0%)
+[  5]  8.0- 9.0 sec   393 MBytes  3.30 Gbits/sec   0.000 ms    0/68694 (0%)
+[  5]  0.0-10.0 sec  3.84 GBytes  3.30 Gbits/sec   0.000 ms    0/687113 (0%)
+
+8) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 12000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 4000m -l 12000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 12000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 50506
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   426 MBytes  3.58 Gbits/sec   0.003 ms    0/37255 (0%)
+[  5]  1.0- 2.0 sec   427 MBytes  3.58 Gbits/sec   0.003 ms    0/37293 (0%)
+[  5]  2.0- 3.0 sec   426 MBytes  3.57 Gbits/sec   0.003 ms    0/37193 (0%)
+[  5]  3.0- 4.0 sec   426 MBytes  3.57 Gbits/sec   0.003 ms    0/37198 (0%)
+[  5]  4.0- 5.0 sec   469 MBytes  3.93 Gbits/sec   0.000 ms    0/40955 (0%)
+[  5]  5.0- 6.0 sec   482 MBytes  4.04 Gbits/sec   0.001 ms    0/42118 (0%)
+[  5]  6.0- 7.0 sec   483 MBytes  4.06 Gbits/sec   0.001 ms    0/42240 (0%)
+[  5]  7.0- 8.0 sec   481 MBytes  4.04 Gbits/sec   0.002 ms    0/42073 (0%)
+[  5]  8.0- 9.0 sec   482 MBytes  4.04 Gbits/sec   0.000 ms    0/42082 (0%)
+[  5]  0.0-10.0 sec  4.48 GBytes  3.85 Gbits/sec   0.002 ms    0/400560 (0%)
+
+9) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 12000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 8000m -l 12000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 12000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 43484
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   427 MBytes  3.58 Gbits/sec   0.003 ms    0/37288 (0%)
+[  5]  1.0- 2.0 sec   474 MBytes  3.97 Gbits/sec   0.000 ms    0/41376 (0%)
+[  5]  2.0- 3.0 sec   534 MBytes  4.48 Gbits/sec   0.001 ms    0/46694 (0%)
+[  5]  3.0- 4.0 sec   538 MBytes  4.51 Gbits/sec   0.001 ms    0/46987 (0%)
+[  5]  4.0- 5.0 sec   534 MBytes  4.48 Gbits/sec   0.001 ms    0/46684 (0%)
+[  5]  5.0- 6.0 sec   543 MBytes  4.56 Gbits/sec   0.000 ms    0/47483 (0%)
+[  5]  6.0- 7.0 sec   543 MBytes  4.56 Gbits/sec   0.000 ms    0/47482 (0%)
+[  5]  7.0- 8.0 sec   544 MBytes  4.57 Gbits/sec   0.000 ms    0/47557 (0%)
+[  5]  8.0- 9.0 sec   544 MBytes  4.56 Gbits/sec   0.000 ms    0/47516 (0%)
+[  5]  0.0-10.0 sec  5.10 GBytes  4.38 Gbits/sec   0.000 ms    0/456372 (0%)
+
+10)
+sudo ip netns exec h3 iperf -s -u -w 16M -l 24000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 8000m -l 24000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 24000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 58595
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   574 MBytes  4.82 Gbits/sec   0.001 ms    0/25092 (0%)
+[  5]  1.0- 2.0 sec   586 MBytes  4.92 Gbits/sec   0.001 ms    0/25604 (0%)
+[  5]  2.0- 3.0 sec   615 MBytes  5.16 Gbits/sec   0.001 ms    0/26881 (0%)
+[  5]  3.0- 4.0 sec   614 MBytes  5.15 Gbits/sec   0.001 ms    0/26830 (0%)
+[  5]  4.0- 5.0 sec   617 MBytes  5.17 Gbits/sec   0.001 ms    0/26946 (0%)
+[  5]  5.0- 6.0 sec   627 MBytes  5.26 Gbits/sec   0.001 ms    0/27391 (0%)
+[  5]  6.0- 7.0 sec   625 MBytes  5.24 Gbits/sec   0.001 ms    0/27299 (0%)
+[  5]  7.0- 8.0 sec   625 MBytes  5.24 Gbits/sec   0.001 ms    0/27305 (0%)
+[  5]  8.0- 9.0 sec   627 MBytes  5.26 Gbits/sec   0.001 ms    0/27375 (0%)
+[  5]  0.0-10.0 sec  5.99 GBytes  5.15 Gbits/sec   0.001 ms    0/268090 (0%)
+
+11) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 24000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 16000m -l 24000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 24000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 43485
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   528 MBytes  4.43 Gbits/sec   0.007 ms    0/23075 (0%)
+[  5]  1.0- 2.0 sec   580 MBytes  4.86 Gbits/sec   0.001 ms    0/25327 (0%)
+[  5]  2.0- 3.0 sec   620 MBytes  5.20 Gbits/sec   0.001 ms    0/27069 (0%)
+[  5]  3.0- 4.0 sec   620 MBytes  5.20 Gbits/sec   0.001 ms    0/27069 (0%)
+[  5]  4.0- 5.0 sec   619 MBytes  5.20 Gbits/sec   0.001 ms    0/27062 (0%)
+[  5]  5.0- 6.0 sec   631 MBytes  5.29 Gbits/sec   0.001 ms    0/27547 (0%)
+[  5]  6.0- 7.0 sec   629 MBytes  5.28 Gbits/sec   0.001 ms    0/27488 (0%)
+[  5]  7.0- 8.0 sec   630 MBytes  5.29 Gbits/sec   0.001 ms    0/27536 (0%)
+[  5]  8.0- 9.0 sec   631 MBytes  5.30 Gbits/sec   0.001 ms    0/27587 (0%)
+[  5]  0.0-10.0 sec  5.98 GBytes  5.13 Gbits/sec   0.001 ms    0/267333 (0%)
+
+12) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 48000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 16000m -l 48000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 48000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 34943
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   642 MBytes  5.38 Gbits/sec   0.001 ms    0/14023 (0%)
+[  5]  1.0- 2.0 sec   640 MBytes  5.37 Gbits/sec   0.002 ms    0/13979 (0%)
+[  5]  2.0- 3.0 sec   674 MBytes  5.65 Gbits/sec   0.002 ms    0/14713 (0%)
+[  5]  3.0- 4.0 sec   672 MBytes  5.64 Gbits/sec   0.003 ms    0/14683 (0%)
+[  5]  4.0- 5.0 sec   675 MBytes  5.66 Gbits/sec   0.001 ms    0/14739 (0%)
+[  5]  5.0- 6.0 sec   685 MBytes  5.75 Gbits/sec   0.002 ms    0/14961 (0%)
+[  5]  6.0- 7.0 sec   685 MBytes  5.75 Gbits/sec   0.036 ms    0/14967 (0%)
+[  5]  7.0- 8.0 sec   685 MBytes  5.75 Gbits/sec   0.002 ms    0/14974 (0%)
+[  5]  8.0- 9.0 sec   688 MBytes  5.77 Gbits/sec   0.002 ms    0/15036 (0%)
+[  5]  0.0-10.0 sec  6.57 GBytes  5.65 Gbits/sec   0.002 ms    0/147043 (0%)
+
+13) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 48000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 32000m -l 48000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 48000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 42396
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   591 MBytes  4.96 Gbits/sec   0.004 ms    0/12913 (0%)
+[  5]  1.0- 2.0 sec   633 MBytes  5.31 Gbits/sec   0.002 ms    0/13820 (0%)
+[  5]  2.0- 3.0 sec   676 MBytes  5.67 Gbits/sec   0.002 ms    0/14757 (0%)
+[  5]  3.0- 4.0 sec   676 MBytes  5.67 Gbits/sec   0.002 ms    0/14767 (0%)
+[  5]  4.0- 5.0 sec   675 MBytes  5.66 Gbits/sec   0.002 ms    0/14750 (0%)
+[  5]  5.0- 6.0 sec   689 MBytes  5.78 Gbits/sec   0.005 ms    0/15060 (0%)
+[  5]  6.0- 7.0 sec   691 MBytes  5.80 Gbits/sec   0.001 ms    0/15101 (0%)
+[  5]  7.0- 8.0 sec   691 MBytes  5.80 Gbits/sec   0.001 ms    0/15097 (0%)
+[  5]  8.0- 9.0 sec   689 MBytes  5.78 Gbits/sec   0.002 ms    0/15060 (0%)
+[  5]  0.0-10.0 sec  6.54 GBytes  5.62 Gbits/sec   0.035 ms    0/146358 (0%)
+
+14) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 65000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 32000m -l 65000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 65000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 60889
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   604 MBytes  5.07 Gbits/sec   0.006 ms    0/ 9746 (0%)
+[  5]  1.0- 2.0 sec   652 MBytes  5.47 Gbits/sec   0.033 ms    0/10520 (0%)
+[  5]  2.0- 3.0 sec   689 MBytes  5.78 Gbits/sec   0.003 ms    0/11112 (0%)
+[  5]  3.0- 4.0 sec   693 MBytes  5.81 Gbits/sec   0.003 ms    0/11172 (0%)
+[  5]  4.0- 5.0 sec   690 MBytes  5.79 Gbits/sec   0.034 ms    0/11139 (0%)
+[  5]  5.0- 6.0 sec   701 MBytes  5.88 Gbits/sec   0.035 ms    0/11315 (0%)
+[  5]  6.0- 7.0 sec   703 MBytes  5.90 Gbits/sec   0.002 ms    0/11339 (0%)
+[  5]  7.0- 8.0 sec   704 MBytes  5.90 Gbits/sec   0.003 ms    0/11355 (0%)
+[  5]  8.0- 9.0 sec   701 MBytes  5.88 Gbits/sec   0.003 ms    0/11302 (0%)
+[  5]  0.0-10.0 sec  6.68 GBytes  5.73 Gbits/sec   0.003 ms    0/110286 (0%)
+
+15) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 65000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 35000m -l 65000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 65000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46754
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   645 MBytes  5.41 Gbits/sec   0.033 ms    0/10411 (0%)
+[  5]  1.0- 2.0 sec   656 MBytes  5.50 Gbits/sec   0.032 ms    0/10582 (0%)
+[  5]  2.0- 3.0 sec   694 MBytes  5.82 Gbits/sec   0.003 ms    0/11195 (0%)
+[  5]  3.0- 4.0 sec   692 MBytes  5.80 Gbits/sec   0.034 ms    0/11163 (0%)
+[  5]  4.0- 5.0 sec   691 MBytes  5.80 Gbits/sec   0.034 ms    0/11149 (0%)
+[  5]  5.0- 6.0 sec   701 MBytes  5.88 Gbits/sec   0.034 ms    0/11308 (0%)
+[  5]  6.0- 7.0 sec   709 MBytes  5.95 Gbits/sec   0.002 ms    0/11433 (0%)
+[  5]  7.0- 8.0 sec   704 MBytes  5.90 Gbits/sec   0.002 ms    0/11353 (0%)
+[  5]  8.0- 9.0 sec   703 MBytes  5.89 Gbits/sec   0.002 ms    0/11336 (0%)
+[  5]  0.0-10.0 sec  6.74 GBytes  5.79 Gbits/sec   0.003 ms    0/111305 (0%)
+
+16) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 65000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 40000m -l 65000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 65000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 39220
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   636 MBytes  5.34 Gbits/sec   0.003 ms    0/10263 (0%)
+[  5]  1.0- 2.0 sec   656 MBytes  5.51 Gbits/sec   0.035 ms    0/10590 (0%)
+[  5]  2.0- 3.0 sec   689 MBytes  5.78 Gbits/sec   0.035 ms    0/11111 (0%)
+[  5]  3.0- 4.0 sec   691 MBytes  5.80 Gbits/sec   0.036 ms    0/11154 (0%)
+[  5]  4.0- 5.0 sec   692 MBytes  5.80 Gbits/sec   0.003 ms    0/11157 (0%)
+[  5]  5.0- 6.0 sec   702 MBytes  5.89 Gbits/sec   0.036 ms    0/11331 (0%)
+[  5]  6.0- 7.0 sec   703 MBytes  5.90 Gbits/sec   0.034 ms    0/11338 (0%)
+[  5]  7.0- 8.0 sec   705 MBytes  5.92 Gbits/sec   0.034 ms    0/11380 (0%)
+[  5]  8.0- 9.0 sec   707 MBytes  5.93 Gbits/sec   0.002 ms    0/11410 (0%)
+[  5]  0.0-10.0 sec  6.72 GBytes  5.78 Gbits/sec   0.003 ms    0/111076 (0%)
+
+
+================
+TCP - change buffer length - 1470, 3000, 6000, 12000, 24000, 48000, 65000
+-l buffer length - specify the length of send or receive buffer. In UDP, this sets the packet size. In TCP, this sets the send/receive buffer length (possibly using system defaults). Using this may be important especially if the operating system default send buffer is too small 
+
+a) 
+iperf -s -i 1 -w 16M -l 1470
+iperf -c 127.0.0.1 -P 1 -p 5001 -t 10 -l 1470 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  4] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 37721
+[ ID] Interval       Transfer     Bandwidth
+[  4]  0.0- 1.0 sec  96.1 MBytes   806 Mbits/sec
+[  4]  1.0- 2.0 sec  95.8 MBytes   803 Mbits/sec
+[  4]  2.0- 3.0 sec  95.9 MBytes   804 Mbits/sec
+[  4]  3.0- 4.0 sec  95.9 MBytes   804 Mbits/sec
+[  4]  4.0- 5.0 sec  95.9 MBytes   805 Mbits/sec
+[  4]  5.0- 6.0 sec  95.9 MBytes   804 Mbits/sec
+[  4]  6.0- 7.0 sec  95.9 MBytes   805 Mbits/sec
+[  4]  7.0- 8.0 sec  95.9 MBytes   804 Mbits/sec
+[  4]  8.0- 9.0 sec  95.9 MBytes   805 Mbits/sec
+[  4]  9.0-10.0 sec  95.9 MBytes   804 Mbits/sec
+[  4]  0.0-10.0 sec   959 MBytes   803 Mbits/sec
+
+b)
+iperf -s -i 1 -w 16M -l 3000
+iperf -c 127.0.0.1 -P 1 -p 5001 -t 10 -l 3000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  4] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 37723
+[ ID] Interval       Transfer     Bandwidth
+[  4]  0.0- 1.0 sec   196 MBytes  1.64 Gbits/sec
+[  4]  1.0- 2.0 sec   196 MBytes  1.64 Gbits/sec
+[  4]  2.0- 3.0 sec   196 MBytes  1.64 Gbits/sec
+[  4]  3.0- 4.0 sec   196 MBytes  1.64 Gbits/sec
+[  4]  4.0- 5.0 sec   196 MBytes  1.64 Gbits/sec
+[  4]  5.0- 6.0 sec   196 MBytes  1.64 Gbits/sec
+[  4]  6.0- 7.0 sec   196 MBytes  1.64 Gbits/sec
+[  4]  7.0- 8.0 sec   196 MBytes  1.64 Gbits/sec
+[  4]  8.0- 9.0 sec   196 MBytes  1.64 Gbits/sec
+[  4]  9.0-10.0 sec   196 MBytes  1.64 Gbits/sec
+[  4]  0.0-10.0 sec  1.91 GBytes  1.64 Gbits/sec
+
+c) 
+iperf -s -i 1 -w 16M -l 6000
+iperf -c 127.0.0.1 -P 1 -p 5001 -t 10 -l 6000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  4] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 37724
+[ ID] Interval       Transfer     Bandwidth
+[  4]  0.0- 1.0 sec   393 MBytes  3.30 Gbits/sec
+[  4]  1.0- 2.0 sec   392 MBytes  3.29 Gbits/sec
+[  4]  2.0- 3.0 sec   393 MBytes  3.30 Gbits/sec
+[  4]  3.0- 4.0 sec   393 MBytes  3.30 Gbits/sec
+[  4]  4.0- 5.0 sec   394 MBytes  3.30 Gbits/sec
+[  4]  5.0- 6.0 sec   392 MBytes  3.29 Gbits/sec
+[  4]  6.0- 7.0 sec   395 MBytes  3.31 Gbits/sec
+[  4]  7.0- 8.0 sec   392 MBytes  3.29 Gbits/sec
+[  4]  8.0- 9.0 sec   395 MBytes  3.31 Gbits/sec
+[  4]  9.0-10.0 sec   391 MBytes  3.28 Gbits/sec
+[  4]  0.0-10.0 sec  3.84 GBytes  3.30 Gbits/sec
+
+d)
+iperf -s -i 1 -w 16M -l 12000
+iperf -c 127.0.0.1 -P 1 -p 5001 -t 10 -l 12000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  4] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 37725
+[ ID] Interval       Transfer     Bandwidth
+[  4]  0.0- 1.0 sec   782 MBytes  6.56 Gbits/sec
+[  4]  1.0- 2.0 sec   783 MBytes  6.57 Gbits/sec
+[  4]  2.0- 3.0 sec   783 MBytes  6.57 Gbits/sec
+[  4]  3.0- 4.0 sec   783 MBytes  6.57 Gbits/sec
+[  4]  4.0- 5.0 sec   783 MBytes  6.57 Gbits/sec
+[  4]  5.0- 6.0 sec   783 MBytes  6.57 Gbits/sec
+[  4]  6.0- 7.0 sec   779 MBytes  6.54 Gbits/sec
+[  4]  7.0- 8.0 sec   780 MBytes  6.55 Gbits/sec
+[  4]  8.0- 9.0 sec   781 MBytes  6.55 Gbits/sec
+[  4]  9.0-10.0 sec   783 MBytes  6.57 Gbits/sec
+[  4]  0.0-10.1 sec  7.69 GBytes  6.56 Gbits/sec
+
+e)
+iperf -s -i 1 -w 16M -l 24000
+iperf -c 127.0.0.1 -P 1 -p 5001 -t 10 -l 24000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  4] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 37726
+[ ID] Interval       Transfer     Bandwidth
+[  4]  0.0- 1.0 sec  1.53 GBytes  13.1 Gbits/sec
+[  4]  1.0- 2.0 sec  1.53 GBytes  13.1 Gbits/sec
+[  4]  2.0- 3.0 sec  1.53 GBytes  13.1 Gbits/sec
+[  4]  3.0- 4.0 sec  1.53 GBytes  13.1 Gbits/sec
+[  4]  4.0- 5.0 sec  1.53 GBytes  13.1 Gbits/sec
+[  4]  5.0- 6.0 sec  1.53 GBytes  13.1 Gbits/sec
+[  4]  6.0- 7.0 sec  1.53 GBytes  13.1 Gbits/sec
+[  4]  7.0- 8.0 sec  1.53 GBytes  13.1 Gbits/sec
+[  4]  8.0- 9.0 sec  1.53 GBytes  13.1 Gbits/sec
+[  4]  9.0-10.0 sec  1.53 GBytes  13.1 Gbits/sec
+[  4]  0.0-10.0 sec  15.3 GBytes  13.1 Gbits/sec
+
+f)
+iperf -s -i 1 -w 16M -l 48000
+iperf -c 127.0.0.1 -P 1 -p 5001 -t 10 -l 48000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  4] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 37727
+[ ID] Interval       Transfer     Bandwidth
+[  4]  0.0- 1.0 sec  2.95 GBytes  25.3 Gbits/sec
+[  4]  1.0- 2.0 sec  3.07 GBytes  26.4 Gbits/sec
+[  4]  2.0- 3.0 sec  3.08 GBytes  26.5 Gbits/sec
+[  4]  3.0- 4.0 sec  3.07 GBytes  26.4 Gbits/sec
+[  4]  4.0- 5.0 sec  3.08 GBytes  26.4 Gbits/sec
+[  4]  5.0- 6.0 sec  3.08 GBytes  26.4 Gbits/sec
+[  4]  6.0- 7.0 sec  3.07 GBytes  26.4 Gbits/sec
+[  4]  7.0- 8.0 sec  3.08 GBytes  26.5 Gbits/sec
+[  4]  8.0- 9.0 sec  3.07 GBytes  26.4 Gbits/sec
+[  4]  9.0-10.0 sec  3.08 GBytes  26.5 Gbits/sec
+[  4]  0.0-10.0 sec  30.6 GBytes  26.3 Gbits/sec
+
+g) 
+iperf -s -i 1 -w 16M -l 65000
+iperf -c 127.0.0.1 -P 1 -p 5001 -t 10 -l 65000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  4] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 37728
+[ ID] Interval       Transfer     Bandwidth
+[  4]  0.0- 1.0 sec  3.11 GBytes  26.7 Gbits/sec
+[  4]  1.0- 2.0 sec  3.11 GBytes  26.7 Gbits/sec
+[  4]  2.0- 3.0 sec  3.23 GBytes  27.8 Gbits/sec
+[  4]  3.0- 4.0 sec  3.23 GBytes  27.7 Gbits/sec
+[  4]  4.0- 5.0 sec  3.21 GBytes  27.6 Gbits/sec
+[  4]  5.0- 6.0 sec  3.22 GBytes  27.7 Gbits/sec
+[  4]  6.0- 7.0 sec  3.23 GBytes  27.7 Gbits/sec
+[  4]  7.0- 8.0 sec  3.23 GBytes  27.7 Gbits/sec
+[  4]  8.0- 9.0 sec  3.22 GBytes  27.6 Gbits/sec
+[  4]  9.0-10.0 sec  3.23 GBytes  27.7 Gbits/sec
+[  4]  0.0-10.0 sec  32.0 GBytes  27.5 Gbits/sec
+
+
+==================
+2 containers (TCP different length)
+
+a)
+sudo ip netns exec h2 iperf -s -i 1 -w 16M -l 1470
+sudo ip netns exec h1 iperf -c 10.10.1.1 -P 1 -p 5001 -t 10 -l 1470 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 33005
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  95.4 MBytes   800 Mbits/sec
+[  6]  1.0- 2.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  2.0- 3.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  3.0- 4.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  4.0- 5.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  5.0- 6.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  6.0- 7.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  7.0- 8.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  8.0- 9.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  9.0-10.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  0.0-10.0 sec   960 MBytes   804 Mbits/sec
+
+b)
+sudo ip netns exec h2 iperf -s -i 1 -w 16M -l 3000
+sudo ip netns exec h1 iperf -c 10.10.1.1 -P 1 -p 5001 -t 10 -l 3000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 33006
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   195 MBytes  1.64 Gbits/sec
+[  6]  1.0- 2.0 sec   196 MBytes  1.65 Gbits/sec
+[  6]  2.0- 3.0 sec   195 MBytes  1.64 Gbits/sec
+[  6]  3.0- 4.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  4.0- 5.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  5.0- 6.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  6.0- 7.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  7.0- 8.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  8.0- 9.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  9.0-10.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  0.0-10.1 sec  1.92 GBytes  1.64 Gbits/sec
+
+c)
+sudo ip netns exec h2 iperf -s -i 1 -w 16M -l 6000
+sudo ip netns exec h1 iperf -c 10.10.1.1 -P 1 -p 5001 -t 10 -l 6000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 33007
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   391 MBytes  3.28 Gbits/sec
+[  6]  1.0- 2.0 sec   395 MBytes  3.31 Gbits/sec
+[  6]  2.0- 3.0 sec   395 MBytes  3.31 Gbits/sec
+[  6]  3.0- 4.0 sec   393 MBytes  3.29 Gbits/sec
+[  6]  4.0- 5.0 sec   394 MBytes  3.31 Gbits/sec
+[  6]  5.0- 6.0 sec   394 MBytes  3.30 Gbits/sec
+[  6]  6.0- 7.0 sec   393 MBytes  3.30 Gbits/sec
+[  6]  7.0- 8.0 sec   394 MBytes  3.31 Gbits/sec
+[  6]  8.0- 9.0 sec   393 MBytes  3.30 Gbits/sec
+[  6]  9.0-10.0 sec   395 MBytes  3.31 Gbits/sec
+[  6]  0.0-10.0 sec  3.85 GBytes  3.30 Gbits/sec
+
+d)
+sudo ip netns exec h2 iperf -s -i 1 -w 16M -l 12000
+sudo ip netns exec h1 iperf -c 10.10.1.1 -P 1 -p 5001 -t 10 -l 12000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 33008
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   533 MBytes  4.47 Gbits/sec
+[  6]  1.0- 2.0 sec   547 MBytes  4.59 Gbits/sec
+[  6]  2.0- 3.0 sec   666 MBytes  5.59 Gbits/sec
+[  6]  3.0- 4.0 sec   661 MBytes  5.55 Gbits/sec
+[  6]  4.0- 5.0 sec   665 MBytes  5.57 Gbits/sec
+[  6]  5.0- 6.0 sec   665 MBytes  5.58 Gbits/sec
+[  6]  6.0- 7.0 sec   662 MBytes  5.55 Gbits/sec
+[  6]  7.0- 8.0 sec   659 MBytes  5.52 Gbits/sec
+[  6]  8.0- 9.0 sec   664 MBytes  5.57 Gbits/sec
+[  6]  9.0-10.0 sec   617 MBytes  5.18 Gbits/sec
+[  6]  0.0-10.0 sec  6.19 GBytes  5.31 Gbits/sec
+
+e)
+sudo ip netns exec h2 iperf -s -i 1 -w 16M -l 24000
+sudo ip netns exec h1 iperf -c 10.10.1.1 -P 1 -p 5001 -t 10 -l 24000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 33009
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   525 MBytes  4.40 Gbits/sec
+[  6]  1.0- 2.0 sec   530 MBytes  4.44 Gbits/sec
+[  6]  2.0- 3.0 sec   616 MBytes  5.17 Gbits/sec
+[  6]  3.0- 4.0 sec   612 MBytes  5.13 Gbits/sec
+[  6]  4.0- 5.0 sec   618 MBytes  5.18 Gbits/sec
+[  6]  5.0- 6.0 sec   624 MBytes  5.24 Gbits/sec
+[  6]  6.0- 7.0 sec   624 MBytes  5.24 Gbits/sec
+[  6]  7.0- 8.0 sec   626 MBytes  5.25 Gbits/sec
+[  6]  8.0- 9.0 sec   628 MBytes  5.27 Gbits/sec
+[  6]  9.0-10.0 sec   626 MBytes  5.25 Gbits/sec
+[  6]  0.0-10.0 sec  5.89 GBytes  5.05 Gbits/sec
+
+f)
+sudo ip netns exec h2 iperf -s -i 1 -w 16M -l 48000
+sudo ip netns exec h1 iperf -c 10.10.1.1 -P 1 -p 5001 -t 10 -l 48000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 33010
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   550 MBytes  4.61 Gbits/sec
+[  6]  1.0- 2.0 sec   547 MBytes  4.59 Gbits/sec
+[  6]  2.0- 3.0 sec   642 MBytes  5.38 Gbits/sec
+[  6]  3.0- 4.0 sec   638 MBytes  5.35 Gbits/sec
+[  6]  4.0- 5.0 sec   633 MBytes  5.31 Gbits/sec
+[  6]  5.0- 6.0 sec   642 MBytes  5.39 Gbits/sec
+[  6]  6.0- 7.0 sec   648 MBytes  5.44 Gbits/sec
+[  6]  7.0- 8.0 sec   654 MBytes  5.48 Gbits/sec
+[  6]  8.0- 9.0 sec   653 MBytes  5.48 Gbits/sec
+[  6]  9.0-10.0 sec   645 MBytes  5.41 Gbits/sec
+[  6]  0.0-10.0 sec  6.11 GBytes  5.24 Gbits/sec
+
+g)
+sudo ip netns exec h2 iperf -s -i 1 -w 16M -l 65000
+sudo ip netns exec h1 iperf -c 10.10.1.1 -P 1 -p 5001 -t 10 -l 65000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.1 port 5001 connected with 10.10.1.2 port 33011
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   561 MBytes  4.71 Gbits/sec
+[  6]  1.0- 2.0 sec   553 MBytes  4.64 Gbits/sec
+[  6]  2.0- 3.0 sec   583 MBytes  4.89 Gbits/sec
+[  6]  3.0- 4.0 sec   585 MBytes  4.90 Gbits/sec
+[  6]  4.0- 5.0 sec   585 MBytes  4.90 Gbits/sec
+[  6]  5.0- 6.0 sec   592 MBytes  4.96 Gbits/sec
+[  6]  6.0- 7.0 sec   592 MBytes  4.96 Gbits/sec
+[  6]  7.0- 8.0 sec   591 MBytes  4.96 Gbits/sec
+[  6]  8.0- 9.0 sec   594 MBytes  4.98 Gbits/sec
+[  6]  9.0-10.0 sec   592 MBytes  4.97 Gbits/sec
+[  6]  0.0-10.0 sec  5.69 GBytes  4.89 Gbits/sec
+
+=========================================================
+3 Containers - ip forwarding
+
+sudo ip netns exec h2 sysctl -w net.ipv4.ip_forward=1
+
+a)
+sudo ip netns exec h3 iperf -s -i 1 -w 16M -l 1470
+sudo ip netns exec h1 iperf -c 10.10.3.1 -P 1 -p 5001 -t 10 -l 1470 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46546
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  95.7 MBytes   803 Mbits/sec
+[  6]  1.0- 2.0 sec  95.3 MBytes   799 Mbits/sec
+[  6]  2.0- 3.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  3.0- 4.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  4.0- 5.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  5.0- 6.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  6.0- 7.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  7.0- 8.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  8.0- 9.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  9.0-10.0 sec  95.9 MBytes   804 Mbits/sec
+[  6]  0.0-10.0 sec   959 MBytes   803 Mbits/sec
+
+b)
+sudo ip netns exec h3 iperf -s -i 1 -w 16M -l 3000
+sudo ip netns exec h1 iperf -c 10.10.3.1 -P 1 -p 5001 -t 10 -l 3000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46547
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  1.0- 2.0 sec   198 MBytes  1.66 Gbits/sec
+[  6]  2.0- 3.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  3.0- 4.0 sec   198 MBytes  1.66 Gbits/sec
+[  6]  4.0- 5.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  5.0- 6.0 sec   198 MBytes  1.66 Gbits/sec
+[  6]  6.0- 7.0 sec   198 MBytes  1.66 Gbits/sec
+[  6]  7.0- 8.0 sec   196 MBytes  1.64 Gbits/sec
+[  6]  8.0- 9.0 sec   197 MBytes  1.65 Gbits/sec
+[  6]  9.0-10.0 sec   196 MBytes  1.65 Gbits/sec
+[  6]  0.0-10.0 sec  1.92 GBytes  1.65 Gbits/sec
+
+c)
+sudo ip netns exec h3 iperf -s -i 1 -w 16M -l 6000
+sudo ip netns exec h1 iperf -c 10.10.3.1 -P 1 -p 5001 -t 10 -l 6000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46549
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   315 MBytes  2.64 Gbits/sec
+[  6]  1.0- 2.0 sec   263 MBytes  2.21 Gbits/sec
+[  6]  2.0- 3.0 sec   278 MBytes  2.33 Gbits/sec
+[  6]  3.0- 4.0 sec   131 MBytes  1.10 Gbits/sec
+[  6]  4.0- 5.0 sec   285 MBytes  2.39 Gbits/sec
+[  6]  5.0- 6.0 sec   210 MBytes  1.76 Gbits/sec
+[  6]  6.0- 7.0 sec   146 MBytes  1.22 Gbits/sec
+[  6]  7.0- 8.0 sec   203 MBytes  1.71 Gbits/sec
+[  6]  8.0- 9.0 sec   280 MBytes  2.35 Gbits/sec
+[  6]  9.0-10.0 sec   216 MBytes  1.81 Gbits/sec
+[  6]  0.0-10.1 sec  2.29 GBytes  1.96 Gbits/sec
+
+d)
+sudo ip netns exec h3 iperf -s -i 1 -w 16M -l 12000
+sudo ip netns exec h1 iperf -c 10.10.3.1 -P 1 -p 5001 -t 10 -l 12000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46550
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   312 MBytes  2.62 Gbits/sec
+[  6]  1.0- 2.0 sec   382 MBytes  3.21 Gbits/sec
+[  6]  2.0- 3.0 sec   265 MBytes  2.23 Gbits/sec
+[  6]  3.0- 4.0 sec   418 MBytes  3.51 Gbits/sec
+[  6]  4.0- 5.0 sec   380 MBytes  3.19 Gbits/sec
+[  6]  5.0- 6.0 sec   188 MBytes  1.57 Gbits/sec
+[  6]  6.0- 7.0 sec   411 MBytes  3.45 Gbits/sec
+[  6]  7.0- 8.0 sec   449 MBytes  3.77 Gbits/sec
+[  6]  8.0- 9.0 sec   474 MBytes  3.98 Gbits/sec
+[  6]  9.0-10.0 sec   450 MBytes  3.78 Gbits/sec
+[  6]  0.0-10.0 sec  3.65 GBytes  3.13 Gbits/sec
+
+e)
+sudo ip netns exec h3 iperf -s -i 1 -w 16M -l 24000
+sudo ip netns exec h1 iperf -c 10.10.3.1 -P 1 -p 5001 -t 10 -l 24000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46551
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   316 MBytes  2.65 Gbits/sec
+[  6]  1.0- 2.0 sec   356 MBytes  2.98 Gbits/sec
+[  6]  2.0- 3.0 sec   212 MBytes  1.78 Gbits/sec
+[  6]  3.0- 4.0 sec   346 MBytes  2.90 Gbits/sec
+[  6]  4.0- 5.0 sec   428 MBytes  3.59 Gbits/sec
+[  6]  5.0- 6.0 sec   433 MBytes  3.64 Gbits/sec
+[  6]  6.0- 7.0 sec   358 MBytes  3.00 Gbits/sec
+[  6]  7.0- 8.0 sec   412 MBytes  3.46 Gbits/sec
+[  6]  8.0- 9.0 sec   317 MBytes  2.66 Gbits/sec
+[  6]  9.0-10.0 sec   418 MBytes  3.51 Gbits/sec
+[  6]  0.0-10.0 sec  3.53 GBytes  3.03 Gbits/sec
+
+f)
+sudo ip netns exec h3 iperf -s -i 1 -w 16M -l 48000
+sudo ip netns exec h1 iperf -c 10.10.3.1 -P 1 -p 5001 -t 10 -l 48000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46552
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   367 MBytes  3.08 Gbits/sec
+[  6]  1.0- 2.0 sec   375 MBytes  3.15 Gbits/sec
+[  6]  2.0- 3.0 sec   226 MBytes  1.90 Gbits/sec
+[  6]  3.0- 4.0 sec   361 MBytes  3.03 Gbits/sec
+[  6]  4.0- 5.0 sec   386 MBytes  3.24 Gbits/sec
+[  6]  5.0- 6.0 sec   425 MBytes  3.57 Gbits/sec
+[  6]  6.0- 7.0 sec   426 MBytes  3.57 Gbits/sec
+[  6]  7.0- 8.0 sec   425 MBytes  3.57 Gbits/sec
+[  6]  8.0- 9.0 sec   425 MBytes  3.57 Gbits/sec
+[  6]  9.0-10.0 sec   426 MBytes  3.58 Gbits/sec
+[  6]  0.0-10.0 sec  3.75 GBytes  3.22 Gbits/sec
+
+g)
+sudo ip netns exec h3 iperf -s -i 1 -w 16M -l 65000
+sudo ip netns exec h1 iperf -c 10.10.3.1 -P 1 -p 5001 -t 10 -l 65000 -w 16M
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46553
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   361 MBytes  3.03 Gbits/sec
+[  6]  1.0- 2.0 sec   153 MBytes  1.28 Gbits/sec
+[  6]  2.0- 3.0 sec   433 MBytes  3.63 Gbits/sec
+[  6]  3.0- 4.0 sec   347 MBytes  2.91 Gbits/sec
+[  6]  4.0- 5.0 sec   414 MBytes  3.47 Gbits/sec
+[  6]  5.0- 6.0 sec   261 MBytes  2.19 Gbits/sec
+[  6]  6.0- 7.0 sec   366 MBytes  3.07 Gbits/sec
+[  6]  7.0- 8.0 sec   335 MBytes  2.81 Gbits/sec
+[  6]  8.0- 9.0 sec   415 MBytes  3.48 Gbits/sec
+[  6]  9.0-10.0 sec   360 MBytes  3.02 Gbits/sec
+[  6]  0.0-10.1 sec  3.38 GBytes  2.89 Gbits/sec
+
+
+=======================================================================
+SIMULATOR
+
+pr_if0.setBufferSize("75000000");
+pr_if0.setBitRate("10000000000"); //10000Mbps
+
+java -DRUNTIME_ENV=[c_slave1,d_slave1,eth2,10.10.1.1,eth3,10.1.3.2] -DPORTAL_LINKS=c_slave1:eth2,topnet.portal_router.portal_if_10_10_1_0,c_slave1:eth3,topnet.center_router.portal_if_10_1_0_0 -jar ../primogeni/netscript/dist/jprime.jar create SolvingPortalTCP1 SolvingPortalTCP1.java 192.168.0.0/16
+
+sudo ip netns exec h2 sysctl -w net.ipv4.ip_forward=0
+
+sudo ip netns exec h2 ~/primogeni/netsim/primex -tp 10.10.3.2 8 -tp 10.10.1.1 34 1800 SolvingPortalTCP1_part_1.tlv
+
+1)
+sudo ip netns exec h1 ping -c1 10.10.3.1
+
+PING 10.10.3.1 (10.10.3.1) 56(84) bytes of data.
+64 bytes from 10.10.3.1: icmp_req=1 ttl=62 time=2.52 ms
+64 bytes from 10.10.3.1: icmp_req=2 ttl=62 time=2.55 ms
+64 bytes from 10.10.3.1: icmp_req=3 ttl=62 time=2.52 ms
+64 bytes from 10.10.3.1: icmp_req=4 ttl=62 time=2.52 ms
+64 bytes from 10.10.3.1: icmp_req=5 ttl=62 time=2.58 ms
+64 bytes from 10.10.3.1: icmp_req=6 ttl=62 time=2.57 ms
+64 bytes from 10.10.3.1: icmp_req=7 ttl=62 time=2.51 ms
+64 bytes from 10.10.3.1: icmp_req=8 ttl=62 time=2.51 ms
+64 bytes from 10.10.3.1: icmp_req=9 ttl=62 time=2.53 ms
+64 bytes from 10.10.3.1: icmp_req=10 ttl=62 time=2.52 ms
+
+--- 10.10.3.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9015ms
+rtt min/avg/max/mdev = 2.517/2.538/2.586/0.045 ms
+
+sudo ip netns exec h1 traceroute 10.10.3.1
+
+traceroute to 10.10.3.1 (10.10.3.1), 30 hops max, 60 byte packets
+ 1  * * *
+ 2  10.10.3.1 (10.10.3.1)  2.428 ms  2.440 ms  2.443 ms
+
+sudo ip netns exec h3 iperf -s -w 16M -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -P 1 -i 1 -p 5001 -w 16M -t 10
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46554
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  91.3 MBytes   766 Mbits/sec
+[  6]  1.0- 2.0 sec  88.5 MBytes   742 Mbits/sec
+[  6]  2.0- 3.0 sec  83.4 MBytes   699 Mbits/sec
+[  6]  3.0- 4.0 sec  81.4 MBytes   683 Mbits/sec
+[  6]  4.0- 5.0 sec  67.3 MBytes   564 Mbits/sec
+[  6]  5.0- 6.0 sec  98.5 MBytes   826 Mbits/sec
+[  6]  6.0- 7.0 sec  98.0 MBytes   822 Mbits/sec
+[  6]  7.0- 8.0 sec  98.5 MBytes   826 Mbits/sec
+[  6]  8.0- 9.0 sec  95.8 MBytes   804 Mbits/sec
+[  6]  9.0-10.0 sec  97.0 MBytes   814 Mbits/sec
+[  6]  0.0-10.2 sec   919 MBytes   756 Mbits/sec
+
+2) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 1470 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 1000m -l 1470
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 1470 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 51893
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec  96.6 MBytes   810 Mbits/sec   0.012 ms  208/69116 (0.3%)
+[  5]  1.0- 2.0 sec  96.1 MBytes   806 Mbits/sec   0.010 ms  157/68724 (0.23%)
+[  5]  2.0- 3.0 sec  95.9 MBytes   804 Mbits/sec   0.011 ms   11/68415 (0.016%)
+[  5]  3.0- 4.0 sec  95.9 MBytes   804 Mbits/sec   0.011 ms    0/68404 (0%)
+[  5]  4.0- 5.0 sec  95.9 MBytes   804 Mbits/sec   0.010 ms   25/68429 (0.037%)
+[  5]  5.0- 6.0 sec  95.9 MBytes   804 Mbits/sec   0.008 ms   47/68451 (0.069%)
+[  5]  6.0- 7.0 sec  95.9 MBytes   804 Mbits/sec   0.012 ms   14/68418 (0.02%)
+[  5]  7.0- 8.0 sec  95.9 MBytes   804 Mbits/sec   0.011 ms   23/68427 (0.034%)
+[  5]  8.0- 9.0 sec  95.9 MBytes   804 Mbits/sec   0.008 ms   19/68423 (0.028%)
+[  5]  9.0-10.0 sec  95.9 MBytes   804 Mbits/sec   0.009 ms   19/68423 (0.028%)
+[  5]  0.0-10.1 sec   967 MBytes   805 Mbits/sec   0.011 ms  522/690465 (0.076%
+
+3) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 1470 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 2000m -l 1470
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 1470 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 57931
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec  96.1 MBytes   806 Mbits/sec   0.009 ms  653/69219 (0.94%)
+[  5]  1.0- 2.0 sec  96.0 MBytes   805 Mbits/sec   0.003 ms    3/68448 (0.0044%)
+[  5]  2.0- 3.0 sec  95.9 MBytes   804 Mbits/sec   0.006 ms    0/68404 (0%)
+[  5]  3.0- 4.0 sec  95.9 MBytes   804 Mbits/sec   0.001 ms 1182/69586 (1.7%)
+[  5]  4.0- 5.0 sec  93.7 MBytes   786 Mbits/sec   0.006 ms 3071/69893 (4.4%)
+[  5]  5.0- 6.0 sec  95.9 MBytes   804 Mbits/sec   0.006 ms    0/68404 (0%)
+[  5]  6.0- 7.0 sec  96.4 MBytes   808 Mbits/sec   0.008 ms    0/68745 (0%)
+[  5]  7.0- 8.0 sec  96.4 MBytes   809 Mbits/sec   0.007 ms    0/68761 (0%)
+[  5]  8.0- 9.0 sec  95.9 MBytes   804 Mbits/sec   0.006 ms    0/68404 (0%)
+[  5]  9.0-10.0 sec  96.4 MBytes   809 Mbits/sec   0.003 ms    0/68795 (0%)
+[  5]  0.0-10.0 sec   959 MBytes   804 Mbits/sec   0.225 ms 4908/688967 (0.71%)
+
+4) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 3000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 1000m -l 3000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 3000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 40024
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   124 MBytes  1.04 Gbits/sec   0.021 ms    1/43491 (0.0023%)
+[  5]  1.0- 2.0 sec   124 MBytes  1.04 Gbits/sec   0.023 ms    1/43471 (0.0023%)
+[  5]  2.0- 3.0 sec   124 MBytes  1.04 Gbits/sec   0.023 ms    0/43473 (0%)
+[  5]  3.0- 4.0 sec   124 MBytes  1.04 Gbits/sec   0.021 ms    1/43445 (0.0023%)
+[  5]  4.0- 5.0 sec   124 MBytes  1.04 Gbits/sec   0.021 ms    1/43466 (0.0023%)
+[  5]  5.0- 6.0 sec   124 MBytes  1.04 Gbits/sec   0.026 ms    0/43421 (0%)
+[  5]  6.0- 7.0 sec   124 MBytes  1.04 Gbits/sec   0.020 ms    1/43486 (0.0023%)
+[  5]  7.0- 8.0 sec   124 MBytes  1.04 Gbits/sec   0.024 ms    1/43464 (0.0023%)
+[  5]  8.0- 9.0 sec   124 MBytes  1.04 Gbits/sec   0.025 ms    0/43480 (0%)
+[  5]  0.0-10.0 sec  1.21 GBytes  1.04 Gbits/sec   0.025 ms    6/434668 (0.0014%)
+
+5) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 3000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 5000m -l 3000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 3000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 54945
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec  68.1 MBytes   572 Mbits/sec   0.141 ms 36247/60064 (60%)
+[  5]  1.0- 2.0 sec  68.5 MBytes   575 Mbits/sec   0.065 ms 36231/60177 (60%)
+[  5]  2.0- 3.0 sec  31.8 MBytes   266 Mbits/sec   0.085 ms 63548/74649 (85%)
+[  5]  3.0- 4.0 sec  38.4 MBytes   322 Mbits/sec   0.041 ms 58025/71434 (81%)
+[  5]  4.0- 5.0 sec  58.8 MBytes   494 Mbits/sec   0.026 ms 37980/58548 (65%)
+[  5]  5.0- 6.0 sec  61.0 MBytes   512 Mbits/sec   0.037 ms 35542/56870 (62%)
+[  5]  6.0- 7.0 sec  58.0 MBytes   487 Mbits/sec   0.108 ms 37066/57348 (65%)
+[  5]  7.0- 8.0 sec  57.5 MBytes   483 Mbits/sec   0.045 ms 36381/56493 (64%)
+[  5]  8.0- 9.0 sec  57.2 MBytes   480 Mbits/sec   0.039 ms 36093/56088 (64%)
+[  5]  9.0-10.0 sec  57.1 MBytes   479 Mbits/sec   0.041 ms 36306/56262 (65%)
+[  5] 10.0-11.0 sec  66.9 MBytes   561 Mbits/sec   0.047 ms 43068/66435 (65%)
+[  5]  0.0-11.2 sec   637 MBytes   477 Mbits/sec   0.374 ms 465510/688247 (68%)
+
+6) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 6000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 2000m -l 6000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 6000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46177
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec   114 MBytes   956 Mbits/sec   0.033 ms   27/19954 (0.14%)
+[  5]  1.0- 2.0 sec  79.6 MBytes   667 Mbits/sec   0.030 ms    2/13907 (0.014%)
+[  5]  2.0- 3.0 sec  69.5 MBytes   583 Mbits/sec   0.026 ms 4487/16631 (27%)
+[  5]  3.0- 4.0 sec  68.9 MBytes   578 Mbits/sec   0.028 ms 17149/29190 (59%)
+[  5]  4.0- 5.0 sec  68.6 MBytes   575 Mbits/sec   0.029 ms 26712/38699 (69%)
+[  5]  5.0- 6.0 sec  42.9 MBytes   360 Mbits/sec   0.046 ms 32336/39828 (81%)
+[  5]  6.0- 7.0 sec  26.6 MBytes   223 Mbits/sec   0.026 ms    4/ 4656 (0.086%)
+[  5]  7.0- 8.0 sec  69.1 MBytes   579 Mbits/sec   0.029 ms 38809/50880 (76%)
+[  5]  8.0- 9.0 sec  34.5 MBytes   290 Mbits/sec   0.029 ms 45385/51419 (88%)
+[  5]  9.0-10.0 sec  34.3 MBytes   288 Mbits/sec   0.031 ms    0/ 5997 (0%)
+[  5] 10.0-11.0 sec  69.1 MBytes   579 Mbits/sec   0.030 ms 51305/63374 (81%)
+[  5]  0.0-11.5 sec   746 MBytes   543 Mbits/sec  43.868 ms 304046/434353 (70%)
+
+7) 
+sudo ip netns exec h3 iperf -s -u -w 16M -l 6000 -i 1
+sudo ip netns exec h1 iperf -c 10.10.3.1 -u -w 16M -b 5000m -l 6000
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 6000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 44881
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec  55.5 MBytes   466 Mbits/sec   0.043 ms 8453/18159 (47%)
+[  5]  1.0- 2.0 sec  14.9 MBytes   125 Mbits/sec   0.060 ms 3249/ 5851 (56%)
+[  5]  2.0- 3.0 sec  35.2 MBytes   295 Mbits/sec   0.073 ms 1291/ 7445 (17%)
+[  5]  3.0- 4.0 sec  35.5 MBytes   298 Mbits/sec   0.039 ms 34198/40407 (85%)
+
+------------------------------------------------------------
+Server listening on UDP port 5001
+Receiving 12000 byte datagrams
+UDP buffer size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  5] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 55271
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  5]  0.0- 1.0 sec  21.9 MBytes   183 Mbits/sec   0.122 ms 5153/ 7063 (73%)
+[  5]  1.0- 2.0 sec  26.7 MBytes   224 Mbits/sec   0.080 ms 5685/ 8022 (71%)
+[  5]  2.0- 3.0 sec  0.00 Bytes  0.00 bits/sec   0.080 ms    0/    0 (-nan%)
+[  5]  3.0- 4.0 sec  14.3 MBytes   120 Mbits/sec   0.098 ms 3547/ 4798 (74%)
+[  5]  4.0- 5.0 sec  19.5 MBytes   164 Mbits/sec   0.135 ms 3689/ 5394 (68%)
+[  5]  5.0- 6.0 sec  0.00 Bytes  0.00 bits/sec   0.135 ms    0/    0 (-nan%)
+
+CHANGING SIMULATION DELAY
+
+lrtor.setDelay((float)0.001);
+
+sudo ip netns exec h1 ping -c10 10.10.3.1
+PING 10.10.3.1 (10.10.3.1) 56(84) bytes of data.
+64 bytes from 10.10.3.1: icmp_req=1 ttl=62 time=2.55 ms
+64 bytes from 10.10.3.1: icmp_req=2 ttl=62 time=2.53 ms
+64 bytes from 10.10.3.1: icmp_req=3 ttl=62 time=2.53 ms
+64 bytes from 10.10.3.1: icmp_req=4 ttl=62 time=2.54 ms
+64 bytes from 10.10.3.1: icmp_req=5 ttl=62 time=2.52 ms
+64 bytes from 10.10.3.1: icmp_req=6 ttl=62 time=2.48 ms
+64 bytes from 10.10.3.1: icmp_req=7 ttl=62 time=2.54 ms
+64 bytes from 10.10.3.1: icmp_req=8 ttl=62 time=2.53 ms
+64 bytes from 10.10.3.1: icmp_req=9 ttl=62 time=2.54 ms
+64 bytes from 10.10.3.1: icmp_req=10 ttl=62 time=2.53 ms
+
+--- 10.10.3.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9015ms
+rtt min/avg/max/mdev = 2.480/2.533/2.556/0.019 ms
+
+lrtor.setDelay((float)0.0001);
+
+sudo ip netns exec h1 ping -c10 10.10.3.1
+PING 10.10.3.1 (10.10.3.1) 56(84) bytes of data.
+64 bytes from 10.10.3.1: icmp_req=1 ttl=62 time=0.764 ms
+64 bytes from 10.10.3.1: icmp_req=2 ttl=62 time=0.744 ms
+64 bytes from 10.10.3.1: icmp_req=3 ttl=62 time=0.739 ms
+64 bytes from 10.10.3.1: icmp_req=4 ttl=62 time=0.728 ms
+64 bytes from 10.10.3.1: icmp_req=5 ttl=62 time=0.734 ms
+64 bytes from 10.10.3.1: icmp_req=6 ttl=62 time=0.731 ms
+64 bytes from 10.10.3.1: icmp_req=7 ttl=62 time=0.725 ms
+64 bytes from 10.10.3.1: icmp_req=8 ttl=62 time=0.724 ms
+64 bytes from 10.10.3.1: icmp_req=9 ttl=62 time=0.732 ms
+64 bytes from 10.10.3.1: icmp_req=10 ttl=62 time=0.725 ms
+
+--- 10.10.3.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 8998ms
+rtt min/avg/max/mdev = 0.724/0.734/0.764/0.031 ms
+
+lrtor.setDelay((float)0.00001);
+
+sudo ip netns exec h1 ping -c10 10.10.3.1
+PING 10.10.3.1 (10.10.3.1) 56(84) bytes of data.
+64 bytes from 10.10.3.1: icmp_req=1 ttl=62 time=0.591 ms
+64 bytes from 10.10.3.1: icmp_req=2 ttl=62 time=0.620 ms
+64 bytes from 10.10.3.1: icmp_req=3 ttl=62 time=0.599 ms
+64 bytes from 10.10.3.1: icmp_req=4 ttl=62 time=0.607 ms
+64 bytes from 10.10.3.1: icmp_req=5 ttl=62 time=0.602 ms
+64 bytes from 10.10.3.1: icmp_req=6 ttl=62 time=0.612 ms
+64 bytes from 10.10.3.1: icmp_req=7 ttl=62 time=0.602 ms
+64 bytes from 10.10.3.1: icmp_req=8 ttl=62 time=0.619 ms
+64 bytes from 10.10.3.1: icmp_req=9 ttl=62 time=0.616 ms
+64 bytes from 10.10.3.1: icmp_req=10 ttl=62 time=0.618 ms
+
+--- 10.10.3.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 8998ms
+rtt min/avg/max/mdev = 0.591/0.608/0.620/0.028 ms
+
+lrtor.setDelay((float)0.000001);		BEST RESULT
+
+sudo ip netns exec h1 ping -c10 10.10.3.1
+PING 10.10.3.1 (10.10.3.1) 56(84) bytes of data.
+64 bytes from 10.10.3.1: icmp_req=1 ttl=62 time=0.742 ms
+64 bytes from 10.10.3.1: icmp_req=2 ttl=62 time=0.565 ms
+64 bytes from 10.10.3.1: icmp_req=3 ttl=62 time=0.554 ms
+64 bytes from 10.10.3.1: icmp_req=4 ttl=62 time=0.560 ms
+64 bytes from 10.10.3.1: icmp_req=5 ttl=62 time=0.587 ms
+64 bytes from 10.10.3.1: icmp_req=6 ttl=62 time=0.580 ms
+64 bytes from 10.10.3.1: icmp_req=7 ttl=62 time=0.589 ms
+64 bytes from 10.10.3.1: icmp_req=8 ttl=62 time=0.590 ms
+64 bytes from 10.10.3.1: icmp_req=9 ttl=62 time=0.544 ms
+64 bytes from 10.10.3.1: icmp_req=10 ttl=62 time=0.552 ms
+
+--- 10.10.3.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 8998ms
+rtt min/avg/max/mdev = 0.544/0.586/0.742/0.057 ms
+
+lrtor.setDelay((float)0.0);
+
+sudo ip netns exec h1 ping -c10 10.10.3.1
+PING 10.10.3.1 (10.10.3.1) 56(84) bytes of data.
+64 bytes from 10.10.3.1: icmp_req=1 ttl=62 time=0.691 ms
+64 bytes from 10.10.3.1: icmp_req=2 ttl=62 time=0.612 ms
+64 bytes from 10.10.3.1: icmp_req=3 ttl=62 time=0.637 ms
+64 bytes from 10.10.3.1: icmp_req=4 ttl=62 time=0.630 ms
+64 bytes from 10.10.3.1: icmp_req=5 ttl=62 time=0.614 ms
+64 bytes from 10.10.3.1: icmp_req=6 ttl=62 time=0.624 ms
+64 bytes from 10.10.3.1: icmp_req=7 ttl=62 time=0.627 ms
+64 bytes from 10.10.3.1: icmp_req=8 ttl=62 time=0.613 ms
+64 bytes from 10.10.3.1: icmp_req=9 ttl=62 time=0.628 ms
+64 bytes from 10.10.3.1: icmp_req=10 ttl=62 time=0.615 ms
+
+--- 10.10.3.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 8998ms
+rtt min/avg/max/mdev = 0.612/0.629/0.691/0.024 ms
+
+Using BEST RESULT and TCP
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46556
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   104 MBytes   873 Mbits/sec
+[  6]  1.0- 2.0 sec   108 MBytes   905 Mbits/sec
+[  6]  2.0- 3.0 sec   115 MBytes   962 Mbits/sec
+[  6]  3.0- 4.0 sec   113 MBytes   952 Mbits/sec
+[  6]  4.0- 5.0 sec   113 MBytes   949 Mbits/sec
+[  6]  5.0- 6.0 sec   114 MBytes   958 Mbits/sec
+[  6]  6.0- 7.0 sec   113 MBytes   945 Mbits/sec
+[  6]  7.0- 8.0 sec   113 MBytes   952 Mbits/sec
+[  6]  8.0- 9.0 sec   113 MBytes   952 Mbits/sec
+[  6]  9.0-10.0 sec   114 MBytes   959 Mbits/sec
+[  6]  0.0-10.1 sec  1.11 GBytes   940 Mbits/sec
+
+DELAY ZERO 
+
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 32.0 MByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.3.1 port 5001 connected with 10.10.1.2 port 46557
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  95.4 MBytes   800 Mbits/sec
+[  6]  1.0- 2.0 sec  95.5 MBytes   801 Mbits/sec
+[  6]  2.0- 3.0 sec  96.3 MBytes   808 Mbits/sec
+[  6]  3.0- 4.0 sec  97.3 MBytes   816 Mbits/sec
+[  6]  4.0- 5.0 sec  98.0 MBytes   822 Mbits/sec
+[  6]  5.0- 6.0 sec  96.4 MBytes   809 Mbits/sec
+[  6]  6.0- 7.0 sec  96.8 MBytes   812 Mbits/sec
+[  6]  7.0- 8.0 sec  91.5 MBytes   768 Mbits/sec
+[  6]  8.0- 9.0 sec  98.2 MBytes   824 Mbits/sec
+[  6]  9.0-10.0 sec  97.3 MBytes   816 Mbits/sec
+[  6]  0.0-10.2 sec   979 MBytes   808 Mbits/sec
+
