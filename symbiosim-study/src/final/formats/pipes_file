@@ -1,0 +1,4 @@
+pipe_id list_of_interfaces(transmitting only)
+===================================================================
+pipe1 topnet:sub1:h1:if0 topnet:sub1:r:ifgateway topnet:sub2:r:ifh1
+pipe2 topnet:sub2:h1:if0 topnet:sub2:r:ifgateway topnet:sub1:r:ifh1

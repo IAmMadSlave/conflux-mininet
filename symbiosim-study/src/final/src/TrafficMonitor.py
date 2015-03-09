@@ -14,7 +14,7 @@ def enqueue_output( out, queue ):
             queue.put( line )
     out.close()
 
-class Traffic_Monitor():
+class TrafficMonitor():
     
     def __init__( self, mn_pipes_file, demand_file ):
         # for writing demand to file
@@ -40,10 +40,12 @@ class Traffic_Monitor():
     def run( self ):
         # module loading 
         self.start_module()
-        print 'start module'
 
-        cat = Popen( ['cat', '/proc/net/tcpprobe'], stdout=PIPE, bufsize=1,
+        env = os.environ.copy()
+        env['LC_ALL'] = 'C'
+        cat = Popen( ['cat', '/proc/net/tcpprobe'], env=env, stdout=PIPE, bufsize=1,
             close_fds=ON_POSIX )
+
         q = Queue()
         t1 = threading.Thread( target=enqueue_output, args=(cat.stdout, q) )
         t1.daemon = True
@@ -60,7 +62,6 @@ class Traffic_Monitor():
         cat.terminate()
         # module unloading
         self.stop_module()
-        print 'mod stop'
         return
 
     def start_module( self ):
@@ -99,7 +100,3 @@ class Traffic_Monitor():
                 time.sleep(1)
                 # add drift control here
             return
-
-if __name__== '__main__':
-        tm = Traffic_Monitor( 'mn_pipes_file', 'demand_file' )
-        tm.run()

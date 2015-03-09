@@ -1,0 +1,163 @@
+<?xml version="1.0" ?>
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema_instance" xsi:noNamespaceSchemaLocation="primex.xsd">
+	<node name="topnet" type="Net" >
+		<!-- RoutingSphere name=_rsphere_ numRoutes=19  -->
+		<node name="_viz_agg_" type="VizAggregate" >
+			<attribute name="var_id" value="180" symbol="false" />
+		</node>
+		<node name="router0" type="Router" >
+			<node name="ifh1" type="Interface" >
+				<attribute name="bit_rate" value="1.0E9" symbol="false" />
+				<attribute name="buffer_size" value="65535" symbol="false" />
+				<attribute name="latency" value="0.0" symbol="false" />
+			</node>
+			<node name="ifh3" type="Interface" >
+				<attribute name="bit_rate" value="1.0E9" symbol="false" />
+				<attribute name="buffer_size" value="65535" symbol="false" />
+				<attribute name="latency" value="0.0" symbol="false" />
+			</node>
+			<node name="ifr1" type="Interface" >
+				<attribute name="queue_type" value="RedQueue" symbol="false" />
+				<attribute name="bit_rate" value="1.0E9" symbol="false" />
+				<attribute name="buffer_size" value="65535" symbol="false" />
+				<attribute name="latency" value="0.0" symbol="false" />
+			</node>
+		</node>
+		<node name="router1" type="Router" >
+			<node name="ifr0" type="Interface" >
+				<attribute name="queue_type" value="RedQueue" symbol="false" />
+				<attribute name="bit_rate" value="1.0E9" symbol="false" />
+				<attribute name="buffer_size" value="65535" symbol="false" />
+				<attribute name="latency" value="0.0" symbol="false" />
+			</node>
+			<node name="ifh2" type="Interface" >
+				<attribute name="bit_rate" value="1.0E9" symbol="false" />
+				<attribute name="buffer_size" value="65535" symbol="false" />
+				<attribute name="latency" value="0.0" symbol="false" />
+			</node>
+			<node name="ifh4" type="Interface" >
+				<attribute name="bit_rate" value="1.0E9" symbol="false" />
+				<attribute name="buffer_size" value="65535" symbol="false" />
+				<attribute name="latency" value="0.0" symbol="false" />
+			</node>
+		</node>
+		<node name="host1" type="Host" >
+			<node name="if0" type="Interface" >
+				<attribute name="bit_rate" value="1.0E9" symbol="false" />
+				<attribute name="buffer_size" value="65535" symbol="false" />
+				<attribute name="latency" value="0.0" symbol="false" />
+			</node>
+			<node name="TCPMaster_18" type="TCPMaster" >
+				<attribute name="tcpCA" value="reno" symbol="false" />
+				<attribute name="mss" value="1400" symbol="false" />
+			</node>
+			<node name="Sender_19" type="Sender" >
+				<attribute name="flow_id" value="1" symbol="false" />
+			</node>
+		</node>
+		<node name="host2" type="Host" >
+			<node name="if0" type="Interface" >
+				<attribute name="bit_rate" value="1.0E9" symbol="false" />
+				<attribute name="buffer_size" value="65535" symbol="false" />
+				<attribute name="latency" value="0.0" symbol="false" />
+			</node>
+			<node name="TCPMaster_22" type="TCPMaster" >
+				<attribute name="tcpCA" value="reno" symbol="false" />
+				<attribute name="mss" value="1400" symbol="false" />
+			</node>
+			<node name="Receiver_23" type="Receiver" >
+				<attribute name="flow_id" value="1" symbol="false" />
+			</node>
+		</node>
+		<node name="host3" type="Host" >
+			<node name="if0" type="Interface" >
+				<attribute name="bit_rate" value="1.0E9" symbol="false" />
+				<attribute name="buffer_size" value="65535" symbol="false" />
+				<attribute name="latency" value="0.0" symbol="false" />
+			</node>
+			<node name="TCPMaster_26" type="TCPMaster" >
+				<attribute name="tcpCA" value="reno" symbol="false" />
+				<attribute name="mss" value="1400" symbol="false" />
+			</node>
+			<node name="HTTPServer_27" type="HTTPServer" >
+			</node>
+		</node>
+		<node name="host4" type="Host" >
+			<node name="if0" type="Interface" >
+				<attribute name="bit_rate" value="1.0E9" symbol="false" />
+				<attribute name="buffer_size" value="65535" symbol="false" />
+				<attribute name="latency" value="0.0" symbol="false" />
+			</node>
+			<node name="TCPMaster_30" type="TCPMaster" >
+				<attribute name="tcpCA" value="reno" symbol="false" />
+				<attribute name="mss" value="1400" symbol="false" />
+			</node>
+			<node name="HTTPClient_31" type="HTTPClient" >
+			</node>
+		</node>
+		<node name="r0_h1" type="Link" >
+			<attribute name="delay" value="0.0010000000474974513" symbol="false" />
+			<attribute name="bandwidth" value="1.0E9" symbol="false" />
+			<ref name="InterfaceAlias_33" path="..:router0:ifh1" />
+			<ref name="InterfaceAlias_34" path="..:host1:if0" />
+		</node>
+		<node name="r1_h2" type="Link" >
+			<attribute name="delay" value="1.0000000116860974E-7" symbol="false" />
+			<attribute name="bandwidth" value="1.0E9" symbol="false" />
+			<ref name="InterfaceAlias_36" path="..:router1:ifh2" />
+			<ref name="InterfaceAlias_37" path="..:host2:if0" />
+		</node>
+		<node name="r0_h3" type="Link" >
+			<attribute name="delay" value="0.0010000000474974513" symbol="false" />
+			<attribute name="bandwidth" value="1.0E9" symbol="false" />
+			<ref name="InterfaceAlias_39" path="..:router0:ifh3" />
+			<ref name="InterfaceAlias_40" path="..:host3:if0" />
+		</node>
+		<node name="r1_h4" type="Link" >
+			<attribute name="delay" value="1.0000000116860974E-7" symbol="false" />
+			<attribute name="bandwidth" value="1.0E9" symbol="false" />
+			<ref name="InterfaceAlias_42" path="..:router1:ifh4" />
+			<ref name="InterfaceAlias_43" path="..:host4:if0" />
+		</node>
+		<node name="l_r0_r1" type="Link" >
+			<attribute name="delay" value="0.014999999664723873" symbol="false" />
+			<attribute name="bandwidth" value="1.0E9" symbol="false" />
+			<ref name="InterfaceAlias_45" path="..:router1:ifr0" />
+			<ref name="InterfaceAlias_46" path="..:router0:ifr1" />
+		</node>
+		<node name="Traffic_47" type="Traffic" >
+			<node name="MyNewAppTraffic_48" type="MyNewAppTraffic" >
+				<attribute name="update_interval" value="1.0" symbol="false" />
+				<attribute name="srcs" value="01021
+001064
+Host01023
+103" symbol="false" />
+				<attribute name="demand_file" value="/Users/rong/Documents/workspace/primex/netsim/demand_file" symbol="false" />
+				<attribute name="host_uid" value="/Users/rong/Documents/workspace/primex/netscript/exp/dumbelltrafficxml/dumbelltrafficxml_node_uid.txt" symbol="false" />
+				<attribute name="start_time" value="1.0" symbol="false" />
+				<attribute name="stop" value="5.0" symbol="false" />
+				<attribute name="dsts" value="01021
+001064
+Host01022
+80" symbol="false" />
+			</node>
+			<node name="TCPTraffic_49" type="TCPTraffic" >
+				<attribute name="srcs" value="01021
+001064
+Host01023
+149" symbol="false" />
+				<attribute name="start_time" value="0.0" symbol="false" />
+				<attribute name="number_of_sessions" value="1" symbol="false" />
+				<attribute name="dsts" value="01021
+001064
+Host01023
+126" symbol="false" />
+				<attribute name="connections_per_session" value="1" symbol="false" />
+				<attribute name="file_size" value="10000000" symbol="false" />
+			</node>
+		</node>
+		<node name="__dynamic_traffics__" type="Traffic" >
+		</node>
+		<node name="3" type="ShortestPath" />
+	</node>
+</model>

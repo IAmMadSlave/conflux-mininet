@@ -160,3 +160,10 @@ class Parser():
 
     def get_emuhosts( self ):
         return self.emuhosts
+
+if __name__ == '__main__':
+    p = Parser( 'dumbelltrafficxml.xml' )
+    p.xml_to_json()
+    e = p.get_emuhosts()
+    for i in e:
+        print i

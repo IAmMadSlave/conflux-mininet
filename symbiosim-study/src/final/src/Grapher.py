@@ -29,14 +29,12 @@ class Grapher():
         #net = ast.literal_eval( json.dumps(net) )
         self.net = net
 
-        self.g = nx.Graph( routing=self.routing_type( self.net['topNet'] ) )
+        #self.g = nx.Graph( routing=self.routing_type( self.net['topnet'] ) )
+        self.g = nx.Graph()
 
-        self.subnets = self.has_subnets( self.net['topNet'] )
+        self.subnets = self.has_subnets( self.net['topnet'] )
 
-        if self.subnets is None:
-            self.json_to_networkx(self.g, self.net['topNet'])
-        else:
-            self.json_to_networkx(self.g, self.net['topNet'], self.subnets)
+        self.json_to_networkx(self.g, self.net['topnet'])
 
     def json_to_networkx( self, g, top, s=None ):
         if top.has_key( 'subnets' ):
@@ -45,23 +43,23 @@ class Grapher():
 
         if top.has_key( 'hosts' ):
             for host in top['hosts']:
-                if s is not None:
-                    for i in range( len( s ) ):
-                        if self.subnets[i]['name'] == top['name']:
-                            nodename = top['name']+':'+host['name']
-                            self.subnets[i]['nodes'].append( nodename )
-                            break
-                        else:
-                            continue
-                        break
-                else:
-                    nodename = host['name']
+                #if s is not None:
+                #    for i in range( len( s ) ):
+                #        if self.subnets[i]['name'] == top['name']:
+                #            nodename = top['name']+':'+host['name']
+                #            self.subnets[i]['nodes'].append( nodename )
+                #            break
+                #        else:
+                #            continue
+                #        break
+                #else:
+                nodename = host['name'].strip()
                 g.add_node( nodename, type='host',
                         interfaces=len( host['interfaces'] ) )
                 for interface in host['interfaces']:
-                    interfacename = nodename+':'+interface['name']
-                    if s is not None and nodename.find( top['name'] ) > -1:
-                        self.subnets[i]['nodes'].append( interfacename )
+                    interfacename = interface['name']
+                    #if s is not None and nodename.find( top['name'] ) > -1:
+                    #    self.subnets[i]['nodes'].append( interfacename )
 
                     g.add_node( interfacename, type='interface',
                         bit_rate=self.str_to_num( interface['bit_rate'] ), 
@@ -70,23 +68,23 @@ class Grapher():
 
         if top.has_key( 'routers' ):
             for router in top['routers']:
-                if s is not None:
-                    for i in range( len( s ) ):
-                        if self.subnets[i]['name'] == top['name']:
-                            nodename = top['name']+':'+router['name']
-                            self.subnets[i]['nodes'].append( nodename )
-                            break
-                        else:
-                            continue
-                        break
-                else:
-                    nodename = router['name']
+                #if s is not None:
+                #    for i in range( len( s ) ):
+                #        if self.subnets[i]['name'] == top['name']:
+                #            nodename = top['name']+':'+router['name']
+                #            self.subnets[i]['nodes'].append( nodename )
+                #            break
+                #        else:
+                #            continue
+                #        break
+                #else:
+                nodename = router['name']
                 g.add_node( nodename, type='router', 
                         interfaces=len( router['interfaces'] ) )
                 for interface in router['interfaces']:
-                    interfacename = nodename+':'+interface['name']
-                    if s is not None and nodename.find( top['name'] ) > -1:
-                        self.subnets[i]['nodes'].append( interfacename )
+                    interfacename = interface['name']
+                    #if s is not None and nodename.find( top['name'] ) > -1:
+                    #    self.subnets[i]['nodes'].append( interfacename )
                     
                     g.add_node( interfacename, type='interface',
                         bit_rate=self.str_to_num( interface['bit_rate'] ),
@@ -99,19 +97,19 @@ class Grapher():
                 path = path.replace( '..', '', 1 )
                 path = path.split( '..' )
 
-                if top != self.net['topNet'] and s is not None:
-                    for i in range( len( s ) ):
-                        if self.subnets[i]['name'] == top['name']:
-                            for i in range( len( path ) ):
-                                path[i] = top['name']+path[i]
-                            break
-                        else:
-                            continue
-                        break
-                else:
-                    for i in range( len( path ) ):
-                        path[i] = path[i].replace( ':', '', 1 )
-                g.add_edge( path[0], path[1],
+                #if top != self.net['topnet'] and s is not None:
+                #    for i in range( len( s ) ):
+                #        if self.subnets[i]['name'] == top['name']:
+                #            for i in range( len( path ) ):
+                #                path[i] = top['name']+path[i]
+                #            break
+                #        else:
+                #            continue
+                #        break
+                #else:
+                    #for i in range( len( path ) ):
+                    #    path[i] = path[i].replace( ':', '', 1 )
+                g.add_edge( path[0].strip(), path[1].strip(),
                     bandwidth=self.str_to_num( link['bandwidth'] ), 
                     delay=self.str_to_num( link['delay'] ),
                     name=link['name'],)
@@ -124,7 +122,6 @@ class Grapher():
         return subnets
 
     def json_to_graph( self ):
-
         return self.g
 
     
