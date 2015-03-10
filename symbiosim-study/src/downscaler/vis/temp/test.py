@@ -14,9 +14,6 @@ if __name__ == "__main__":
     p = Parser( sys.argv[1] )
     root  = p.xml_to_json()
 
-    import pprint
-    pprint.pprint(root)
-
     g = Grapher ( p.xml_to_json() )
     graph = g.json_to_graph()
 
