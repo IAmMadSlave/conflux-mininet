@@ -1,0 +1,6 @@
+topnet:host1 topnet:host2 0
+topnet:host2 topnet:host1 0
+topnet:host1 topnet:host2 0
+topnet:host2 topnet:host1 0
+topnet:host1 topnet:host2 0
+topnet:host2 topnet:host1 0

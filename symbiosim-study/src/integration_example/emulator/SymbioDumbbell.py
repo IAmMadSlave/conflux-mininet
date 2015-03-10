@@ -3,6 +3,18 @@
 from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.link import TCLink
+from mininet.cli import CLI
+
+from TrafficMonitor import TrafficMonitor
+from TrafficController import TrafficController
+
+import threading
+
+def startMonitor( mn_pipes, demand_file ):
+    tm = TrafficMonitor( mn_pipes, demand_file )
+
+def startController( mn_pipes, tc_file, mn_ip, mn ):
+    tc = TrafficController( mn_pipes, tc_file, mn_ip, mn )
 
 class SingleSwitchTopo( Topo ):
     def build( self, n=2 ):
@@ -22,11 +34,31 @@ def SymbioTest():
     net = Mininet( topo=topo, link=TCLink )
 
     net.start()
-
+    
     left = net.getNodeByName( 'h1' )
     leftIP = left.IP()
-
     right = net.getNodeByName( 'h2' )
     rightIP = right.IP()
 
+    mn_ip = []
+    mn_ip.append( {'name': 'h1', 'ip': leftIP} )
+    mn_ip.append( {'name': 'h2', 'ip': rightIP} )
+
+    t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file',
+    'demand_file' ) )
+    t1.daemon = True
+
+    t2 = threading.Thread( target=startController, args=('mn_pipes_file', 'tc_file',
+        mn_ip, net,) )
+    t2.daemon = True
     
+    t1.start()
+    t2.start()
+
+    cli = CLI
+    cli( net )
+
+    net.stop
+
+if __name__ == '__main__':
+    SymbioTest()

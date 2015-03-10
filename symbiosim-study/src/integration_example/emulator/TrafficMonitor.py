@@ -37,6 +37,8 @@ class TrafficMonitor():
                 p[3].strip(), 'sim_src': p[2].strip(), 'src': p[1].strip(),
                 'nxt': 0, 'name':p[0].strip() } )
 
+        self.run()
+
     def run( self ):
         # module loading 
         self.start_module()
@@ -92,8 +94,7 @@ class TrafficMonitor():
         # write periodic traffic demand to file
         with open( self.demand_file, 'w') as demand:
             # write demand once per second
-            i= 0
-            for i in range( 50 ):
+            while True:
                 for pipe in self.pipes_table:
                     demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(
                         pipe['nxt'] ) +'\n' )

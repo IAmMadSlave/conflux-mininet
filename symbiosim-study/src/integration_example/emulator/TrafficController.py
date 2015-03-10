@@ -7,6 +7,8 @@ import threading
 from subprocess import Popen, PIPE
 from Queue import Queue, Empty
 
+from mininet.net import Mininet
+
 ON_POSIX = 'posix' in sys.builtin_module_names
 
 def enqueue_output( out, queue ):
@@ -14,12 +16,12 @@ def enqueue_output( out, queue ):
             queue.put( line )
     out.close()
 
-class TrafficMonitor():
+class TrafficController():
     
-    def __init__( self, mn_pipes_file, demand_file ):
-        # for writing demand to file
-        self.demand_file = demand_file
-      
+    def __init__( self, mn_pipes_file, tc_file, mn_ip, mn ):
+        self.mn_ip = mn_ip
+        self.mn = mn
+
         # read pipe info 
         pipes = []
         with open( mn_pipes_file, 'r') as openfile:
@@ -37,13 +39,12 @@ class TrafficMonitor():
                 p[3].strip(), 'sim_src': p[2].strip(), 'src': p[1].strip(),
                 'nxt': 0, 'name':p[0].strip() } )
 
-    def run( self ):
-        # module loading 
-        self.start_module()
+        self.run()
 
+    def run( self ):
         env = os.environ.copy()
         env['LC_ALL'] = 'C'
-        cat = Popen( ['cat', '/proc/net/tcpprobe'], env=env, stdout=PIPE, bufsize=1,
+        cat = Popen( ['cat', 'tc_file'], env=env, stdout=PIPE, bufsize=1,
             close_fds=ON_POSIX )
 
         q = Queue()
@@ -54,29 +55,9 @@ class TrafficMonitor():
         t2 = threading.Thread( target=self.continous_update, args=(q,) )
         t2.daemon = True
         t2.start()
-       
-        t3 = threading.Thread( target=self.timed_update )
-        t3.start()
 
-        t3.join()
         cat.terminate()
-        # module unloading
-        self.stop_module()
         return
-
-    def start_module( self ):
-        # unload kernel module
-        subprocess.call( ['modprobe', '-r', 'tcp_probe'] )
-
-        # load kernel module
-        subprocess.call( ['modprobe', 'tcp_probe', 'full=0'] )
-
-        # change permissions to read on tcp_probe output
-        subprocess.call( ['chmod', '444', '/proc/net/tcpprobe'] )
-
-    def stop_module( self ):
-        # unload kernel module
-        subprocess.call( ['modprobe', '-r', 'tcp_probe'] )
 
     def continous_update( self, q ):
         while True:
@@ -86,17 +67,13 @@ class TrafficMonitor():
                 line = None
             else:
                 lineparts = line.split( ' ' )
-                self.pipes_table[0]['nxt'] = lineparts[4]
+                for p in self.pipes_table:
+                    if p['name'] == lineparts[0]:
+                        for ip in self.mn_ip:
+                            if ip.get( 'ip' ) == p['src']:
+                                hostname = ip.get( 'name' )
+                host = self.mn.getNodeByName( hostname )
+                host.cmd( 'tc qdisc dev %s add netem rate %dbits', host.defaultIntf() , lineparts[2] )
+                host.cmd( 'tc qdisc change dev %s root netemm loss %d', host.defaultIntf() , lineparts[1] )
 
-    def timed_update( self ):
-        # write periodic traffic demand to file
-        with open( self.demand_file, 'w') as demand:
-            # write demand once per second
-            i= 0
-            for i in range( 50 ):
-                for pipe in self.pipes_table:
-                    demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(
-                        pipe['nxt'] ) +'\n' )
-                time.sleep(1)
-                # add drift control here
-            return
+                    
