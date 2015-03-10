@@ -88,16 +88,24 @@ class TrafficMonitor():
                 line = None
             else:
                 lineparts = line.split( ' ' )
-                self.pipes_table[0]['nxt'] = lineparts[4]
+
+                src = lineparts[1].split( ':' )
+                src = src[0].strip()
+                dest = lineparts[2].split( ':' )
+                dest = dest[0].strip()
+
+                for pipe in self.pipes_table:
+                    if pipe['src'] == src and pipe['dest'] == dest:
+                        if pipe['nxt'] != lineparts[4]:
+                            pipe['nxt'] = lineparts[4]
+                        else:
+                            pipe['nxt'] = 0
 
     def timed_update( self ):
-        # write periodic traffic demand to file
-        with open( self.demand_file, 'w') as demand:
-            # write demand once per second
-            while True:
-                for pipe in self.pipes_table:
-                    demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(
-                        pipe['nxt'] ) +'\n' )
+        while True:
+            demand = open( self.demand_file, 'w' )
+            for pipe in self.pipes_table:
+                demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(pipe['nxt'] )+'\n' )
                 time.sleep(1)
-                # add drift control here
-            return
+            demand.close()
+        return
