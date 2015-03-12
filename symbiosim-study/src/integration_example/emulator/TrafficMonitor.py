@@ -102,10 +102,9 @@ class TrafficMonitor():
                             pipe['nxt'] = 0
 
     def timed_update( self ):
+        demand = open( 'self.demand_file', 'w' )
         while True:
-            demand = open( self.demand_file, 'w' )
             for pipe in self.pipes_table:
                 demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(pipe['nxt'] )+'\n' )
                 time.sleep(1)
-            demand.close()
-        return
+   
