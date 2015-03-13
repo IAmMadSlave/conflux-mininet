@@ -1,0 +1,53 @@
+(Routing)
+h1(10.10.1.1) ---- pollux(eth0)<> ---- (bridge) physical (bridge) --- h3 --- h4
+
+
+Pollux:
+
+echo 0 >> /proc/sys/net/ipv4/ip_forward
+vim /etc/sysctl.conf
+sudo ip link add h1-eth0 type veth peer name pollux-eth1
+sudo ip netns add h1
+sudo ip link set h1-eth0 netns h1
+sudo ip netns exec h1 ifconfig lo up
+sudo ip netns exec h1 ifconfig h1-eth0 10.10.1.1/24
+
+sudo brctl addbr br0
+sudo ifconfig eth0 down
+sudo ifconfig pollux-eth1 down
+sudo brctl addif br0 pollux-eth1
+sudo brctl addif br0 eth0
+sudo ifconfig eth0 0.0.0.0 up
+sudo ifconfig pollux-eth1 0.0.0.0 up
+sudo ifconfig br0 10.1.0.28/16
+route add default gw 10.1.0.1
+sudo ip netns exec h1 ping -c1 10.10.1.2
+
+
+
+
+castor:
+
+echo 0 >> /proc/sys/net/ipv4/ip_forward
+vim /etc/sysctl.conf
+sudo ip link add h2-eth0 type veth peer name castor-eth1
+sudo ip netns add h2
+sudo ip link set h2-eth0 netns h2
+sudo ip netns exec h2 ifconfig lo up
+sudo ip netns exec h2 ifconfig h2-eth0 10.10.1.2/24
+
+sudo brctl addbr br0
+sudo ifconfig eth0 down
+sudo ifconfig castor-eth1 down
+sudo brctl addif br0 castor-eth1
+sudo brctl addif br0 eth0
+sudo ifconfig eth0 0.0.0.0 up
+sudo ifconfig castor-eth1 0.0.0.0 up
+sudo ifconfig br0 10.1.0.29/16
+route add default gw 10.1.0.1
+
+sudo ip netns exec h1 ping -c1 10.10.1.2
+sudo ip netns exec h2 ping -c1 10.10.1.1
+
+
+
