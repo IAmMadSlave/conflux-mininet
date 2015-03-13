@@ -14,6 +14,9 @@ from mininet.node import Node
 from mininet.log import setLogLevel, info
 from mininet.cli import CLI
 from mininet.util import irange
+from mininet.util import custom
+from mininet.node import CPULimitedHost
+from mininet.link import TCLink
 
 from time import sleep, time
 
@@ -58,7 +61,10 @@ class NetworkTopo( Topo ):
 
 def run():
     topo = NetworkTopo()
-    net = Mininet( topo=topo, controller=None ) # no controller needed
+    host = custom(CPULimitedHost, cpu=.15)
+    link = custom(TCLink, bw=100, delay='1ms', max_queue_size=200)
+
+    net = Mininet( topo=topo, host=host, link=link, controller=None ) # no controller needed
     net.start()
 
     # adding static routes
