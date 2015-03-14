@@ -40,16 +40,16 @@ def SymbioTest():
     right = net.getNodeByName( 'h2' )
     rightIP = right.IP()
 
-    mn_ip = []
-    mn_ip.append( {'name': 'h1', 'ip': leftIP} )
-    mn_ip.append( {'name': 'h2', 'ip': rightIP} )
+    mn_ips = []
+    mn_ips.append( {'name': 'h1', 'ip': leftIP} )
+    mn_ips.append( {'name': 'h2', 'ip': rightIP} )
 
     t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file',
     'demand_file' ) )
     t1.daemon = True
 
     t2 = threading.Thread( target=startController, args=('mn_pipes_file', 'tc_file',
-        mn_ip, net,) )
+        mn_ips, net,) )
     t2.daemon = True
     
     t1.start()
