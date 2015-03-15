@@ -4,10 +4,9 @@ from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.link import TCLink
 from mininet.cli import CLI
-#from mininet.topo import SingleSwitchTopo
 
 from TrafficMonitor import TrafficMonitor
-from TrafficController import TrafficController
+#from TrafficController import TrafficController
 
 import threading
 
@@ -49,13 +48,9 @@ def SymbioTest():
 
     print mn_ips
 
-    t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file', 'demand_file' ) )
-    t1.daemon = True
-    #t2 = threading.Thread( target=startController, args=('mn_pipes_file', 'tc_file',
-    #    mn_ips, net,) )
-    #t2.daemon = True
-    t1.start()
-    #t2.start()
+    #t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file', 'demand_file',) )
+    #t1.daemon = True
+    #t1.start()
 
     cli = CLI
     cli( net )

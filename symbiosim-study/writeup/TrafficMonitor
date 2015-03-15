@@ -1,0 +1,22 @@
+TrafficMonitor
+==============
+TrafficMonitor is simple solution we have developed to monitor the TCP traffic demand for each host within Mininet.
+TrafficMonitor uses the tcpprobe kernel module[1] for determing the traffic demand by  collecting and filtering statistics for each host.
+
+Design
+======
+Each host in Mininet is a Linux container attached to a network namespace with a virtual network interface[2]. The kernel module, tcpprobe has been set to return output only if the cwnd changes, by reading the output of the tcpprobe continously in the background we can obtain vital statistics concerning each container. Specifically, the send next pointer in the TCP buffer. The send next pointer is the sequence number of the the first unsent byte of data, more specifically the first byte of data which is not sent, but the recipient is ready to receive[3]. Using the send next pointer it is possible to calculuate the demand. This is done by taking the difference between the send next pointer and its previously observed value. We accumlate this demand over a specified interval and then send it to the simulator, once the demand has been sent the demand resets to zero and the process begins again. Note all calculations performed on sequence numbers must be performed with modulo 2**32[4]
+
+Performance
+===========
+
+
+Future Work
+===========
+As the size of the emulated topology grows the performance begins to decrease. As a result of a larger number of hosts to collect statistics for the process begins to slow down. This is a problem possibly solved by dividing up the emulated topology on to a distributed network of machines all collected to one simulator.
+
+References:
+[1] http://www.linuxfoundation.org/collaborate/workgroups/networking/tcpprobe
+[2] http://conferences.sigcomm.org/co-next/2012/eproceedings/conext/p253.pdf
+[3] http://www.tcpipguide.com/free/t_TCPSlidingWindowDataTransferandAcknowledgementMech-2.htm
+[4] https://www.ietf.org/rfc/rfc793.txt

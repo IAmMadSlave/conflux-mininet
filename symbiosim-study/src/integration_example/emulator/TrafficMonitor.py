@@ -52,7 +52,7 @@ class TrafficMonitor():
             close_fds=ON_POSIX )
 
         q = Queue()
-        t1 = threading.Thread( target=enqueue_output, args=(cat.stdout, q) )
+        t1 = threading.Thread( target=enqueue_output, args=(cat.stdout, q,) )
         t1.daemon = True
         t1.start()
 
@@ -71,25 +71,27 @@ class TrafficMonitor():
 
     def start_module( self ):
         # unload kernel module
-        subprocess.call( ['modprobe', '-r', 'tcp_probe'] )
+        subprocess.call( ['sudo', 'modprobe', '-r', 'tcp_probe'] )
 
         # load kernel module
-        subprocess.call( ['modprobe', 'tcp_probe', 'full=0'] )
+        subprocess.call( ['sudo', 'modprobe', 'tcp_probe', 'full=0'] )
 
         # change permissions to read on tcp_probe output
-        subprocess.call( ['chmod', '444', '/proc/net/tcpprobe'] )
+        subprocess.call( ['sudo', 'chmod', '444', '/proc/net/tcpprobe'] )
 
     def stop_module( self ):
         # unload kernel module
-        subprocess.call( ['modprobe', '-r', 'tcp_probe'] )
+        subprocess.call( ['sudo', 'modprobe', '-r', 'tcp_probe'] )
 
     def continous_update( self, q ):
         while True:
             try:
                 line = q.get_nowait()
+                print 'try'
             except Empty:
                 line = None
             else:
+                print 'else'
                 lineparts = line.split( ' ' )
 
                 src = lineparts[1].split( ':' )
@@ -110,10 +112,6 @@ class TrafficMonitor():
                                 #print seq, pipe['nxt']
                             pipe['delta'] = pipe['delta'] + delta
                             pipe['nxt'] = seq
-                        #if pipe['nxt'] != lineparts[4]:
-                        #    pipe['nxt'] = lineparts[4]
-                        #else:
-                        #    pipe['nxt'] = 0
 
     def timed_update( self ):
         #demand = open( self.demand_file, 'w' )
@@ -128,6 +126,7 @@ class TrafficMonitor():
                 time.sleep(1)
         demand.close()
 
+'''
 if __name__ == '__main__':
     tm = TrafficMonitor( 'mn_pipes_file', 'demand_file' )
-    tm.start()
+'''
