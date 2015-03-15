@@ -33,7 +33,7 @@ class TrafficMonitor():
         # setup pipes in memory 
         self.pipes_table = []
         for p in pipes:
-            self.pipes_table.append( {'delta': 0, 'sim_dest': p[4].strip(), 'dest':
+            self.pipes_table.append( {'time': 0.0, 'delta': 0, 'sim_dest': p[4].strip(), 'dest':
                 p[3].strip(), 'sim_src': p[2].strip(), 'src': p[1].strip(),
                 'nxt': 0, 'name':p[0].strip() } )
 
@@ -87,11 +87,9 @@ class TrafficMonitor():
         while True:
             try:
                 line = q.get_nowait()
-                print 'try'
             except Empty:
                 line = None
             else:
-                print 'else'
                 lineparts = line.split( ' ' )
 
                 src = lineparts[1].split( ':' )
@@ -114,7 +112,6 @@ class TrafficMonitor():
                             pipe['nxt'] = seq
 
     def timed_update( self ):
-        #demand = open( self.demand_file, 'w' )
         with open( self.demand_file, 'w' ) as demand:
             while True:
                 for pipe in self.pipes_table:
@@ -124,9 +121,6 @@ class TrafficMonitor():
                         #print( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(pipe['delta'] )+'\n' )
                         pipe['delta'] = 0
                 time.sleep(1)
-        demand.close()
 
-'''
 if __name__ == '__main__':
     tm = TrafficMonitor( 'mn_pipes_file', 'demand_file' )
-'''
