@@ -33,7 +33,7 @@ class TrafficMonitor():
         # setup pipes in memory 
         self.pipes_table = []
         for p in pipes:
-            self.pipes_table.append( {'sim_dest': p[4].strip(), 'dest':
+            self.pipes_table.append( {'delta': 0, 'sim_dest': p[4].strip(), 'dest':
                 p[3].strip(), 'sim_src': p[2].strip(), 'src': p[1].strip(),
                 'nxt': 0, 'name':p[0].strip() } )
 
@@ -99,21 +99,32 @@ class TrafficMonitor():
 
                 for pipe in self.pipes_table:
                     if pipe['src'] == src and pipe['dest'] == dest:
-                        if pipe['nxt'] != lineparts[4]:
-                            pipe['nxt'] = lineparts[4]
+                        seq = str( lineparts[4] )
+                        seq = int( seq, 16 )
+                        if pipe['nxt'] == 0:
+                            pipe['nxt'] = seq
                         else:
-                            pipe['nxt'] = 0
+                            delta  = seq - pipe['nxt']
+                            if delta < 0:
+                                delta = delta + 0xffffffff
+                                #print seq, pipe['nxt']
+                            pipe['delta'] = pipe['delta'] + delta
+                            pipe['nxt'] = seq
+                        #if pipe['nxt'] != lineparts[4]:
+                        #    pipe['nxt'] = lineparts[4]
+                        #else:
+                        #    pipe['nxt'] = 0
 
     def timed_update( self ):
         #demand = open( self.demand_file, 'w' )
         with open( self.demand_file, 'w' ) as demand:
             while True:
                 for pipe in self.pipes_table:
-                    nxt = str( pipe['nxt'] )
-                    nxt = int( nxt, 16 )
-                    demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+ str( nxt ) +'\n' )
-                    demand.flush()
-                    #print( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(pipe['nxt'] )+'\n' )
+                    if pipe['delta'] != 0:
+                        demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+ str( pipe['delta'] ) +'\n' )
+                        demand.flush()
+                        #print( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(pipe['delta'] )+'\n' )
+                        pipe['delta'] = 0
                 time.sleep(1)
         demand.close()
 
