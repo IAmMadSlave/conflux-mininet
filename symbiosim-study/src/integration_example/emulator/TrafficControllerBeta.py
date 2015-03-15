@@ -35,6 +35,7 @@ class TrafficController():
                             for ip in self.mn_ips:
                                 if ip.get( 'ip' ) == pipe[1]:
                                     print ip.get( 'name' )
+            tcfile.close()
             time.sleep(1)
 
 

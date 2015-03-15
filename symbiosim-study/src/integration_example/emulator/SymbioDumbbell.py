@@ -4,7 +4,7 @@ from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.link import TCLink
 from mininet.cli import CLI
-from mininet.topo import SingleSwitchTopo
+#from mininet.topo import SingleSwitchTopo
 
 from TrafficMonitor import TrafficMonitor
 from TrafficController import TrafficController
@@ -17,26 +17,27 @@ def startMonitor( mn_pipes, demand_file ):
 def startController( mn_pipes, tc_file, mn_ip, mn ):
     tc = TrafficController( mn_pipes, tc_file, mn_ip, mn )
 
-'''
-class SingleSwitchTopo( Topo ):
-    def build( self, n=2 ):
-        switch = self.addSwitch( 's1' )
+class SymbioTopo( Topo ):
+    def __init__( self ):
+        Topo.__init__( self )
 
         leftHost = self.addHost( 'h1' )
         rightHost = self.addHost( 'h2' )
+
+        switch = self.addSwitch( 's1' )
 
         self.addLink( leftHost, switch, 
                 bw=1000, delay='0.001s' )
         
         self.addLink( rightHost, switch,
                 bw=1000, delay='1s' )
-'''               
+
 def SymbioTest():
-    topo = SingleSwitchTopo(2)
+    topo = SymbioTopo()
     net = Mininet( topo=topo, link=TCLink )
 
     net.start()
-    
+  
     left = net.getNodeByName( 'h1' )
     leftIP = left.IP()
     right = net.getNodeByName( 'h2' )
