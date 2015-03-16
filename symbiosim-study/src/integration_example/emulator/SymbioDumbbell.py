@@ -23,34 +23,18 @@ class SymbioTopo( Topo ):
         leftHost = self.addHost( 'h1' )
         rightHost = self.addHost( 'h2' )
 
-        switch = self.addSwitch( 's1' )
-
-        self.addLink( leftHost, switch, 
-                bw=1000, delay='0.001s' )
+        linkopts = dict( bw=10, delay='15ms' )
+        self.addLink( leftHost, rightHost, **linkopts )
         
-        self.addLink( rightHost, switch,
-                bw=1000, delay='1s' )
-
 def SymbioTest():
     topo = SymbioTopo()
     net = Mininet( topo=topo, link=TCLink )
 
     net.start()
   
-    left = net.getNodeByName( 'h1' )
-    leftIP = left.IP()
-    right = net.getNodeByName( 'h2' )
-    rightIP = right.IP()
-
-    mn_ips = []
-    mn_ips.append( {'name': 'h1', 'ip': leftIP} )
-    mn_ips.append( {'name': 'h2', 'ip': rightIP} )
-
-    print mn_ips
-
-    #t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file', 'demand_file',) )
-    #t1.daemon = True
-    #t1.start()
+    t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file', 'demand_file',) )
+    t1.daemon = True
+    t1.start()
 
     cli = CLI
     cli( net )

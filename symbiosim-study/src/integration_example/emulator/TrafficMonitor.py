@@ -4,10 +4,15 @@ import sys
 import time
 import subprocess
 import threading
+import socket
 from subprocess import Popen, PIPE
 from Queue import Queue, Empty
 
 ON_POSIX = 'posix' in sys.builtin_module_names
+
+#sock = socket.socket( socket.AP_INET, socket.SOCK_STREAM )
+#server_address = ( 'localhost', 51717 )
+#sock.connect( server_address )
 
 def enqueue_output( out, queue ):
     for line in iter( out.readline, b'' ):
@@ -33,12 +38,9 @@ class TrafficMonitor():
         # setup pipes in memory 
         self.pipes_table = []
         for p in pipes:
-            self.pipes_table.append( {'time': 0.0, 'delta': 0, 'sim_dest': p[4].strip(), 'dest':
+            self.pipes_table.append( {'delta': 0, 'sim_dest': p[4].strip(), 'dest':
                 p[3].strip(), 'sim_src': p[2].strip(), 'src': p[1].strip(),
                 'nxt': 0, 'name':p[0].strip() } )
-
-        for p in self.pipes_table:
-            print p
 
         self.run()
 
@@ -114,13 +116,18 @@ class TrafficMonitor():
     def timed_update( self ):
         with open( self.demand_file, 'w' ) as demand:
             while True:
+                msg = ''
                 for pipe in self.pipes_table:
                     if pipe['delta'] != 0:
-                        demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+ str( pipe['delta'] ) +'\n' )
+                        demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+str( pipe['nxt'] )+'\n' )
                         demand.flush()
                         #print( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(pipe['delta'] )+'\n' )
+                        msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+str( pipe['nxt'] )+'\n' 
                         pipe['delta'] = 0
+                    else:
+                        msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( 0 )+str( pipe['nxt'] )+'\n' 
+                #sock.sendall( msg )
                 time.sleep(1)
 
-if __name__ == '__main__':
-    tm = TrafficMonitor( 'mn_pipes_file', 'demand_file' )
+#if __name__ == '__main__':
+#    tm = TrafficMonitor( 'mn_pipes_file', 'demand_file' )
