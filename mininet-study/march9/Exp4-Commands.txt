@@ -1,5 +1,5 @@
-(Routing)
-h1 ---- h2 ---- (bridge) physical (bridge) --- h3 --- h4
+#(Routing)
+#h1 ---- h2 ---- (bridge) physical (bridge) --- h3 --- h4
 
 sudo ip link add phy2-eth0 type veth peer name h3-eth0
 sudo ip link add h3-eth1 type veth peer name h4-eth0
@@ -25,13 +25,12 @@ sudo ip netns exec h4 ip route add 10.10.1.0/24 via 10.10.3.2
 sudo brctl addbr br0
 sudo brctl addif br0 phy2-eth0
 sudo brctl addif br0 eth0
-
 sudo ifconfig eth0 down
 sudo ifconfig phy2-eth0 down
 sudo ifconfig eth0 0.0.0.0 up
 sudo ifconfig phy2-eth0 0.0.0.0 up
 sudo ifconfig br0 10.1.0.29/16
-route add default gw 10.1.0.1
+sudo ip route add default via 10.1.0.1
 
 sudo ip netns exec h3 ping -c1 10.10.3.1
 sudo ip netns exec h4 ping -c1 10.10.3.2
