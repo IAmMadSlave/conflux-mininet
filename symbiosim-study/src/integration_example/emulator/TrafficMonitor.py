@@ -119,7 +119,7 @@ class TrafficMonitor():
                 msg = ''
                 for pipe in self.pipes_table:
                     if pipe['delta'] != 0:
-                        demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+str( pipe['nxt'] )+'\n' )
+                        demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+' '+str( pipe['nxt'] )+'\n' )
                         demand.flush()
                         #print( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(pipe['delta'] )+'\n' )
                         msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+str( pipe['nxt'] )+'\n' 
