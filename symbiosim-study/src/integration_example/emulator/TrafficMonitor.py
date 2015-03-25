@@ -7,6 +7,7 @@ import threading
 import socket
 from subprocess import Popen, PIPE
 from Queue import Queue, Empty
+from datetime import datetime
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
@@ -86,6 +87,7 @@ class TrafficMonitor():
         subprocess.call( ['sudo', 'modprobe', '-r', 'tcp_probe'] )
 
     def continous_update( self, q ):
+	testfile = open('test_file', 'w')
         while True:
             try:
                 line = q.get_nowait()
@@ -104,12 +106,20 @@ class TrafficMonitor():
                         seq = str( lineparts[4] )
                         seq = int( seq, 16 )
                         if pipe['nxt'] == 0:
+			    tempseq = seq
+			    testfile.write(lineparts[0]+ ' '+'0'+'\n')
+			    testfile.flush()
+
                             pipe['nxt'] = seq
                         else:
+			    testfile.write(lineparts[0]+' '+str(seq-tempseq)+'\n')
+			    testfile.flush()
+
                             delta  = seq - pipe['nxt']
                             if delta < 0:
                                 delta = delta + 0xffffffff
                                 #print seq, pipe['nxt']
+			    
                             pipe['delta'] = pipe['delta'] + delta
                             pipe['nxt'] = seq
 
@@ -121,12 +131,13 @@ class TrafficMonitor():
                     if pipe['delta'] != 0:
                         demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+' '+str( pipe['nxt'] )+'\n' )
                         demand.flush()
-                        #print( pipe['sim_src']+' '+pipe['sim_dest']+' '+str(pipe['delta'] )+'\n' )
-                        msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+str( pipe['nxt'] )+'\n' 
+	                msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+'\n'
+			#print msg 
                         pipe['delta'] = 0
                     else:
-                        msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( 0 )+str( pipe['nxt'] )+'\n' 
+                        msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( 0 )+'\n' 
                 #sock.sendall( msg )
+		print('msg:%s at %s'% (msg, str(datetime.now()) ))
                 time.sleep(1)
 
 #if __name__ == '__main__':
