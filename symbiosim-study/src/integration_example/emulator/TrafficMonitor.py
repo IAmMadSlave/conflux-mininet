@@ -11,7 +11,7 @@ from datetime import datetime
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
-#sock = socket.socket( socket.AP_INET, socket.SOCK_STREAM )
+#sock = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
 #server_address = ( 'localhost', 51717 )
 #sock.connect( server_address )
 
@@ -137,8 +137,8 @@ class TrafficMonitor():
                     else:
                         msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( 0 )+'\n' 
                 #sock.sendall( msg )
-		print('msg:%s at %s'% (msg, str(datetime.now()) ))
-                time.sleep(1)
+		#print('msg:%s at %s'% (msg, str(datetime.now()) ))
+                time.sleep(0.01)
 
 #if __name__ == '__main__':
 #    tm = TrafficMonitor( 'mn_pipes_file', 'demand_file' )

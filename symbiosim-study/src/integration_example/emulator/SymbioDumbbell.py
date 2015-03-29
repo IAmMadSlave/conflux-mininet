@@ -5,6 +5,7 @@ from mininet.topo import Topo
 from mininet.link import TCLink
 from mininet.node import CPULimitedHost
 from mininet.cli import CLI
+from mininet.node import OVSController
 
 from TrafficMonitor import TrafficMonitor
 #from TrafficController import TrafficController
@@ -23,18 +24,18 @@ class SymbioTopo( Topo ):
         Topo.__init__( self )
 
         leftHost = self.addHost( 'h1' )
-        #leftHost = self.addHost( 'h1', cpu=.5/2 )
+        #leftHost = self.addHost( 'h1', cls=CPULimitedHost, cpu=.5 )
 
         rightHost = self.addHost( 'h2' )
-        #rightHost = self.addHost( 'h2', cpu=.5/2 )
+        #rightHost = self.addHost( 'h2', cls=CPULimitedHost, cpu=.5 )
 
         linkopts = dict( bw=10, delay='15ms' )
-        self.addLink( leftHost, rightHost, **linkopts )
+        self.addLink( leftHost, rightHost, cls=TCLink, **linkopts )
         
 def SymbioTest():
     topo = SymbioTopo()
-    net = Mininet( topo=topo, link=TCLink )
-    #net = Mininet( topo=topo, host=CPULimitedHost, link=TCLink )
+    net = Mininet( topo=topo, controller=OVSController, link=TCLink )
+    #net = Mininet( topo=topo, host=CPULimitedHost, controller=OVSController, link=TCLink )
 
     net.start()
   
@@ -46,6 +47,7 @@ def SymbioTest():
     cli( net )
 
     subprocess.call( ['sudo', 'killall', 'cat'] )
+    subprocess.call( ['sudo', 'killall', 'ovs-controller'] )
 
     net.stop
 
