@@ -1,0 +1,22 @@
+TrafficMonitor
+==============
+TrafficMonitor is a simple solution we have developed to monitor the TCP traffic demand for each host on the emulation side i.e., Mininet.
+TrafficMonitor uses the tcpprobe kernel module[1] for determing the traffic demand by collecting and filtering vital TCP-related statistics for each host.
+
+Design
+======
+Each host in Mininet is a Linux container attached to a network namespace with a virtual network interface[2]. The machine hosting the Mininet instance has full visbility over the containers and thereforce can monitor the state of any of their respective TCP connections. The kernel module, tcpprobe observed the state of a TCP connection by inserting a hook into tcp_revc with kprobe[1]. By reading the output of the tcpprobe continously in the background we can obtain vital TCP-related statistics concerning each container. Specifically, the send next pointer in the TCP buffer. The send next pointer is the sequence number of the the first unsent byte of data, more specifically the first byte of data which is not sent, but the recipient is ready to receive[3]. Using the send next pointer it is possible to calculuate the TCP traffic demand at each host. This is done by taking the difference between the current observed value of the send next pointer and its previously observed value of the send next pointer. We then accumlate this demand over a specified interval and periodically transmit the TCP traffic demand to the simulator. Once the TCP traffic demand has been transmitted it is reset to zero and the process begins again. Note all calculations performed on the send next pointer which is just a sequence number must be performed with modulo 2**32[4]
+
+Performance
+===========
+
+
+Future Work
+===========
+As the size of the emulated topology grows the performance may begin to decrease. This could be a result of a larger number of hosts to collect statistics for which slows the process down. This is a problem possibly solved by dividing up the emulated topology into several instances of Mininet and deploying them on a  distributed network of machines all connected to one or more simulator(s).
+
+References:
+[1] http://www.linuxfoundation.org/collaborate/workgroups/networking/tcpprobe
+[2] http://conferences.sigcomm.org/co-next/2012/eproceedings/conext/p253.pdf
+[3] http://www.tcpipguide.com/free/t_TCPSlidingWindowDataTransferandAcknowledgementMech-2.htm
+[4] https://www.ietf.org/rfc/rfc793.txt

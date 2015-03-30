@@ -1,0 +1,4 @@
+pipe_id mn_src_ip sim_src       mn_dest_ip sim_dest
+=========================================================
+pipe1   10.0.0.1 topnet:sub1:h1 10.0.0.2   topnet:sub2:h1
+pipe2   10.0.0.2 topnet:sub2:h1 10.0.0.1   topnet:sub1:h1

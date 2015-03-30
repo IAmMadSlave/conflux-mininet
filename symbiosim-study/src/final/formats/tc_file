@@ -1,0 +1,3 @@
+pipe_id drop_prob service_rate(bits/s)
+======================================
+pipe1   0.5       100

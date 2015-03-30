@@ -1,0 +1,9 @@
+mount -t tmpfs -o size=512m tmpfs /mnt/ramdisk      # this sets up a non-persistant ramdisk
+
+# do what any file operations needs on the ramdisk
+# when the file operations are completed the ramdisk needs to be unmounted
+# however, processes still using the ramdisk can prevent the unmounting
+
+lsof | grep "/mnt/ramdisk" | awk '{if (NR!=1) {print $2}}' | xargs kill -9
+umount -l /mnt/ramdisk
+
