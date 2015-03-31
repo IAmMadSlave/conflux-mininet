@@ -106,14 +106,14 @@ class TrafficMonitor():
                         seq = str( lineparts[4] )
                         seq = int( seq, 16 )
                         if pipe['nxt'] == 0:
-			    tempseq = seq
-			    testfile.write(lineparts[0]+ ' '+'0'+'\n')
-			    testfile.flush()
+			                tempseq = seq
+			                testfile.write(lineparts[0]+ ' '+'0'+'\n')
+			                testfile.flush()
 
                             pipe['nxt'] = seq
                         else:
-			    testfile.write(lineparts[0]+' '+str(seq-tempseq)+'\n')
-			    testfile.flush()
+			                testfile.write(lineparts[0]+' '+str(seq-tempseq)+'\n')
+			                testfile.flush()
 
                             delta  = seq - pipe['nxt']
                             if delta < 0:
@@ -131,13 +131,13 @@ class TrafficMonitor():
                     if pipe['delta'] != 0:
                         demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+' '+str( pipe['nxt'] )+'\n' )
                         demand.flush()
-	                msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+'\n'
-			#print msg 
+	                    msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+'\n'
+			            #print msg 
                         pipe['delta'] = 0
                     else:
                         msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( 0 )+'\n' 
                 #sock.sendall( msg )
-		#print('msg:%s at %s'% (msg, str(datetime.now()) ))
+		        #print('msg:%s at %s'% (msg, str(datetime.now()) ))
                 time.sleep(0.01)
 
 #if __name__ == '__main__':

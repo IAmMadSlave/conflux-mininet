@@ -6,9 +6,6 @@ from mininet.node import CPULimitedHost
 from mininet.cli import CLI
 from mininet.node import OVSController
 
-from TrafficMonitor import TrafficMonitor
-#from TrafficController import TrafficController
-
 import os
 import time
 import datetime
@@ -32,7 +29,6 @@ def changeBW( host, bandwidth, interval ):
     log_file.write( str(datetime.datetime.now()) + ' ' + str(bandwidth)  + '\n')
 
 def autoBW( host, bandwidth_set, interval ):
-    i = 0
     for bw in bandwidth_set:
         changeBW( host, bw, interval )
 
@@ -56,11 +52,11 @@ def SymbioTest():
     t0.start()
     t0.join()
 
-    first_set = [9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5]
-    second_set = [5, 50, 100, 20, 10, 5, 50, 100, 20]
+    first_set = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5]
+    second_set = [10, 5, 50, 100, 20, 10, 5, 50, 100, 20]
 
     interval = 10
-    iperf_time = ( len( first_set ) + 1 ) * interval
+    iperf_time = len( first_set ) * interval
 
     h1test = open( 'h1_tcpdump.out', 'w' ) 
     h1tcpd = h1.popen( ['tcpdump'], stdout=h1test, stderr=h1test )
