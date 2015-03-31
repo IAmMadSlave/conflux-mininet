@@ -55,7 +55,7 @@ def SymbioTest():
     first_set = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5]
     second_set = [10, 5, 50, 100, 20, 10, 5, 50, 100, 20]
 
-    interval = 10
+    interval = 0.01
     iperf_time = len( first_set ) * interval
 
     h1test = open( 'h1_tcpdump.out', 'w' ) 
