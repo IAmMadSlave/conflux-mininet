@@ -31,7 +31,7 @@ sudo ifconfig phy2-eth0 down
 sudo ifconfig eth0 0.0.0.0 up
 sudo ifconfig phy2-eth0 0.0.0.0 up
 sudo ifconfig br0 10.1.0.29/16
-route add default gw 10.1.0.1
+sudo ip route add default via 10.1.0.1
 
 sudo ip netns exec h3 ping -c1 10.10.3.1
 sudo ip netns exec h4 ping -c1 10.10.3.2
