@@ -22,6 +22,7 @@ with open( sys.argv[1], 'r' ) as log:
 
     times = []
     total_bytes = []
+    total = 0
     for line in lines:
         time_hours = ( int(line[0]) - first_hr ) * 3600
         time_mins  = ( int(line[1]) - first_min ) * 60
@@ -33,6 +34,7 @@ with open( sys.argv[1], 'r' ) as log:
         time_total = float( time_total )
 
         total_byte = int(line[4]) - prev_seq
+        total = total + total_byte
 
         times.append( time_total )
         total_bytes.append( total_byte )
@@ -40,6 +42,6 @@ with open( sys.argv[1], 'r' ) as log:
     plt.plot( times, total_bytes, 'r--' ) 
     plt.xlabel('Time (s)')
     plt.ylabel('Total bytes')
-    plt.axis( [0, int(sys.argv[2]), 0, 150000000] )
+    #plt.axis( [0, int(sys.argv[2]), 0, ] )
     plt.grid(True)
     plt.savefig( 'plot.png' )
