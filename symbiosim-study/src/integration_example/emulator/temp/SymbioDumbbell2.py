@@ -53,17 +53,17 @@ def SymbioTest():
     t0.join()
 
     first_set = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5]
-    second_set = [10, 5, 50, 100, 20, 10, 5, 50, 100, 20]
+    second_set = [10000, 9500, 500, 30, 2, 7500, 400, 10]
 
     interval = 0.01
-    iperf_time = len( first_set ) * interval
+    iperf_time = len( second_set ) * interval
 
     h1test = open( 'h1_tcpdump.out', 'w' ) 
     h1tcpd = h1.popen( ['tcpdump'], stdout=h1test, stderr=h1test )
 
     h2iperfs = h2.popen( 'iperf -s' ) 
 
-    t0 = threading.Thread( target=autoBW, args=(h1, first_set, interval,) )    
+    t0 = threading.Thread( target=autoBW, args=(h1, second_set, interval,) )    
     t0.start()
 
     out, err, exitcode = h1.pexec( 'iperf -c %s -t %s -i %s' % (h2.IP(), iperf_time, interval) )
