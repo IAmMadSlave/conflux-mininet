@@ -1,5 +1,8 @@
-(Routing)
-h1 ---- h2 ---- (bridge) physical (bridge) --- h3 --- h4
+
+############################################### PC1 Scripts
+
+#(Routing)
+#h1 ---- h2 ---- (bridge) physical (bridge) --- h3 --- h4
 
 sudo ip link add h1-eth0 type veth peer name h2-eth0
 sudo ip link add h2-eth1 type veth peer name phy1-eth0
@@ -22,19 +25,29 @@ sudo ip netns exec h2 sysctl -w net.ipv4.ip_forward=1
 sudo ip netns exec h2 ip route add 10.10.3.0/24 via 10.10.2.1
 sudo ip netns exec h1 ip route add 10.10.3.0/24 via 10.10.1.1
 
+
+#Write the following block in a file and run the file in background mode or normal mode
 sudo brctl addbr br0
 sudo brctl addif br0 phy1-eth0
 sudo brctl addif br0 eth0
-
 sudo ifconfig eth0 down
 sudo ifconfig phy1-eth0 down
 sudo ifconfig eth0 0.0.0.0 up
 sudo ifconfig phy1-eth0 0.0.0.0 up
 sudo ifconfig br0 10.1.0.28/16
-route add default gw 10.1.0.1
+sudo ip route add default via 10.1.0.1
 
+
+#Now wait fot the connection
 sudo ip netns exec h1 ping -c1 10.10.1.1
 sudo ip netns exec h2 ping -c1 10.10.1.2
 sudo ip netns exec h2 ping -c1 10.10.2.1
 
 
+
+
+#Now disable ip forwarding
+
+
+
+############################################### PC2 Scripts

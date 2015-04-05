@@ -1,0 +1,371 @@
+MPI Portal
+
+************************************ 1gb, default delay(1ms?) bottleneck result
+Didnt specify delay in model
+
+root@pollux:~/expt/mpi# sudo ip netns exec h1 iperf -s -w 16M -i 1
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:  256 KByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60183
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  15.0 MBytes   126 Mbits/sec
+[  6]  1.0- 2.0 sec  13.4 MBytes   112 Mbits/sec
+[  6]  2.0- 3.0 sec  14.2 MBytes   119 Mbits/sec
+[  6]  3.0- 4.0 sec  16.2 MBytes   136 Mbits/sec
+[  6]  4.0- 5.0 sec  11.9 MBytes  99.7 Mbits/sec
+[  6]  5.0- 6.0 sec  17.9 MBytes   150 Mbits/sec
+[  6]  6.0- 7.0 sec  18.1 MBytes   152 Mbits/sec
+[  6]  7.0- 8.0 sec  14.8 MBytes   124 Mbits/sec
+[  6]  8.0- 9.0 sec  17.9 MBytes   150 Mbits/sec
+[  6]  9.0-10.0 sec  16.2 MBytes   136 Mbits/sec
+[  6]  0.0-10.0 sec   156 MBytes   131 Mbits/sec
+
+
+
+************************************1gb, 10ms bottleneck result    ###PortalMPI_1Gb10ms.java
+
+root@pollux:~/expt/mpi# sudo ip netns exec h1 iperf -s -w 16M -i 1------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:  256 KByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60197
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  3.62 MBytes  30.4 Mbits/sec
+[  6]  1.0- 2.0 sec  3.42 MBytes  28.7 Mbits/sec
+[  6]  2.0- 3.0 sec  3.52 MBytes  29.5 Mbits/sec
+[  6]  3.0- 4.0 sec  3.62 MBytes  30.4 Mbits/sec
+[  6]  4.0- 5.0 sec  3.22 MBytes  27.0 Mbits/sec
+[  6]  5.0- 6.0 sec  3.78 MBytes  31.7 Mbits/sec
+[  6]  6.0- 7.0 sec  3.25 MBytes  27.3 Mbits/sec
+[  6]  7.0- 8.0 sec  2.38 MBytes  20.0 Mbits/sec
+[  6]  8.0- 9.0 sec  3.05 MBytes  25.6 Mbits/sec
+[  6]  9.0-10.0 sec  2.59 MBytes  21.7 Mbits/sec
+[  6]  0.0-10.1 sec  32.8 MBytes  27.1 Mbits/sec
+[  7] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60198
+[  7]  0.0- 1.0 sec  3.42 MBytes  28.7 Mbits/sec
+[  7]  1.0- 2.0 sec  3.19 MBytes  26.7 Mbits/sec
+[  7]  2.0- 3.0 sec  3.32 MBytes  27.9 Mbits/sec
+[  7]  3.0- 4.0 sec  3.19 MBytes  26.8 Mbits/sec
+[  7]  4.0- 5.0 sec  3.77 MBytes  31.6 Mbits/sec
+[  7]  5.0- 6.0 sec  3.29 MBytes  27.6 Mbits/sec
+[  7]  6.0- 7.0 sec  3.00 MBytes  25.1 Mbits/sec
+[  7]  7.0- 8.0 sec  2.22 MBytes  18.6 Mbits/sec
+[  7]  8.0- 9.0 sec  1.92 MBytes  16.1 Mbits/sec
+[  7]  9.0-10.0 sec  2.21 MBytes  18.5 Mbits/sec
+[  6]  0.0-10.1 sec  32.8 MBytes  27.1 Mbits/sec
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60199
+[  6]  0.0- 1.0 sec  3.62 MBytes  30.4 Mbits/sec
+[  6]  1.0- 2.0 sec  3.29 MBytes  27.6 Mbits/sec
+[  6]  2.0- 3.0 sec  3.09 MBytes  25.9 Mbits/sec
+[  6]  3.0- 4.0 sec  3.40 MBytes  28.5 Mbits/sec
+[  6]  4.0- 5.0 sec  3.17 MBytes  26.6 Mbits/sec
+[  6]  5.0- 6.0 sec  3.16 MBytes  26.5 Mbits/sec
+[  6]  6.0- 7.0 sec  2.14 MBytes  17.9 Mbits/sec
+[  6]  7.0- 8.0 sec  2.21 MBytes  18.5 Mbits/sec
+[  6]  8.0- 9.0 sec  2.99 MBytes  25.1 Mbits/sec
+[  6]  9.0-10.0 sec  3.00 MBytes  25.1 Mbits/sec
+[  6]  0.0-10.1 sec  30.4 MBytes  25.1 Mbits/sec
+
+
+************************************1gb, 100ms bottleneck result    ###PortalMPI_1Gb500micros.java
+
+root@pollux:~/expt/mpi# sudo ip netns exec h1 iperf -s -w 16M -i 1------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:  256 KByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60216
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   130 KBytes  1.07 Mbits/sec
+[  6]  1.0- 2.0 sec   249 KBytes  2.04 Mbits/sec
+[  6]  2.0- 3.0 sec   239 KBytes  1.96 Mbits/sec
+[  6]  3.0- 4.0 sec   124 KBytes  1.02 Mbits/sec
+[  6]  4.0- 5.0 sec   262 KBytes  2.14 Mbits/sec
+[  6]  5.0- 6.0 sec   243 KBytes  1.99 Mbits/sec
+[  6]  6.0- 7.0 sec   255 KBytes  2.09 Mbits/sec
+[  6]  7.0- 8.0 sec   255 KBytes  2.09 Mbits/sec
+[  6]  8.0- 9.0 sec   262 KBytes  2.14 Mbits/sec
+[  6]  9.0-10.0 sec   293 KBytes  2.40 Mbits/sec
+[  6]  0.0-10.7 sec  2.50 MBytes  1.96 Mbits/sec
+
+
+************************************1gb, 500microSecond bottleneck result    ###PortalMPI_1Gb500micros.java
+
+root@pollux:~/expt/mpi# sudo ip netns exec h1 iperf -s -w 16M -i 1
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:  256 KByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60222
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  23.1 MBytes   194 Mbits/sec
+[  6]  1.0- 2.0 sec  24.7 MBytes   208 Mbits/sec
+[  6]  2.0- 3.0 sec  24.1 MBytes   203 Mbits/sec
+[  6]  3.0- 4.0 sec  22.1 MBytes   185 Mbits/sec
+[  6]  4.0- 5.0 sec  23.1 MBytes   194 Mbits/sec
+[  6]  5.0- 6.0 sec  23.5 MBytes   197 Mbits/sec
+[  6]  6.0- 7.0 sec  23.7 MBytes   199 Mbits/sec
+[  6]  7.0- 8.0 sec  23.2 MBytes   194 Mbits/sec
+[  6]  8.0- 9.0 sec  22.0 MBytes   184 Mbits/sec
+[  6]  9.0-10.0 sec  23.5 MBytes   197 Mbits/sec
+[  6]  0.0-10.0 sec   233 MBytes   195 Mbits/sec
+[  7] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60223
+[  7]  0.0- 1.0 sec  21.2 MBytes   178 Mbits/sec
+[  7]  1.0- 2.0 sec  22.4 MBytes   188 Mbits/sec
+[  7]  2.0- 3.0 sec  22.4 MBytes   188 Mbits/sec
+[  7]  3.0- 4.0 sec  21.7 MBytes   182 Mbits/sec
+[  7]  4.0- 5.0 sec  21.8 MBytes   183 Mbits/sec
+[  7]  5.0- 6.0 sec  21.2 MBytes   178 Mbits/sec
+[  7]  6.0- 7.0 sec  22.0 MBytes   184 Mbits/sec
+[  7]  7.0- 8.0 sec  22.0 MBytes   185 Mbits/sec
+[  7]  8.0- 9.0 sec  22.5 MBytes   188 Mbits/sec
+[  7]  9.0-10.0 sec  21.5 MBytes   180 Mbits/sec
+[  7]  0.0-10.0 sec   219 MBytes   183 Mbits/sec
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60224
+[  6]  0.0- 1.0 sec  21.5 MBytes   180 Mbits/sec
+[  6]  1.0- 2.0 sec  22.6 MBytes   189 Mbits/sec
+[  6]  2.0- 3.0 sec  24.1 MBytes   202 Mbits/sec
+[  6]  3.0- 4.0 sec  22.2 MBytes   186 Mbits/sec
+[  6]  4.0- 5.0 sec  23.3 MBytes   195 Mbits/sec
+[  6]  5.0- 6.0 sec  22.4 MBytes   188 Mbits/sec
+[  6]  6.0- 7.0 sec  21.9 MBytes   183 Mbits/sec
+[  6]  7.0- 8.0 sec  23.1 MBytes   194 Mbits/sec
+[  6]  8.0- 9.0 sec  23.2 MBytes   195 Mbits/sec
+[  6]  9.0-10.0 sec  23.4 MBytes   196 Mbits/sec
+[  6]  0.0-10.0 sec   228 MBytes   191 Mbits/sec
+
+Simulator Restarted, iperf wasnt restarted
+
+[  7] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60229
+[  7]  0.0- 1.0 sec  20.0 MBytes   168 Mbits/sec
+[  7]  1.0- 2.0 sec  19.6 MBytes   165 Mbits/sec
+[  7]  2.0- 3.0 sec  18.7 MBytes   157 Mbits/sec
+[  7]  3.0- 4.0 sec  19.8 MBytes   166 Mbits/sec
+[  7]  4.0- 5.0 sec  19.3 MBytes   162 Mbits/sec
+[  7]  5.0- 6.0 sec  19.9 MBytes   167 Mbits/sec
+[  7]  6.0- 7.0 sec  19.6 MBytes   164 Mbits/sec
+[  7]  7.0- 8.0 sec  19.5 MBytes   164 Mbits/sec
+[  7]  8.0- 9.0 sec  20.1 MBytes   169 Mbits/sec
+[  7]  9.0-10.0 sec  20.1 MBytes   169 Mbits/sec
+[  7]  0.0-10.0 sec   197 MBytes   165 Mbits/sec
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60230
+[  6]  0.0- 1.0 sec  20.7 MBytes   174 Mbits/sec
+[  6]  1.0- 2.0 sec  19.2 MBytes   161 Mbits/sec
+[  6]  2.0- 3.0 sec  20.0 MBytes   167 Mbits/sec
+[  6]  3.0- 4.0 sec  19.7 MBytes   165 Mbits/sec
+[  6]  4.0- 5.0 sec  20.3 MBytes   170 Mbits/sec
+[  6]  5.0- 6.0 sec  19.7 MBytes   166 Mbits/sec
+[  6]  6.0- 7.0 sec  20.3 MBytes   170 Mbits/sec
+[  6]  7.0- 8.0 sec  19.0 MBytes   160 Mbits/sec
+[  6]  8.0- 9.0 sec  20.7 MBytes   174 Mbits/sec
+[  6]  9.0-10.0 sec  20.2 MBytes   169 Mbits/sec
+[  6]  0.0-10.0 sec   200 MBytes   168 Mbits/sec
+
+Simulator iperf both restart
+
+root@pollux:~/expt/mpi# sudo ip netns exec h1 iperf -s -w 16M -i 1
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:  256 KByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60239
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  20.5 MBytes   172 Mbits/sec
+[  6]  1.0- 2.0 sec  23.7 MBytes   199 Mbits/sec
+[  6]  2.0- 3.0 sec  23.5 MBytes   197 Mbits/sec
+[  6]  3.0- 4.0 sec  22.1 MBytes   186 Mbits/sec
+[  6]  4.0- 5.0 sec  23.0 MBytes   193 Mbits/sec
+[  6]  5.0- 6.0 sec  22.5 MBytes   188 Mbits/sec
+[  6]  6.0- 7.0 sec  22.5 MBytes   189 Mbits/sec
+[  6]  7.0- 8.0 sec  22.1 MBytes   185 Mbits/sec
+[  6]  8.0- 9.0 sec  22.2 MBytes   187 Mbits/sec
+[  6]  9.0-10.0 sec  22.1 MBytes   186 Mbits/sec
+[  6]  0.0-10.0 sec   224 MBytes   188 Mbits/sec
+[  7] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60240
+[  7]  0.0- 1.0 sec  24.0 MBytes   201 Mbits/sec
+[  7]  1.0- 2.0 sec  24.2 MBytes   203 Mbits/sec
+[  7]  2.0- 3.0 sec  22.5 MBytes   189 Mbits/sec
+[  7]  3.0- 4.0 sec  24.2 MBytes   203 Mbits/sec
+[  7]  4.0- 5.0 sec  23.2 MBytes   195 Mbits/sec
+[  7]  5.0- 6.0 sec  21.8 MBytes   183 Mbits/sec
+[  7]  6.0- 7.0 sec  22.3 MBytes   187 Mbits/sec
+[  7]  7.0- 8.0 sec  23.0 MBytes   193 Mbits/sec
+[  7]  8.0- 9.0 sec  24.3 MBytes   204 Mbits/sec
+[  7]  9.0-10.0 sec  24.7 MBytes   207 Mbits/sec
+[  7]  0.0-10.0 sec   234 MBytes   197 Mbits/sec
+
+
+
+************************************1gb, 250microSecond bottleneck result    ###PortalMPI_1Gb250micros.java
+^Croot@pollux:~/expt/mpi# sudo ip netns exec h1 iperf -s -w 16M -i 1
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:  256 KByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60245
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  22.1 MBytes   185 Mbits/sec
+[  6]  1.0- 2.0 sec  19.6 MBytes   164 Mbits/sec
+[  6]  2.0- 3.0 sec  21.1 MBytes   177 Mbits/sec
+[  6]  3.0- 4.0 sec  21.1 MBytes   177 Mbits/sec
+[  6]  4.0- 5.0 sec  20.5 MBytes   172 Mbits/sec
+[  6]  5.0- 6.0 sec  20.6 MBytes   173 Mbits/sec
+[  6]  6.0- 7.0 sec  21.6 MBytes   181 Mbits/sec
+[  6]  7.0- 8.0 sec  22.1 MBytes   185 Mbits/sec
+[  6]  8.0- 9.0 sec  22.3 MBytes   187 Mbits/sec
+[  6]  9.0-10.0 sec  21.2 MBytes   178 Mbits/sec
+[  6]  0.0-10.0 sec   212 MBytes   178 Mbits/sec
+[  7] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60246
+[  7]  0.0- 1.0 sec  21.4 MBytes   180 Mbits/sec
+[  7]  1.0- 2.0 sec  21.8 MBytes   183 Mbits/sec
+[  7]  2.0- 3.0 sec  21.3 MBytes   179 Mbits/sec
+[  7]  3.0- 4.0 sec  21.2 MBytes   178 Mbits/sec
+[  7]  4.0- 5.0 sec  21.9 MBytes   184 Mbits/sec
+[  7]  5.0- 6.0 sec  21.9 MBytes   184 Mbits/sec
+[  7]  6.0- 7.0 sec  21.7 MBytes   182 Mbits/sec
+[  7]  7.0- 8.0 sec  21.7 MBytes   182 Mbits/sec
+[  7]  8.0- 9.0 sec  21.6 MBytes   181 Mbits/sec
+[  7]  9.0-10.0 sec  21.8 MBytes   183 Mbits/sec
+[  7]  0.0-10.0 sec   217 MBytes   181 Mbits/sec
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60247
+[  6]  0.0- 1.0 sec  21.5 MBytes   180 Mbits/sec
+[  6]  1.0- 2.0 sec  20.5 MBytes   172 Mbits/sec
+[  6]  2.0- 3.0 sec  20.8 MBytes   175 Mbits/sec
+[  6]  3.0- 4.0 sec  21.6 MBytes   181 Mbits/sec
+[  6]  4.0- 5.0 sec  21.0 MBytes   176 Mbits/sec
+[  6]  5.0- 6.0 sec  21.3 MBytes   179 Mbits/sec
+[  6]  6.0- 7.0 sec  21.8 MBytes   183 Mbits/sec
+[  6]  7.0- 8.0 sec  21.4 MBytes   180 Mbits/sec
+[  6]  8.0- 9.0 sec  21.1 MBytes   177 Mbits/sec
+[  6]  9.0-10.0 sec  21.0 MBytes   176 Mbits/sec
+[  6]  0.0-10.0 sec   212 MBytes   178 Mbits/sec
+^Croot@pollux:~/expt/mpi# sudo ip netns exec h1 iperf -s -w 16M -i 1
+
+Simulator and iperf restart
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size:  256 KByte (WARNING: requested 16.0 MByte)
+------------------------------------------------------------
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60252
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec  19.7 MBytes   166 Mbits/sec
+[  6]  1.0- 2.0 sec  20.8 MBytes   174 Mbits/sec
+[  6]  2.0- 3.0 sec  20.9 MBytes   175 Mbits/sec
+[  6]  3.0- 4.0 sec  19.4 MBytes   163 Mbits/sec
+[  6]  4.0- 5.0 sec  21.9 MBytes   184 Mbits/sec
+[  6]  5.0- 6.0 sec  23.0 MBytes   193 Mbits/sec
+[  6]  6.0- 7.0 sec  21.8 MBytes   183 Mbits/sec
+[  6]  7.0- 8.0 sec  21.5 MBytes   180 Mbits/sec
+[  6]  8.0- 9.0 sec  21.0 MBytes   176 Mbits/sec
+[  6]  9.0-10.0 sec  20.6 MBytes   173 Mbits/sec
+[  6]  0.0-10.0 sec   211 MBytes   177 Mbits/sec
+[  7] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60253
+[  7]  0.0- 1.0 sec  21.3 MBytes   179 Mbits/sec
+[  7]  1.0- 2.0 sec  20.7 MBytes   174 Mbits/sec
+[  7]  2.0- 3.0 sec  20.9 MBytes   175 Mbits/sec
+[  7]  3.0- 4.0 sec  21.5 MBytes   180 Mbits/sec
+[  7]  4.0- 5.0 sec  21.2 MBytes   178 Mbits/sec
+[  7]  5.0- 6.0 sec  20.8 MBytes   175 Mbits/sec
+[  7]  6.0- 7.0 sec  21.1 MBytes   177 Mbits/sec
+[  7]  7.0- 8.0 sec  22.0 MBytes   185 Mbits/sec
+[  7]  8.0- 9.0 sec  21.0 MBytes   177 Mbits/sec
+[  7]  9.0-10.0 sec  22.0 MBytes   185 Mbits/sec
+[  7]  0.0-10.0 sec   213 MBytes   178 Mbits/sec
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60254
+[  6]  0.0- 1.0 sec  21.1 MBytes   177 Mbits/sec
+[  6]  1.0- 2.0 sec  20.9 MBytes   175 Mbits/sec
+[  6]  2.0- 3.0 sec  21.7 MBytes   182 Mbits/sec
+[  6]  3.0- 4.0 sec  20.9 MBytes   176 Mbits/sec
+[  6]  4.0- 5.0 sec  21.3 MBytes   179 Mbits/sec
+[  6]  5.0- 6.0 sec  21.1 MBytes   177 Mbits/sec
+[  6]  6.0- 7.0 sec  22.4 MBytes   188 Mbits/sec
+[  6]  7.0- 8.0 sec  20.9 MBytes   175 Mbits/sec
+[  6]  8.0- 9.0 sec  21.3 MBytes   179 Mbits/sec
+[  6]  9.0-10.0 sec  21.3 MBytes   179 Mbits/sec
+[  6]  0.0-10.0 sec   213 MBytes   179 Mbits/sec
+
+
+
+
+************************************1gb, 125microSecond bottleneck result    ###PortalMPI_1Gb125micros.java
+root@pollux:~/expt/mpi# sudo ip netns exec h1 iperf -s  -i 1
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 85.3 KByte (default)
+------------------------------------------------------------
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60265
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   317 KBytes  2.59 Mbits/sec
+[  6]  1.0- 2.0 sec   582 KBytes  4.77 Mbits/sec
+[  6]  2.0- 3.0 sec   402 KBytes  3.29 Mbits/sec
+[  6]  3.0- 4.0 sec   730 KBytes  5.98 Mbits/sec
+[  6]  4.0- 5.0 sec   369 KBytes  3.02 Mbits/sec
+[  6]  5.0- 6.0 sec   147 KBytes  1.20 Mbits/sec
+[  6]  6.0- 7.0 sec   650 KBytes  5.33 Mbits/sec
+[  6]  7.0- 8.0 sec   512 KBytes  4.19 Mbits/sec
+[  6]  8.0- 9.0 sec   430 KBytes  3.52 Mbits/sec
+[  6]  9.0-10.0 sec   416 KBytes  3.41 Mbits/sec
+[  6] 10.0-11.0 sec   178 KBytes  1.46 Mbits/sec
+[  6]  0.0-11.5 sec  4.75 MBytes  3.46 Mbits/sec
+[  7] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60266
+[  7]  0.0- 1.0 sec   134 KBytes  1.10 Mbits/sec
+[  7]  1.0- 2.0 sec   325 KBytes  2.66 Mbits/sec
+[  7]  2.0- 3.0 sec   436 KBytes  3.57 Mbits/sec
+[  7]  3.0- 4.0 sec   216 KBytes  1.77 Mbits/sec
+[  7]  4.0- 5.0 sec   274 KBytes  2.25 Mbits/sec
+[  7]  5.0- 6.0 sec   158 KBytes  1.30 Mbits/sec
+[  7]  6.0- 7.0 sec   532 KBytes  4.36 Mbits/sec
+[  7]  7.0- 8.0 sec   216 KBytes  1.77 Mbits/sec
+[  7]  8.0- 9.0 sec  56.6 KBytes   463 Kbits/sec
+[  7]  9.0-10.0 sec   164 KBytes  1.34 Mbits/sec
+[  7] 10.0-11.0 sec   226 KBytes  1.85 Mbits/sec
+[  7]  0.0-11.8 sec  2.75 MBytes  1.95 Mbits/sec
+[  6] local 10.10.1.2 port 5001 connected with 10.10.2.2 port 60267
+[  6]  0.0- 1.0 sec   342 KBytes  2.80 Mbits/sec
+[  6]  1.0- 2.0 sec   402 KBytes  3.29 Mbits/sec
+[  6]  2.0- 3.0 sec   554 KBytes  4.54 Mbits/sec
+[  6]  3.0- 4.0 sec   453 KBytes  3.71 Mbits/sec
+[  6]  4.0- 5.0 sec   402 KBytes  3.29 Mbits/sec
+[  6]  5.0- 6.0 sec   430 KBytes  3.52 Mbits/sec
+[  6]  6.0- 7.0 sec   362 KBytes  2.97 Mbits/sec
+[  6]  7.0- 8.0 sec   342 KBytes  2.80 Mbits/sec
+[  6]  8.0- 9.0 sec   484 KBytes  3.96 Mbits/sec
+[  6]  9.0-10.0 sec   373 KBytes  3.06 Mbits/sec
+[  6] 10.0-11.0 sec  29.7 KBytes   243 Kbits/sec
+[  6] 11.0-12.0 sec  62.2 KBytes   510 Kbits/sec
+[  6] 12.0-13.0 sec  60.8 KBytes   498 Kbits/sec
+[  6] 13.0-14.0 sec   113 KBytes   927 Kbits/sec
+[  6]  0.0-14.7 sec  4.38 MBytes  2.50 Mbits/sec
+
+castor to pollux
+root@castor:~# sudo ip netns exec h2 iperf -s -i 1
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 85.3 KByte (default)
+------------------------------------------------------------
+[  6] local 10.10.2.2 port 5001 connected with 10.10.1.2 port 59263
+[ ID] Interval       Transfer     Bandwidth
+[  6]  0.0- 1.0 sec   764 KBytes  6.26 Mbits/sec
+[  6]  1.0- 2.0 sec   386 KBytes  3.16 Mbits/sec
+[  6]  2.0- 3.0 sec   515 KBytes  4.22 Mbits/sec
+[  6]  3.0- 4.0 sec   436 KBytes  3.57 Mbits/sec
+[  6]  4.0- 5.0 sec   783 KBytes  6.42 Mbits/sec
+[  6]  5.0- 6.0 sec   867 KBytes  7.10 Mbits/sec
+[  6]  6.0- 7.0 sec   338 KBytes  2.77 Mbits/sec
+[  6]  7.0- 8.0 sec   332 KBytes  2.72 Mbits/sec
+[  6]  8.0- 9.0 sec   718 KBytes  5.88 Mbits/sec
+[  6]  9.0-10.0 sec   471 KBytes  3.86 Mbits/sec
+[  6]  0.0-10.7 sec  5.75 MBytes  4.51 Mbits/sec
+[  7] local 10.10.2.2 port 5001 connected with 10.10.1.2 port 59264
+[  7]  0.0- 1.0 sec   402 KBytes  3.30 Mbits/sec
+[  7]  1.0- 2.0 sec   617 KBytes  5.05 Mbits/sec
+[  7]  2.0- 3.0 sec   813 KBytes  6.66 Mbits/sec
+[  7]  3.0- 4.0 sec   535 KBytes  4.38 Mbits/sec
+[  7]  4.0- 5.0 sec   566 KBytes  4.63 Mbits/sec
+[  7]  5.0- 6.0 sec   424 KBytes  3.48 Mbits/sec
+[  7]  6.0- 7.0 sec   788 KBytes  6.45 Mbits/sec
+[  7]  7.0- 8.0 sec   392 KBytes  3.21 Mbits/sec
+[  7]  8.0- 9.0 sec   348 KBytes  2.85 Mbits/sec
+[  7]  9.0-10.0 sec   608 KBytes  4.98 Mbits/sec
+[  7]  0.0-10.2 sec  5.62 MBytes  4.62 Mbits/sec
