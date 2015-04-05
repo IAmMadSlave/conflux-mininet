@@ -109,6 +109,7 @@ class TrafficMonitor():
                             tempseq = seq
                             testfile.write(lineparts[0]+ ' '+'0'+'\n')
                             testfile.flush()
+
                             pipe['nxt'] = seq
                         else:
                             testfile.write(lineparts[0]+' '+str(seq-tempseq)+'\n')

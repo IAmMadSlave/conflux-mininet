@@ -6,6 +6,8 @@ from mininet.node import CPULimitedHost
 from mininet.cli import CLI
 from mininet.node import OVSController
 
+from TrafficMonitor import TrafficMonitor
+
 import os
 import time
 import datetime
@@ -16,9 +18,6 @@ log_file = open( 'tc_timestamps', 'w' )
 
 def startMonitor( mn_pipes, demand_file ):
     tm = TrafficMonitor( mn_pipes, demand_file )
-
-def startController( mn_pipes, tc_file, mn_ip, mn ):
-    tc = TrafficController( mn_pipes, tc_file, mn_ip, mn )
 
 def changeBW( host, bandwidth, interval ):
     time.sleep( interval )
@@ -44,9 +43,9 @@ def SymbioTest():
 
     net.start()
 
-    #t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file', 'demand_file',) )
-    #t1.daemon = True
-    #t1.start()
+    t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file', 'demand_file',) )
+    t1.daemon = True
+    t1.start()
 
     t0 = threading.Thread( target=changeBW, args=(h1, 10, 0,) )
     t0.start()
@@ -75,6 +74,8 @@ def SymbioTest():
     #cli( net )
 
     h2iperfs.terminate()
+    subprocess.call( ['sudo', 'killall', 'cat'] )
+    subprocess.call( ['sudo', 'killall', 'ovs-controller'] )
 
     net.stop
 
