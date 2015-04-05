@@ -2,14 +2,14 @@
 
 import sys
 import pygal
-from pygal.style import LightColorizedStyle
+from pygal.style import BlueStyle
 
 with open( sys.argv[1], 'r' ) as log:
     lines = log.readlines()
 
     i = 0
     for i in range( len( lines ) ):
-        #lines[i] = lines[i].replace( ',', '' )
+        lines[i] = lines[i].replace( ',', '' )
         lines[i] = lines[i].replace( ':', ' ' )
         lines[i] = lines[i].replace( '.', ' ' )
         lines[i] = lines[i].split()
@@ -40,22 +40,47 @@ with open( sys.argv[1], 'r' ) as log:
         times.append( time_total )
         total_bytes.append( total_byte )
 
-    data_set = []
+    sample_rate = 2
+
+    temp_list = []
+    plot_list = []
+    current_interval = int( times[0] )
     i = 0
     for i in range( len( times ) ):
-        if ( i % 10 == 0 ):
-            data_set.append( (times[i], total_bytes[i]) )
+        if int( times[i] ) == current_interval:
+            temp_list.append( (times[i], total_bytes[i]) )
+        else:
+            j = 0
+            sample_counter = 0
+            #print current_interval, len( temp_list )
+            if len( temp_list ) > sample_rate:
+                for j in range( len( temp_list ) ):
+                    if sample_counter == sample_rate:
+                        break
+                    if j % ( len( temp_list ) / sample_rate ) == 0:
+                        plot_list.append( temp_list[j] )
+                        sample_counter = sample_counter + 1
+            current_interval = int( times[i] )
+            temp_list = []
+            temp_list.append( (times[i], total_bytes[i]) )
         i = i + 1
 
-    print len( times )
-    print len( total_bytes )
+    j = 0
+    sample_counter = 0
+    if len( temp_list ) > sample_rate:
+        for j in range( len( temp_list ) ):
+            if sample_counter == sample_rate:
+                break
+            if j % ( len( temp_list ) / sample_rate ) == 0:
+                plot_list.append( temp_list[j] )
+                sample_counter = sample_counter + 1
 
-    xy_chart = pygal.XY( stroke=False, human_readable=True, show_legend=False, dots_size=1,  style=LightColorizedStyle )
-    xy_chart.add( 'A', data_set )
-    xy_chart.render_to_file( 'plot.svg' )
+    graph_title = sys.argv[1]
+    last_index = graph_title.rfind( '/' )
+    graph_title = graph_title[last_index+1::]
 
-    #plt.plot( times, total_bytes, 'r--' ) 
-    #plt.xlabel('Time (s)')
-    #plt.ylabel('Total bytes')
-    #plt.grid(True)
-    #plt.savefig( 'plot.png' )
+    xy_chart = pygal.XY( stroke=False, fill=True, human_readable=True,
+            show_legend=False, dots_size=2,  style=BlueStyle, x_title='Time (s)', y_title='Total Bytes', title=graph_title )
+    xy_chart.add( 'A', plot_list )
+    xy_chart.render_to_png( 'plot.png' )
+    #xy_chart.render_to_file( 'plot.svg' )

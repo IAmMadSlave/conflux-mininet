@@ -54,9 +54,10 @@ def SymbioTest():
 
     first_set = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5]
     second_set = [10000, 9500, 500, 30, 2, 7500, 400, 10]
+    third_set = [10000, 1, 1000, 1, 100, 1, 10, 1, 10, 1, 100, 1, 1000, 1, 10000]
 
-    interval = 0.01
-    iperf_time = len( second_set ) * interval
+    interval = 10.0
+    iperf_time = len( third_set ) * interval
 
     h1test = open( 'h1_tcpdump.out', 'w' ) 
     h1tcpd = h1.popen( ['tcpdump'], stdout=h1test, stderr=h1test )
