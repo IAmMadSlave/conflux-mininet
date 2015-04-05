@@ -1,1 +1,0 @@
-tstamp saddr:sport daddr:dport len send_nxt send_una send_cwnd ssthresh snd_wnd 1? srtt

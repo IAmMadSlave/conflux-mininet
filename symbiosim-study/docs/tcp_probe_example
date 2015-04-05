@@ -1,7 +1,0 @@
-sudo modprobe -r tcp_probe
-sudo modprobe tcp_probe full=1
-sudo chmod 444 /proc/net/tcpprobe
-sudo cat /proc/net/tcpprobe > temp.lot &
-TCPCAT=$!
-iperf -c
-kill $TCPCAT
