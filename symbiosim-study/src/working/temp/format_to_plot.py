@@ -40,7 +40,13 @@ with open( sys.argv[1], 'r' ) as log:
         times.append( time_total )
         total_bytes.append( total_byte )
 
-    sample_rate = 2
+    full = []
+    i = 0
+    for t in times:
+        full.append( (times[i], total_bytes[i]) )
+        i = i + 1
+
+    sample_rate = 1
 
     temp_list = []
     plot_list = []
@@ -81,6 +87,7 @@ with open( sys.argv[1], 'r' ) as log:
 
     xy_chart = pygal.XY( stroke=False, fill=True, human_readable=True,
             show_legend=False, dots_size=2,  style=BlueStyle, x_title='Time (s)', y_title='Total Bytes', title=graph_title )
-    xy_chart.add( 'A', plot_list )
-    xy_chart.render_to_png( 'plot.png' )
-    #xy_chart.render_to_file( 'plot.svg' )
+    #xy_chart.add( 'A', plot_list )
+    xy_chart.add( 'A', full )
+    #xy_chart.render_to_png( 'plot.png' )
+    xy_chart.render_to_file( 'plot.svg' )
