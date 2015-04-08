@@ -9,8 +9,6 @@ from mininet.cli  import CLI
 
 from TrafficMonitor import TrafficMonitor
 
-lock = threading.Lock()
-
 # function for long single async wget
 def wget_short():
     return
@@ -41,14 +39,12 @@ def tc_change( host, bandwidth, drop_prob ):
     return
 
 def tc_listener( hosts ):
-    while True:
+    #while True:
         try:
-            lock.acquire()
             tc_file = open( 'tc_changes_file', 'r' )
         except:
-            lock.release()
-            time.sleep(1)
-            continue
+            time.sleep(10)
+            #continue
         else:
             lines = tc_file.readlines()
             tc_changes = []
@@ -60,25 +56,14 @@ def tc_listener( hosts ):
                     tc_change( h, t[1], t[2] )
 
             tc_file.close()
-            lock.release()
-            time.sleep(1)
-        return
+            time.sleep(10)
+    	return
 
 def start_tc_listener( hosts ):
     t = threading.Thread( target=tc_listener, args=(hosts,) )
     t.daemon = True
     t.start()
     return
-
-def fake_sim():
-    i = 0
-    for i in range(10):
-        lock.acquire()
-        tc = open('tc_changes_file', 'w' )
-        cmd = 'pipe1 %s 0.0' % (str(i+1),)
-        tc.write( cmd )
-        tc.close()
-        lock.release()
 
 def main():
     net = Mininet()
@@ -97,8 +82,6 @@ def main():
     # start tc lister here
     start_tc_listener( hosts )
 
-    t0 = threading.Thread( target=fake_sim )
-    t0.start()
 
     # start traffic monitor here
     start_traffic_monitor()

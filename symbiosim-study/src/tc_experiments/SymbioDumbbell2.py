@@ -43,10 +43,6 @@ def SymbioTest():
 
     net.start()
 
-    t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file', 'demand_file',) )
-    t1.daemon = True
-    t1.start()
-
     t0 = threading.Thread( target=changeBW, args=(h1, 10, 0,) )
     t0.start()
     t0.join()
@@ -55,7 +51,7 @@ def SymbioTest():
     second_set = [10000, 9500, 500, 30, 2, 7500, 400, 10]
     third_set = [10000, 1, 1000, 1, 100, 1, 10, 1, 10, 1, 100, 1, 1000, 1, 10000]
 
-    interval = 0.01
+    interval = 1.0
     iperf_time = len( third_set ) * interval
 
     h1test = open( 'h1_tcpdump.out', 'w' ) 
