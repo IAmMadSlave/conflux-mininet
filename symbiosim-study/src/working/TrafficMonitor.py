@@ -22,9 +22,11 @@ def enqueue_output( out, queue ):
 
 class TrafficMonitor():
     
-    def __init__( self, mn_pipes_file, demand_file ):
+    def __init__( self, mn_pipes_file, demand_file, sock ):
         # for writing demand to file
         self.demand_file = demand_file
+        self.sock = sock
+        print('TrafficMonitor:sock %s' % self.sock)
       
         # read pipe info 
         pipes = []
@@ -87,7 +89,7 @@ class TrafficMonitor():
         subprocess.call( ['sudo', 'modprobe', '-r', 'tcp_probe'] )
 
     def continous_update( self, q ):
-	testfile = open('test_file', 'w')
+        testfile = open('test_file', 'w')
         while True:
             try:
                 line = q.get_nowait()
@@ -100,20 +102,20 @@ class TrafficMonitor():
                 src = src[0].strip()
                 dest = lineparts[2].split( ':' )
                 dest = dest[0].strip()
-
+                
                 for pipe in self.pipes_table:
                     if pipe['src'] == src and pipe['dest'] == dest:
+
                         seq = str( lineparts[4] )
                         seq = int( seq, 16 )
                         if pipe['nxt'] == 0:
-			                tempseq = seq
-			                testfile.write(lineparts[0]+ ' '+'0'+'\n')
-			                testfile.flush()
-
+                            tempseq = seq
+                            testfile.write(lineparts[0]+' '+'0'+'\n' )
+                            testfile.flush()
                             pipe['nxt'] = seq
                         else:
-			                testfile.write(lineparts[0]+' '+str(seq-tempseq)+'\n')
-			                testfile.flush()
+                            testfile.write(lineparts[0]+' '+str(seq-tempseq)+'\n')
+                            testfile.flush()
 
                             delta  = seq - pipe['nxt']
                             if delta < 0:
@@ -131,14 +133,18 @@ class TrafficMonitor():
                     if pipe['delta'] != 0:
                         demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+' '+str( pipe['nxt'] )+'\n' )
                         demand.flush()
-	                    msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+'\n'
-			            #print msg 
+                        msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str(pipe['delta'])+'\n'
+                        #print msg
                         pipe['delta'] = 0
                     else:
-                        msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( 0 )+'\n' 
-                #sock.sendall( msg )
-		        #print('msg:%s at %s'% (msg, str(datetime.now()) ))
-                time.sleep(0.01)
+                        msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( 0 )+'\n'
+                #msg = pipe['sim_src']+' '+pipe['sim_dest']+' '+str(10000)+'\n'
+                #self.sock.sendall( msg )
+                #print('msg:%s at %s'% (msg, str(datetime.now())))
+                #data = self.sock.recv(256)
+                #received = len(data)
+                #print('msg: %s at: %s size: of %s'%(data, str(datetime.now()),str(received)))
+                time.sleep(1)
 
 #if __name__ == '__main__':
 #    tm = TrafficMonitor( 'mn_pipes_file', 'demand_file' )

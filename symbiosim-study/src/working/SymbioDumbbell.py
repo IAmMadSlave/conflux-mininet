@@ -13,8 +13,16 @@ from TrafficMonitor import TrafficMonitor
 import threading
 import subprocess
 
-def startMonitor( mn_pipes, demand_file ):
-    tm = TrafficMonitor( mn_pipes, demand_file )
+import time
+import socket
+
+sock = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
+server_address = ( 'localhost', 51717 )
+sock.connect( server_address )
+print ('SymbioDumbell: socket is %s' % sock)
+
+def startMonitor( mn_pipes, demand_file, sock ):
+    tm = TrafficMonitor( mn_pipes, demand_file, sock )
 
 def startController( mn_pipes, tc_file, mn_ip, mn ):
     tc = TrafficController( mn_pipes, tc_file, mn_ip, mn )
@@ -39,7 +47,7 @@ def SymbioTest():
 
     net.start()
   
-    t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file', 'demand_file',) )
+    t1 = threading.Thread( target=startMonitor, args=('mn_pipes_file', 'demand_file', sock) )
     t1.daemon = True
     t1.start()
 
