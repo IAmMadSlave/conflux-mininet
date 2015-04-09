@@ -4,16 +4,12 @@ import sys
 import time
 import subprocess
 import threading
-import socket
+
 from subprocess import Popen, PIPE
 from Queue import Queue, Empty
 from datetime import datetime
 
 ON_POSIX = 'posix' in sys.builtin_module_names
-
-#sock = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
-#server_address = ( 'localhost', 51717 )
-#sock.connect( server_address )
 
 def enqueue_output( out, queue ):
     for line in iter( out.readline, b'' ):
@@ -22,11 +18,7 @@ def enqueue_output( out, queue ):
 
 class TrafficMonitor():
 
-    def __init__( self, mn_pipes_file, demand_file ):
-        # for writing demand to file
-        self.demand_file = demand_file
-
-        # read pipe info 
+    def __init__( self, mn_pipes_file ):
         pipes = []
         with open( mn_pipes_file, 'r') as openfile:
             for line in openfile:
@@ -43,7 +35,7 @@ class TrafficMonitor():
                 p[3].strip(), 'sim_src': p[2].strip(), 'src': p[1].strip(),
                 'nxt': 0, 'name':p[0].strip() } )
 
-            self.run()
+        self.run()
 
     def run( self ):
         # module loading 
@@ -63,11 +55,7 @@ class TrafficMonitor():
         t2.daemon = True
         t2.start()
 
-        t3 = threading.Thread( target=self.timed_update )
-        t3.start()
 
-        t3.join()
-        cat.terminate()
         # module unloading
         self.stop_module()
         return
@@ -93,6 +81,7 @@ class TrafficMonitor():
                 line = q.get_nowait()
             except Empty:
                 line = None
+	    	time.sleep(0.001)
             else:
                 lineparts = line.split( ' ' )
 
@@ -109,7 +98,6 @@ class TrafficMonitor():
                             tempseq = seq
                             testfile.write(lineparts[0]+ ' '+'0'+'\n')
                             testfile.flush()
-
                             pipe['nxt'] = seq
                         else:
                             testfile.write(lineparts[0]+' '+str(seq-tempseq)+'\n')
@@ -122,23 +110,3 @@ class TrafficMonitor():
 
                             pipe['delta'] = pipe['delta'] + delta
                             pipe['nxt'] = seq
-
-    def timed_update( self ):
-        with open( self.demand_file, 'w' ) as demand:
-            while True:
-                msg = ''
-                for pipe in self.pipes_table:
-                    if pipe['delta'] != 0:
-                        demand.write( pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+' '+str( pipe['nxt'] )+'\n' )
-                        demand.flush()
-                        msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( pipe['delta'] )+'\n'
-                        #print msg 
-                        pipe['delta'] = 0
-                    else:
-                        msg += pipe['sim_src']+' '+pipe['sim_dest']+' '+str( 0 )+'\n' 
-                #sock.sendall( msg )
-                #print('msg:%s at %s'% (msg, str(datetime.now()) ))
-                time.sleep(0.01)
-
-#if __name__ == '__main__':
-#    tm = TrafficMonitor( 'mn_pipes_file', 'demand_file' )

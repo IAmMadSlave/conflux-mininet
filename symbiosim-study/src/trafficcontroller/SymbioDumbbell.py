@@ -10,11 +10,15 @@ from mininet.cli  import CLI
 from TrafficMonitor import TrafficMonitor
 
 # function for long single async wget
-def wget_short():
+def wget_short( src, dest ):
+    dest_ip = dest.IP()
+    src.popen( [] )
     return
 
 # function for short single async wget
-def wget_long():
+def wget_long( src, dest ):
+    dest_ip = dest.IP()
+    src.popen( [] )
     return
 
 # functions for test_file (tcpprobe)
@@ -39,12 +43,12 @@ def tc_change( host, bandwidth, drop_prob ):
     return
 
 def tc_listener( hosts ):
-    #while True:
+    while True:
         try:
             tc_file = open( 'tc_changes_file', 'r' )
         except:
-            time.sleep(10)
-            #continue
+            time.sleep(0.001)
+            continue
         else:
             lines = tc_file.readlines()
             tc_changes = []
@@ -56,7 +60,7 @@ def tc_listener( hosts ):
                     tc_change( h, t[1], t[2] )
 
             tc_file.close()
-            time.sleep(10)
+            time.sleep(0.001)
     	return
 
 def start_tc_listener( hosts ):
