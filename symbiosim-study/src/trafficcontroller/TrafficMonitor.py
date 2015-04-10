@@ -81,7 +81,7 @@ class TrafficMonitor():
                 line = q.get_nowait()
             except Empty:
                 line = None
-	    	time.sleep(0.001)
+                time.sleep(0.001)
             else:
                 lineparts = line.split( ' ' )
 

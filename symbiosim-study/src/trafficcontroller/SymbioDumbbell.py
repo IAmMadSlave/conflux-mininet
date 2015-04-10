@@ -3,11 +3,19 @@
 import time
 import threading
 
+import socket
+from datetime import datetime
+
 from mininet.net  import Mininet
 from mininet.link import TCLink
 from mininet.cli  import CLI
 
 from TrafficMonitor import TrafficMonitor
+
+sock = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
+server_address = ( 'localhost', 51717 )
+sock.connect( server_address )
+print ('SymbioDumbell: socket is %s' % sock)
 
 # function for long single async wget
 def wget_short( src, dest ):
@@ -45,23 +53,30 @@ def tc_change( host, bandwidth, drop_prob ):
 def tc_listener( hosts ):
     while True:
         try:
-            tc_file = open( 'tc_changes_file', 'r' )
+            #tc_file = open( 'tc_changes_file', 'r' )
+            data = sock.recv(256)
         except:
             time.sleep(0.001)
             continue
         else:
-            lines = tc_file.readlines()
+            received = len(data)
+            if received == 0:
+                break
+            #print('msg: %s at: %s size: of %s'%(data, str(datetime.now()),str(received)))
+            #lines = tc_file.readlines()
             tc_changes = []
-            for line in lines:
-                tc_changes.append( line.split() )
+            for line in data.splitlines():
+               tc_changes.append( line.split())
 
             for h in hosts:
                 for t in tc_changes:
-                    tc_change( h, t[1], t[2] )
+                    #tc_change( h, t[1], t[2] )
 
-            tc_file.close()
+            #tc_file.close()
             time.sleep(0.001)
-    	return
+            continue
+        #time.sleep(1)
+    return
 
 def start_tc_listener( hosts ):
     t = threading.Thread( target=tc_listener, args=(hosts,) )
