@@ -26,12 +26,12 @@ def start_traffic_monitor():
     return
 
 def changeBW( host, bandwidth, interval ):
-    time.sleep( interval )
     cmd = 'tc qdisc replace dev %s root handle 1:0 htb default 10' % (host.defaultIntf(),)
     host.popen( cmd )
     cmd = 'tc class replace dev %s parent 1:0 classid 1:10 htb rate %smbit' % (host.defaultIntf(), bandwidth,)
     host.popen( cmd )
     log_file.write( str(datetime.datetime.now()) + ' ' + str(bandwidth)  + '\n')
+    time.sleep( interval )
 
 def autoBW( host, bandwidth_set, interval ):
     for bw in bandwidth_set:
@@ -59,7 +59,7 @@ def SymbioTest():
     second_set = [10000, 9500, 500, 30, 2, 7500, 400, 10]
     third_set = [10000, 1, 1000, 1, 100, 1, 10, 1, 10, 1, 100, 1, 1000, 1, 10000]
 
-    interval = 0.01 
+    interval = 10.0
     iperf_time = len( third_set ) * interval
 
     #h1test = open( 'h1_tcpdump.out', 'w' ) 

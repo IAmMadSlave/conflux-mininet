@@ -1,6 +1,7 @@
 #!/bin/python
 
 import time
+import datetime
 import threading
 
 import socket
@@ -12,22 +13,47 @@ from mininet.cli  import CLI
 
 from TrafficMonitor import TrafficMonitor
 
-sock = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
-server_address = ( 'localhost', 51717 )
-sock.connect( server_address )
-print ('SymbioDumbell: socket is %s' % sock)
+#sock = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
+#server_address = ( 'localhost', 51717 )
+#sock.connect( server_address )
+#print ('SymbioDumbell: socket is %s' % sock)
+
+log_file = open( 'tc_changes.out', 'w' )
+python_server = None
+server_on = False
+
+# python server
+def set_server( host ):
+    if server_on:
+        return True
+    else:
+        python_server = host.popen( 'python -m SimpleHTTPServer' )
+        server_on = True
+    return True
+
+def kill_server():
+    python_server.terminate()
 
 # function for long single async wget
 def wget_short( src, dest ):
     dest_ip = dest.IP()
-    src.popen( [] )
+    dest_ip = dest_ip + ':8000/two_m.dat'
+    src.popen( ['wget', dest_ip] )
     return
 
 # function for short single async wget
 def wget_long( src, dest ):
     dest_ip = dest.IP()
-    src.popen( [] )
+    dest_ip = dest_ip + ':8000/ten_m.dat' 
+    src.popen( ['wget', dest_ip] )
     return
+
+# iperf 
+def iperf( src, dest, duration, interval ):
+    iperf_server = dest.popen( 'iperf -s' )
+    out, err, exitcode = src.pexec( 'iperf -c %s -t %s -i %s' % ( dest.IP(),
+        duration, interval) )
+    return out
 
 # functions for test_file (tcpprobe)
 def call_traffic_monitor():
@@ -46,8 +72,9 @@ def tc_change( host, bandwidth, drop_prob ):
     cmd = 'tc class replace dev %s parent 1:0 classid 1:10 htb rate %smbit' % (host.defaultIntf(), bandwidth, )
     host.popen( cmd )
     if float( drop_prob ) > 0:
-        cmd = 'tc qdisc replace dev %s root netem loss %s%' %(drop_prob,)
+        cmd = 'tc qdisc replace dev %s root netem loss %s%' %(host.defaultIntf(), drop_prob,)
         host.popen( cmd )
+    log_file.write( str( datetime.datetime.now() ) + ' ' + str( bandwidth ) + '\n' )
     return
 
 def tc_listener( hosts ):
@@ -66,11 +93,11 @@ def tc_listener( hosts ):
             #lines = tc_file.readlines()
             tc_changes = []
             for line in data.splitlines():
-               tc_changes.append( line.split())
+               tc_changes.append( line.split() )
 
             for h in hosts:
                 for t in tc_changes:
-                    #tc_change( h, t[1], t[2] )
+                    tc_change( h, t[1], t[2] )
 
             #tc_file.close()
             time.sleep(0.001)
@@ -105,8 +132,17 @@ def main():
     # start traffic monitor here
     start_traffic_monitor()
 
-    cli = CLI
-    cli( net )
+    # add iperf 20s 1s interval
+    out = iperf( h1, h2, 20, 1 )
+    print out
+
+    set_server( h2 )
+    wget_short( h1, h2 )
+    wget_long( h1, h2 )
+    kill_server()
+
+    #cli = CLI
+    #cli( net )
 
     net.stop
 
