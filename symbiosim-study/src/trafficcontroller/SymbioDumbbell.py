@@ -149,11 +149,16 @@ def main():
     l1 = net.addLink( h1, h2, cls=TCLink )
 
     net.start()
+
+    # default bandwidth of 10mbit
     tc_change( h1, '10', '0.0' )
+
+    # start tcpdumps
+    h1tcpd = h1.popen( ['tcpdump', '-w', 'h1_tcpdump.pcap'] )
+    h2tcpd = h2.popen( ['tcpdump', '-w', 'h2_tcpdump.pcap'] )
 
     # start tc lister here
     start_tc_listener( hosts )
-
 
     # start traffic monitor here
     start_traffic_monitor()
@@ -162,9 +167,10 @@ def main():
     #out = iperf( h1, h2, 20, 1 )
     out = iperf3( h1, h2, 20, 1 )
     print out
-    
-    out, err, exitcode = h1.pexec( 'ping -c 5 10.0.0.2' )
-    print out
+   
+    # ping test
+    #out, err, exitcode = h1.pexec( 'ping -c 5 10.0.0.2' )
+    #print out
 
     #set_server( h2 )
     #wget_short( h1, h2 )
@@ -173,6 +179,9 @@ def main():
 
     #cli = CLI
     #cli( net )
+
+    h1tcpd.terminate()
+    h2tcpd.terminate()
 
     net.stop
 
