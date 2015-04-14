@@ -13,9 +13,9 @@ from mininet.cli  import CLI
 
 from TrafficMonitor import TrafficMonitor
 
-sock = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
-server_address = ( 'localhost', 51717 )
-sock.connect( server_address )
+#sock = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
+#server_address = ( 'localhost', 51717 )
+#sock.connect( server_address )
 #print ('SymbioDumbell: socket is %s' % sock)
 
 log_file = open( 'tc_changes.out', 'w' )
@@ -24,6 +24,9 @@ server_on = False
 
 # python server
 def set_server( host ):
+    global server_on
+    global python_server
+    print('server is on or not:%s'%(server_on))
     if server_on:
         return True
     else:
@@ -36,17 +39,18 @@ def kill_server():
 
 # function for long single async wget
 def wget_short( src, dest ):
+    print ('download from:%s to:%s at %s' %(str(src),str(dest),str(datetime.now())))
     dest_ip = dest.IP()
-    dest_ip = dest_ip + ':8000/two_m.dat'
-    src.popen( ['wget', dest_ip] )
-    return
+    dest_ip = dest_ip + ':8000/plot.py'
+    return src.popen( ['wget', dest_ip] )
+
 
 # function for short single async wget
 def wget_long( src, dest ):
     dest_ip = dest.IP()
     dest_ip = dest_ip + ':8000/ten_m.dat' 
-    src.popen( ['wget', dest_ip] )
-    return
+    return src.popen( ['wget', dest_ip] )
+
 
 # iperf2
 def iperf( src, dest, duration, interval ):
@@ -96,7 +100,7 @@ def tc_change( host, bandwidth, drop_prob ):
     cmd = 'tc class replace dev %s parent 1:0 classid 1:10 htb rate %smbit' % ( host.defaultIntf(), bandwidth, )
     host.popen( cmd )
     if float( drop_prob ) > 0.0:
-        drop_prob = float( drop_prob ) / 100.0
+        drop_prob = float( drop_prob ) * 100.0
         drop_prob = str( drop_prob )
         cmd = 'tc qdisc replace dev %s parent 1:10 handle 10 netem loss %s%% delay 1ms' % ( host.defaultIntf(), drop_prob, )
         host.popen( cmd )
@@ -158,27 +162,38 @@ def main():
     h2tcpd = h2.popen( ['tcpdump', '-w', 'h2_tcpdump.pcap'] )
 
     # start tc lister here
-    start_tc_listener( hosts )
+    #start_tc_listener( hosts )
 
     # start traffic monitor here
     start_traffic_monitor()
 
     # add iperf 20s 1s interval
     #out = iperf( h1, h2, 20, 1 )
-    out = iperf3( h1, h2, 20, 1 )
-    print out
+    #out = iperf3( h1, h2, 20, 1 )
+    #print out
    
     # ping test
     #out, err, exitcode = h1.pexec( 'ping -c 5 10.0.0.2' )
     #print out
-
-    #set_server( h2 )
-    #wget_short( h1, h2 )
-    #wget_long( h1, h2 )
+    
+    #print('server is on or not:%s'%(server_on))
+    set_server( h1 )
+    print ('time for setting server:%s'%str(datetime.now()))
+    time.sleep(0.1)
+    popens = []
+    for i in range(1):
+        popens.append(wget_short(h2, h1))
+        time.sleep(1)
+    #wget_short( h2, h1 )
+    #wget_long( h2, h1 )
     #kill_server()
 
     #cli = CLI
     #cli( net )
+    
+    for p in popens:
+        p.wait()
+    kill_server()
 
     h1tcpd.terminate()
     h2tcpd.terminate()
