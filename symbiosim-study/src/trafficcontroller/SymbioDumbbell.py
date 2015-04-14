@@ -41,7 +41,7 @@ def kill_server():
 def wget_short( src, dest ):
     print ('download from:%s to:%s at %s' %(str(src),str(dest),str(datetime.now())))
     dest_ip = dest.IP()
-    dest_ip = dest_ip + ':8000/plot.py'
+    dest_ip = dest_ip + ':8000/25MB_m.dat'
     return src.popen( ['wget', dest_ip] )
 
 
@@ -169,31 +169,32 @@ def main():
 
     # add iperf 20s 1s interval
     #out = iperf( h1, h2, 20, 1 )
-    #out = iperf3( h1, h2, 20, 1 )
-    #print out
+    out = iperf3( h1, h2, 20, 1 )
+    print out
    
     # ping test
     #out, err, exitcode = h1.pexec( 'ping -c 5 10.0.0.2' )
     #print out
     
     #print('server is on or not:%s'%(server_on))
-    set_server( h1 )
-    print ('time for setting server:%s'%str(datetime.now()))
-    time.sleep(0.1)
-    popens = []
-    for i in range(1):
-        popens.append(wget_short(h2, h1))
-        time.sleep(1)
+    #set_server( h1 )
+    #print ('time for setting server:%s'%str(datetime.now()))
+    #time.sleep(0.1)
+    #popens = []
+    #for i in range(1):
+    #    popens.append(wget_short(h2, h1))
+    #    time.sleep(1)
     #wget_short( h2, h1 )
     #wget_long( h2, h1 )
-    #kill_server()
 
     #cli = CLI
     #cli( net )
     
-    for p in popens:
-        p.wait()
-    kill_server()
+    #for p in popens:
+    #    p.wait()
+    #kill_server()
+
+    time.sleep(30)
 
     h1tcpd.terminate()
     h2tcpd.terminate()

@@ -46,41 +46,6 @@ with open( sys.argv[1], 'r' ) as log:
         full.append( (times[i], total_bytes[i]) )
         i = i + 1
 
-    sample_rate = 1
-
-    temp_list = []
-    plot_list = []
-    current_interval = int( times[0] )
-    i = 0
-    for i in range( len( times ) ):
-        if int( times[i] ) == current_interval:
-            temp_list.append( (times[i], total_bytes[i]) )
-        else:
-            j = 0
-            sample_counter = 0
-            #print current_interval, len( temp_list )
-            if len( temp_list ) > sample_rate:
-                for j in range( len( temp_list ) ):
-                    if sample_counter == sample_rate:
-                        break
-                    if j % ( len( temp_list ) / sample_rate ) == 0:
-                        plot_list.append( temp_list[j] )
-                        sample_counter = sample_counter + 1
-            current_interval = int( times[i] )
-            temp_list = []
-            temp_list.append( (times[i], total_bytes[i]) )
-        i = i + 1
-
-    j = 0
-    sample_counter = 0
-    if len( temp_list ) > sample_rate:
-        for j in range( len( temp_list ) ):
-            if sample_counter == sample_rate:
-                break
-            if j % ( len( temp_list ) / sample_rate ) == 0:
-                plot_list.append( temp_list[j] )
-                sample_counter = sample_counter + 1
-
     graph_title = sys.argv[1]
     last_index = graph_title.rfind( '/' )
     graph_title = graph_title[last_index+1::]
