@@ -76,6 +76,7 @@ class TrafficMonitor():
 
     def continous_update( self, q ):
         testfile = open('test_file', 'w')
+        first_seq = 0
         while True:
             try:
                 line = q.get_nowait()
@@ -100,7 +101,11 @@ class TrafficMonitor():
                             testfile.flush()
                             pipe['nxt'] = seq
                         else:
-                            testfile.write(lineparts[0]+' '+str(seq-tempseq)+'\n')
+                            new_seq = int( lineparts[4], 16 )
+                            if new_seq - first_seq < 0:
+                                testfile.write(lineparts[0]+' '+str(seq-tempseq)+' '+str(new_seq+first_seq)+'\n')
+                            else:
+                                testfile.write(lineparts[0]+' '+str(seq-tempseq)+' '+str(new_seq)+'\n')
                             testfile.flush()
 
                             delta  = seq - pipe['nxt']
