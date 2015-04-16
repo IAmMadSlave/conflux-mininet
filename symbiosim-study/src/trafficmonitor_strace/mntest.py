@@ -14,8 +14,6 @@ def main():
 
     net.start()
 
-    print h1.pid
-
     cli = CLI
     cli( net )
 

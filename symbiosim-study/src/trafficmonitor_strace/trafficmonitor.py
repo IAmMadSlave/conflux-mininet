@@ -1,18 +1,21 @@
 #!/bin/python
 
+import re
+import os
 import sys
+import threading
 from mininet.net import Mininet
 from subprocess import PIPE
 from Queue import Queue, Empty
 from time import sleep
+from datetime import datetime
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
 class trafficmonitor():
 
-    def __init__( self, mn, hosts_map, mn_pipes_file, demand_file ):
+    def __init__( self, mn, mn_pipes_file, demand_file ):
         self.mn = mn
-        self.hosts_map = hosts_map
         self.demand_file = demand_file
 
         mn_pipes = []
@@ -40,7 +43,17 @@ class trafficmonitor():
     
     def run( self ):
         out = self.monitorhost()
-        
+        q = Queue()
+
+        t0 = threading.Thread( target=self.enqueue_output, args=(out.stderr, q,) )
+        t0.daemon = True
+        t0.start()
+
+        t1 = threading.Thread( target=self.timed_update )
+        t1.daemon = True
+        t1.start()
+
+        fds = []
         while True:
             try:
                 line = q.get_nowait()
@@ -48,23 +61,40 @@ class trafficmonitor():
                 line = None
                 sleep( 0.001 )
             else:
-                print line
-        
+                if re.search( 'connect', line ) and re.search( '10.0.0.2', line ): 
+                    line = line.split( ' ' )
+                    fd = ''.join( x for x in line[2] if x.isdigit() ) + '\n'
+                    fds.append( fd )
+                else:
+                    if re.search( 'write', line ):
+                        line = line.split( ' ' )
+                        fd_temp = ''.join( x for x in line[2] if x.isdigit() ) + '\n'
+                        for fd in fds:
+                            if fd == fd_temp:
+                                try:
+                                    d = int( line[-1] )
+                                except:
+                                    continue
+                                else:
+                                    self.mn_pipes_table[0]['demand'] += d
+
+    def timed_update( self ):
+        with open( self.demand_file, 'w' ) as demand:
+            while True:
+                demand.write( str(self.mn_pipes_table[0]['demand']) + '\n')
+                demand.flush()
+                self.mn_pipes_table[0]['demand'] = 0
+                sleep( 1 )
 
     def monitorhost( self ):
-        host = None
-        hostip = self.mn_pipes_table[0].get( 'emu_src' )
-        for ip, name in self.hosts_map:
-            if ip == hostip:
-                host = name
+        host = self.mn.get( 'h1' )
+        env = os.environ.copy()
+        cmd = ['strace', '-f', '-e', 'trace=connect,write,send,sendto,sendmsg', '-p', str(host.pid) ]
+        proc = host.popen( cmd, env=env, stdout=PIPE, stderr=PIPE, bufsize=1,
+                close_fds=ON_POSIX )
+        return proc
 
-        host = self.mn.get( name )
-        cmd = 'strace -f -e trace=network -p %s', ( host.pid, )
-        proc = host.popen( cmd, env=env, stdout=PIPE, bufsize=1,
-                close_fds=ONPOSIX )
-        return proc.stdout
-
-    def enqueue_output( output, queue ):
+    def enqueue_output( self, output, queue ):
         for line in iter( output.readline, b'' ):
             queue.put( line )
         output.close()
