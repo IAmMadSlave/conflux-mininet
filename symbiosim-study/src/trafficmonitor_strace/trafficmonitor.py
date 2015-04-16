@@ -68,3 +68,7 @@ class trafficmonitor():
         for line in iter( output.readline, b'' ):
             queue.put( line )
         output.close()
+
+# cat strace.out | egrep "[0-9]*\ write\([0-9]*" | grep -v "unfinished" | awk
+# '{print $NF}' | awk '{s+=$1} END {print s}'
+# we can do a strace -e trace=write or something?
