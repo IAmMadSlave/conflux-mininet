@@ -41,7 +41,7 @@ def kill_server():
 def wget_short( src, dest ):
     print ('download from:%s to:%s at %s' %(str(src),str(dest),str(datetime.now())))
     dest_ip = dest.IP()
-    dest_ip = dest_ip + ':8000/plot.py'
+    dest_ip = dest_ip + ':8000/25MB_m.dat'
     return src.popen( ['wget', dest_ip] )
 
 
@@ -185,10 +185,13 @@ def main():
     #popens = []
     #for i in range(1):
     #    popens.append(wget_long(h2, h1))
+    #time.sleep(0.1)
+    #popens = []
+    #for i in range(1):
+    #    popens.append(wget_short(h2, h1))
     #    time.sleep(1)
     #wget_short( h2, h1 )
     #wget_long( h2, h1 )
-    #kill_server()
 
     #cli = CLI
     #cli( net )
@@ -198,7 +201,6 @@ def main():
     #kill_server()
     #print ('time for setting server:%s'%str(datetime.now()))
     #time.sleep(20)
-
 
     h1tcpd.terminate()
     h2tcpd.terminate()
