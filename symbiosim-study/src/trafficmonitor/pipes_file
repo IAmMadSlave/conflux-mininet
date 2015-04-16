@@ -1,2 +1,0 @@
-pipe1 topnet:host1:if0 topnet:router0:ifr1 topnet:router1:ifh1
-pipe2 topnet:host2:if0 topnet:router1:ifr0 topnet:router0:ifh1

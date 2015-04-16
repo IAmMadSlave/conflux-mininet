@@ -170,8 +170,8 @@ def main():
     #start_traffic_monitor()
 
     # add iperf 20s 1s interval
-    out = iperf( h1, h2, 50, 1 )
-    #out = iperf3( h1, h2, 20, 1 )
+    #out = iperf( h1, h2, 20, 1 )
+    out = iperf3( h1, h2, 20, 1 )
     print out
    
     # ping test
@@ -181,10 +181,7 @@ def main():
     #print('server is on or not:%s'%(server_on))
     #set_server( h1 )
     #print ('time for setting server:%s'%str(datetime.now()))
-    #time.sleep(30)
-    #popens = []
-    #for i in range(1):
-    #    popens.append(wget_long(h2, h1))
+
     #time.sleep(0.1)
     #popens = []
     #for i in range(1):
@@ -199,8 +196,6 @@ def main():
     #for p in popens:
     #    p.wait()
     #kill_server()
-    #print ('time for setting server:%s'%str(datetime.now()))
-    #time.sleep(20)
 
     h1tcpd.terminate()
     h2tcpd.terminate()
