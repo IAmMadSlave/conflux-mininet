@@ -23,7 +23,7 @@ def main():
     h1 = net.addHost( 'h1' )
     h2 = net.addHost( 'h2' )
 
-    linkopts = dict( bw=10 )
+    linkopts = dict( bw=10, delay='15ms' )
     l1 = net.addLink( h1, h2, cls=TCLink, **linkopts )
 
     net.start()
