@@ -28,10 +28,14 @@ def main():
 
     net.start()
 
+    h1tcpdump = h1.popen( ['tcpdump', '-w', 'h1_tcpdump.pcap'] )
+
     start_traffic_monitor( net, 'mn_pipes_file', 'demand_file' )
 
     cli = CLI
     cli( net )
+
+    h1tcpdump.terminate()
 
     net.stop()
 
