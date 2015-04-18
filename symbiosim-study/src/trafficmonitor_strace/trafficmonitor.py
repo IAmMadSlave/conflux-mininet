@@ -72,17 +72,19 @@ class trafficmonitor():
                         for fd in fds:
                             if fd == fd_temp:
                                 try:
-                                    d = int( line[-1] )
+                                    new_demand = int( line[-1] )
                                 except:
                                     continue
                                 else:
-                                    self.mn_pipes_table[0]['demand'] += d
+                                    self.mn_pipes_table[0]['demand'] +=
+                                    new_demand
 
     def timed_update( self ):
         with open( self.demand_file, 'w' ) as demand:
             while True:
-                demand.write( str(self.mn_pipes_table[0]['name']) + ' ' + 
-                              str(self.mn_pipes_table[0]['demand']) + '\n')
+                demand.write( '{} {} \n'.format( self.mn_pipes_table[0]['name'], 
+                                                 self.mn_pipes_table[0]['demand']
+                                                 ) )
                 demand.flush()
                 self.mn_pipes_table[0]['demand'] = 0
                 sleep( 1 )
