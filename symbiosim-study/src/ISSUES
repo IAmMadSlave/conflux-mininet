@@ -1,0 +1,31 @@
+TrafficMonitor
+==================================================
+distinguish UDP and TCP traffic in traffic monitor
+
+distinguish interfaces in traffic monitor
+
+monitor based on pipe not host in traffic monitor
+
+TrafficController
+==================================================
+default interfaces should be none
+
+listen based on pipe
+
+maintain table to prevent redundant changes
+
+thread
+
+
+
+TrafficController
+=================================================
+[X] Refactor tc change to seperate for bandwidth and drop_prob
+[X] Add tables based on pipes (see trafficmonitor)
+[X] Check table before change
+[ ] Add tc listener
+[ ] Listen and thread based on pipes table
+[ ] Add global limit of 10Gbit to tc tree
+[ ] Restructure tc tree to include a root class
+[ ] Parameterize root class?
+[ ] Parameterize delay? (initial only?)

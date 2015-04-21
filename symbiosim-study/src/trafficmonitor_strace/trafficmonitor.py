@@ -39,7 +39,7 @@ class trafficmonitor():
                                           'emu_dest': emu_dest,
                                           'sim_dest': sim_dest,
                                           'demand': 0 } )
-            self.run()
+        self.run()
     
     def run( self ):
         out = self.monitorhost()
