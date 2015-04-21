@@ -23,9 +23,16 @@ TrafficController
 [X] Refactor tc change to seperate for bandwidth and drop_prob
 [X] Add tables based on pipes (see trafficmonitor)
 [X] Check table before change
+[X] Refactor default args
 [ ] Add tc listener
-[ ] Listen and thread based on pipes table
-[ ] Add global limit of 10Gbit to tc tree
-[ ] Restructure tc tree to include a root class
-[ ] Parameterize root class?
-[ ] Parameterize delay? (initial only?)
+[X] Listen and thread based on pipes table
+[X] Restructure tc tree to include a root class
+[X] Parameterize root class?
+[X] Parameterize delay? (initial only?)
+
+
+Questions?
+================================================
+What does the format of tc changes look like exactly?
+Is bandwidth a float?
+Is there initial drop prob?
