@@ -24,7 +24,7 @@ TrafficController
 [X] Add tables based on pipes (see trafficmonitor)
 [X] Check table before change
 [X] Refactor default args
-[ ] Add tc listener
+[X] Add tc listener
 [X] Listen and thread based on pipes table
 [X] Restructure tc tree to include a root class
 [X] Parameterize root class?
