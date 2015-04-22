@@ -42,45 +42,51 @@ class trafficmonitor():
         self.run()
     
     def run( self ):
-        out = self.monitorhost()
-        q = Queue()
+        self.monitors = []
+        for i, pipe in enumerate( self.mn_pipes_table ):
+            out = self.strace_monitor( pipe['emu_src'] )
+            q = Queue()
+            t = threading.Thread( target=self.enqueue_output, args(out.stderr, q,))
+            t.daemon = True
+            t.start()
+            self.monitors.append( (out, q, t, i ) )
 
-        t0 = threading.Thread( target=self.enqueue_output, args=(out.stderr, q,) )
+        t0 = threading.Thread( target=self.timed_update )
         t0.daemon = True
         t0.start()
 
-        t1 = threading.Thread( target=self.timed_update )
+        t1 = threading.Thread( target=self.strace_listener )
         t1.daemon = True
         t1.start()
-
+        
+    def strace_listener( self ):
         fds = []
         while True:
-            try:
-                line = q.get_nowait()
-            except:
-                line = None
-                sleep( 0.001 )
-            else:
-                if re.search( 'connect', line ) and re.search( '10.0.0.2', line ): 
-                    line = line.split( ' ' )
-                    fd = ''.join( x for x in line[2] if x.isdigit() ) + '\n'
-                    fds.append( fd )
+            for proc, q, t, i in self.monitors:
+                try:
+                    line = q.get_nowait()
+                except:
+                    line = None
+                    sleep( 0.001 )
                 else:
-                    if re.search( 'write', line ):
+                    emu_dest = self.mn_pipes_table[i]['emu_dest']
+                    if re.search( 'connect', line ) and re.search( emu_dest, line ): 
                         line = line.split( ' ' )
-                        fd_temp = ''.join( x for x in line[2] if x.isdigit() ) + '\n'
-                        for fd in fds:
-                            if fd == fd_temp:
-                                try:
-                                    new_demand = int( line[-1] )
-                                except:
-                                    continue
-                                else:
-                                    self.mn_pipes_table[0]['demand'] +=
-                                    new_demand
-
-    def strace_listener( self ):
-        return
+                        fd = ''.join( x for x in line[2] if x.isdigit() ) + '\n'
+                        fds.append( fd )
+                    else:
+                        if re.search( 'write', line ):
+                            line = line.split( ' ' )
+                            fd_temp = ''.join( x for x in line[2] if x.isdigit() ) + '\n'
+                            for fd in fds:
+                                if fd == fd_temp:
+                                    try:
+                                        new_demand = int( line[-1] )
+                                    except:
+                                        continue
+                                    else:
+                                        self.mn_pipes_table[i]['demand'] +=
+                                                new_demand
 
     def timed_update( self ):
         with open( self.demand_file, 'w' ) as demand:
@@ -92,8 +98,8 @@ class trafficmonitor():
                 self.mn_pipes_table[0]['demand'] = 0
                 sleep( 1 )
 
-    def monitorhost( self ):
-        host = self.mn.get( 'h1' )
+    def strace_monitor( self, host ):
+        host = self.get_host_by_ip( host )
         env = os.environ.copy()
         cmd = ['strace', '-f', '-e', 'trace=connect,write,send,sendto,sendmsg', '-p', str(host.pid) ]
         proc = host.popen( cmd, env=env, stdout=PIPE, stderr=PIPE, bufsize=1,
