@@ -79,6 +79,9 @@ class trafficmonitor():
                                     self.mn_pipes_table[0]['demand'] +=
                                     new_demand
 
+    def strace_listener( self ):
+        return
+
     def timed_update( self ):
         with open( self.demand_file, 'w' ) as demand:
             while True:
@@ -101,3 +104,15 @@ class trafficmonitor():
         for line in iter( output.readline, b'' ):
             queue.put( line )
         output.close()
+
+    def get_host_by_ip( self, ip ):
+        for host in self.mn.hosts:
+            if host.IP() == ip:
+                return host
+        return null
+
+    def get_pipe_table_by_name( self, name ):
+        for pipe in self.mn_pipes_table:
+            if pipe['name'] == name:
+                return pipe
+        return null

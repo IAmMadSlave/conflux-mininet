@@ -72,6 +72,7 @@ class trafficmonitor():
                     host = self.get_host_by_ip( pipe['emu_src'] )
                     self.tc_change_bandwidth( line[2], host, pipe )
                     self.tc_change_drop_prob( line[1], None, host, pipe )
+                    time.sleep( 1 )
 
     def setup_tc( self, host, pipe=None, interface=None, bandwidth=None, delay=None ):
         if interface is None:
