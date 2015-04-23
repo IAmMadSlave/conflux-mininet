@@ -4,11 +4,13 @@ import re
 import os
 import sys
 import threading
-from mininet.net import Mininet
 from subprocess import PIPE
 from Queue import Queue, Empty
 from time import sleep
 from datetime import datetime
+
+from mininet.net import Mininet
+from proc import procinfofactory, procinfo
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
@@ -33,23 +35,28 @@ class trafficmonitor():
             emu_dest = mn_pipes[i][3]
             sim_dest = mn_pipes[i][4]
 
+            proc_info = procinfofactory()
+
             self.mn_pipes_table.append( { 'name': name,
                                           'emu_src': emu_src,
                                           'sim_src': sim_src,
                                           'emu_dest': emu_dest,
                                           'sim_dest': sim_dest,
+                                          'tcp_demand': 0,
+                                          'udp_demand': 0,
+                                          'proc_info': proc_info,
                                           'demand': 0 } )
         self.run()
-    
+
     def run( self ):
         self.monitors = []
-        for i, pipe in enumerate( self.mn_pipes_table ):
+        for pipe in  self.mn_pipes_table:
             out = self.strace_monitor( pipe['emu_src'] )
             q = Queue()
-            t = threading.Thread( target=self.enqueue_output, args(out.stderr, q,))
+            t = threading.Thread( target=self.enqueue_output, args=(out.stderr, q,))
             t.daemon = True
             t.start()
-            self.monitors.append( (out, q, t, i ) )
+            self.monitors.append( (out, q, t, pipe ) )
 
         t0 = threading.Thread( target=self.timed_update )
         t0.daemon = True
@@ -58,21 +65,23 @@ class trafficmonitor():
         t1 = threading.Thread( target=self.strace_listener )
         t1.daemon = True
         t1.start()
-        
+
     def strace_listener( self ):
         fds = []
         while True:
-            for proc, q, t, i in self.monitors:
+            for proc, q, t, pipe in self.monitors:
                 try:
                     line = q.get_nowait()
                 except:
                     line = None
                     sleep( 0.001 )
                 else:
-                    emu_dest = self.mn_pipes_table[i]['emu_dest']
-                    if re.search( 'connect', line ) and re.search( emu_dest, line ): 
+                    emu_dest = pipe['emu_dest']
+                    if re.search( 'connect', line ) and re.search( emu_dest, line ):
                         line = line.split( ' ' )
+                        temp_proc = pipe['proc_info'].get_proc( line[0].strip() )
                         fd = ''.join( x for x in line[2] if x.isdigit() ) + '\n'
+                        temp_proc.add_fd( fd, )
                         fds.append( fd )
                     else:
                         if re.search( 'write', line ):
@@ -85,18 +94,18 @@ class trafficmonitor():
                                     except:
                                         continue
                                     else:
-                                        self.mn_pipes_table[i]['demand'] +=
-                                                new_demand
+                                        pipe['demand'] += new_demand
 
     def timed_update( self ):
         with open( self.demand_file, 'w' ) as demand:
             while True:
-                demand.write( '{} {} \n'.format( self.mn_pipes_table[0]['name'], 
-                                                 self.mn_pipes_table[0]['demand']
-                                                 ) )
-                demand.flush()
-                self.mn_pipes_table[0]['demand'] = 0
-                sleep( 1 )
+                for pipe in self.mn_pipes_table:
+                    demand.write( '{} {} \n'.format( pipe['name'],
+                                                     pipe['demand']
+                                                   ) )
+                    demand.flush()
+                    pipe['demand'] = 0
+                    sleep( 1 )
 
     def strace_monitor( self, host ):
         host = self.get_host_by_ip( host )
@@ -115,10 +124,9 @@ class trafficmonitor():
         for host in self.mn.hosts:
             if host.IP() == ip:
                 return host
-        return null
+        return None
 
     def get_pipe_table_by_name( self, name ):
         for pipe in self.mn_pipes_table:
             if pipe['name'] == name:
                 return pipe
-        return null

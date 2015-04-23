@@ -1,38 +1,28 @@
-TrafficMonitor
-==================================================
-distinguish UDP and TCP traffic in traffic monitor
-
-distinguish interfaces in traffic monitor
-
-monitor based on pipe not host in traffic monitor
-
-TrafficController
-==================================================
-default interfaces should be none
-
-listen based on pipe
-
-maintain table to prevent redundant changes
-
-thread
-
-
-
-TrafficController
-=================================================
-[X] Refactor tc change to seperate for bandwidth and drop_prob
-[X] Add tables based on pipes (see trafficmonitor)
-[X] Check table before change
-[X] Refactor default args
-[X] Add tc listener
-[X] Listen and thread based on pipes table
-[X] Restructure tc tree to include a root class
-[X] Parameterize root class?
-[X] Parameterize delay? (initial only?)
-
-
 Questions?
 ================================================
 What does the format of tc changes look like exactly?
 Is bandwidth a float?
 Is there initial drop prob?
+
+
+trafficmonitor
+================================================
+[X] setup tables for UDP and TCP demand(s)
+[X] setup tables for TCP fds and sockets info
+[ ] setup TCP fds and sockets table with info methods
+[ ] UDP demand
+    [ ] UDP demand filtering
+    [ ] UDP demand table check
+    [ ] UDP demand calculation
+    [ ] UDP demand table update
+    [ ] UDP demand report
+[ ] TCP demand
+    [ ] TCP demand fd watch
+    [ ] TCP demand filtering
+    [ ] TCP demand table check
+    [ ] TCP demand calculation
+    [ ] TCP demand table update
+    [ ] TCP demand report
+
+[ ] check if pid is socket
+[ ] if socket get info

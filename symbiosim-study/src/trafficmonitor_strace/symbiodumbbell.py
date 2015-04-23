@@ -12,7 +12,7 @@ def traffic_monitor( net, mn_pipes_file, demand_file ):
     trafficmonitor( net, mn_pipes_file, demand_file )
 
 def start_traffic_monitor( net, mn_pipes_file, demand_file ):
-    t = threading.Thread( target=traffic_monitor, args=(net, 
+    t = threading.Thread( target=traffic_monitor, args=(net,
         mn_pipes_file, demand_file,) )
     t.daemon = True
     t.start()
