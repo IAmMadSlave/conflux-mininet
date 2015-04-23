@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 
 import threading
 import subprocess
@@ -12,11 +12,13 @@ class trafficmonitor():
     def __init__( self, mn, mn_pipes_file ):
         self.mn = mn
 
+        # read in pipes info from file
         mn_pipes = []
         with open( mn_pipes_file, 'r' ) as openfile:
             for line in openfile:
                 mn_pipes.append( line )
 
+        # setup pipes table
         self.mn_pipes_table = []
         for i,_ in enumerate( mn_pipes ):
             mn_pipes[i] = mn_pipes[i].rstrip( '\n' ).split( ' ' )
