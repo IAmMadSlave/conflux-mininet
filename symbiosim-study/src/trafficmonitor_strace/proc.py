@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import os
+import shlex
 from re import match
 from subprocess import Popen, PIPE
 
@@ -37,6 +39,7 @@ class procinfo():
             inode = self.is_socket( fd )
             if inode:
                 # use inode to get pipe
+
                 fd_info = { 'name': None,
                             'fd': fd }
                 self.fds.add( fd_info )
@@ -58,7 +61,25 @@ class procinfo():
         return None
 
     def inode_to_pipe( self, inode ):
-        return
+        env = os.environ.copy()
+        cmd = ['cat', '/proc/net/tcp']
+        cat = host.popen( cmd, env=env, stdout=PIPE, stderr=PIPE )
+        cat.wait()
+        cmd = "awk '{if (NR!=1) {print $3, $10}}'"
+        cmd = shlex.split( cmd )
+        awk = host.popen( cmd, env, stdin=cat.stdout, stdout=PIPE, stderr=PIPE )
+        for line in awk.stdout.readlines():
+            line = line.split()
+            if line[-1].strip( '\n' ) == inode:
+                line = line[0].split( ':' )[0]
+                dest_ip = [dest_ip[i:i+2] for i in range(0, len(dest_ip), 2)]
+                dest_ip = [str(int(x, 16)) for x in dest_ip]
+                dest_ip = dest_ip[::-1]
+                dest_ip = '.'.join( dest_ip )
+
+                return dest_ip
+
+        return None
 
     def __str__( self ):
         out = 'pid: {}\n'.format( self.pid )
