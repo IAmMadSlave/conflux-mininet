@@ -48,7 +48,8 @@ class trafficmonitor():
     def run( self ):
         self.monitors = []
         for host in self.host_set:
-            pif = procinfofactory( host, self.mn_pipes_table )
+            host_real = self.get_host_by_ip( host )
+            pif = procinfofactory( host_real, self.mn_pipes_table )
             out = self.strace_monitor( host )
             q = Queue()
             t = threading.Thread( target=self.enqueue_output, args=(out.stderr, q,) )
@@ -73,20 +74,23 @@ class trafficmonitor():
                     line = None
                     sleep( 0.001 )
                 else:
+                    print line
                     if re.search( 'connect', line ):
                         line = line.split( ' ' )
-                        temp_pid = line[0].strip( '\n' )
+                        temp_pid = line[1].strip( '\n' )
+                        temp_pid = temp_pid.translate( None, '[]' )
                         # add pid
                         proc = pif.add_proc( temp_pid )
                         temp_fd = ''.join( x for x in line[2] if x.isdigit() )
                         # add fd
                         temp_pipe = proc.add_fd( temp_fd )
                         #temp_pipe['tcp_demand'] += int(line[-1])
-                    if re.search( 'write', line ):
+                    elif re.search( 'write', line ):
                         line = line.split( ' ' )
-                        temp_pid = line[0].strip( '\n' )
+                        temp_pid = line[1].strip( '\n' )
+                        temp_pid = temp_pid.translate( None, '[]' )
                         # add pid
-                        proc = pif.add_proc( temp_pid )
+                        proc = pif.add_proc( str(temp_pid) )
                         temp_fd = ''.join( x for x in line[2] if x.isdigit() )
                         # add fd
                         temp_pipe = proc.add_fd( temp_fd )

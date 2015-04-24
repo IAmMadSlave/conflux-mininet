@@ -70,11 +70,11 @@ class procinfo():
         cat.wait()
         cmd = "awk '{if (NR!=1) {print $3, $10}}'"
         cmd = shlex.split( cmd )
-        awk = self.host.popen( cmd, env, stdin=cat.stdout, stdout=PIPE, stderr=PIPE )
+        awk = self.host.popen( cmd, env=env, stdin=cat.stdout, stdout=PIPE, stderr=PIPE )
         for line in awk.stdout.readlines():
             line = line.split()
             if line[-1].strip( '\n' ) == inode:
-                line = line[0].split( ':' )[0]
+                dest_ip = line[0].split( ':' )[0]
                 dest_ip = [dest_ip[i:i+2] for i in range(0, len(dest_ip), 2)]
                 dest_ip = [str(int(x, 16)) for x in dest_ip]
                 dest_ip = dest_ip[::-1]
