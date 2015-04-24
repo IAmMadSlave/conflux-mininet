@@ -3,31 +3,46 @@
 from re import match
 from subprocess import Popen, PIPE
 
+from mininet.net import Mininet
+from mininet.node import Host
+
 class procinfofactory():
-    def __init__( self ):
+    def __init__( self, host, mn_pipes_table ):
+        self.host = host
+        self.mn_pipes_table = mn_pipes_table
         self.procs = []
         return
 
-    def get_proc( self, pid ):
+    def add_proc( self, pid ):
         for proc in self.procs:
             if proc.pid == int(pid):
                 return proc
         else:
-            proc = procinfo( pid )
+            proc = procinfo( pid, self.host, self.mn_pipes_table )
             self.procs.append( proc )
             return proc
 
 class procinfo():
-    def __init__( self, pid ):
+    def __init__( self, pid, host, mn_pipes_table ):
         self.pid = int(pid)
+        self.host = host
+        self.mn_pipes_table = mn_pipes_table
         self.fds = []
 
-    def add_fd( self, fd, dest_ip, port ):
-        tcp_info = { 'fd': int(fd),
-                     'dest_ip': dest_ip,
-                     'dest_port': int(port) }
-
-        self.fds.append( tcp_info )
+    def add_fd( self, fd ):
+        for f in self.fds:
+            if fd == f['fd']:
+                return f['name']
+        else:
+            inode = self.is_socket( fd )
+            if inode:
+                # use inode to get pipe
+                fd_info = { 'name': None,
+                            'fd': fd }
+                self.fds.add( fd_info )
+                return fd_info['name']
+            else:
+                return None
 
     def is_socket( self, fd ):
         path = '/proc/{}/fd/{}'.format( self.pid, fd )
@@ -42,6 +57,9 @@ class procinfo():
 
         return None
 
+    def inode_to_pipe( self, inode ):
+        return
+
     def __str__( self ):
         out = 'pid: {}\n'.format( self.pid )
         for fd in self.fds:
@@ -50,5 +68,5 @@ class procinfo():
 
 if __name__ == '__main__':
     pif = procinfofactory()
-    proc = pif.get_proc( '18549' )
+    proc = pif.add_proc( '18549' )
     print proc.is_socket( '3' )

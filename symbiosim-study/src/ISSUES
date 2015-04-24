@@ -3,6 +3,7 @@ Questions?
 What does the format of tc changes look like exactly?
 Is bandwidth a float?
 Is there initial drop prob?
+Can two flows share the same interface
 
 
 trafficmonitor
@@ -26,3 +27,6 @@ trafficmonitor
 
 [ ] check if pid is socket
 [ ] if socket get info
+
+
+
