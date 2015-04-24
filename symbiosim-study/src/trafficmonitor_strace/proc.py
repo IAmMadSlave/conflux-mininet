@@ -39,11 +39,14 @@ class procinfo():
             inode = self.is_socket( fd )
             if inode:
                 # use inode to get pipe
-
-                fd_info = { 'name': None,
-                            'fd': fd }
-                self.fds.add( fd_info )
-                return fd_info['name']
+                pipe = self.inode_to_pipe( inode )
+                if pipe:
+                    fd_info = { 'name': pipe,
+                                'fd': fd }
+                    self.fds.add( fd_info )
+                    return fd_info['name']
+                else:
+                    return None
             else:
                 return None
 
@@ -63,11 +66,11 @@ class procinfo():
     def inode_to_pipe( self, inode ):
         env = os.environ.copy()
         cmd = ['cat', '/proc/net/tcp']
-        cat = host.popen( cmd, env=env, stdout=PIPE, stderr=PIPE )
+        cat = self.host.popen( cmd, env=env, stdout=PIPE, stderr=PIPE )
         cat.wait()
         cmd = "awk '{if (NR!=1) {print $3, $10}}'"
         cmd = shlex.split( cmd )
-        awk = host.popen( cmd, env, stdin=cat.stdout, stdout=PIPE, stderr=PIPE )
+        awk = self.host.popen( cmd, env, stdin=cat.stdout, stdout=PIPE, stderr=PIPE )
         for line in awk.stdout.readlines():
             line = line.split()
             if line[-1].strip( '\n' ) == inode:
@@ -76,10 +79,21 @@ class procinfo():
                 dest_ip = [str(int(x, 16)) for x in dest_ip]
                 dest_ip = dest_ip[::-1]
                 dest_ip = '.'.join( dest_ip )
-
-                return dest_ip
+                try:
+                    pipe = self.find_pipe( self.host.IP, dest_ip )
+                except:
+                    print 'No such pipe!'
+                else:
+                    return pipe
 
         return None
+
+    def find_pipe( self, emu_src, emu_dest ):
+        for pipe in self.mn_pipes_table:
+            if pipe['emu_src'] == emu_src and pipe['emu_dest'] == emu_dest:
+                return pipe
+        else:
+            raise LookupError
 
     def __str__( self ):
         out = 'pid: {}\n'.format( self.pid )
