@@ -66,6 +66,7 @@ class trafficmonitor():
         t1.start()
 
     def strace_listener( self ):
+        strace = open( 'strace.out', 'w' )
         while True:
             for pif, q in self.monitors:
                 try:
@@ -74,35 +75,38 @@ class trafficmonitor():
                     line = None
                     sleep( 0.001 )
                 else:
-                    print line
-                    if re.search( 'connect', line ):
-                        line = line.split( ' ' )
-                        temp_pid = line[1].strip( '\n' )
-                        temp_pid = temp_pid.translate( None, '[]' )
-                        # add pid
-                        proc = pif.add_proc( temp_pid )
-                        temp_fd = ''.join( x for x in line[2] if x.isdigit() )
-                        # add fd
-                        temp_pipe = proc.add_fd( temp_fd )
-                        #temp_pipe['tcp_demand'] += int(line[-1])
-                    elif re.search( 'write', line ):
-                        line = line.split( ' ' )
-                        temp_pid = line[1].strip( '\n' )
-                        temp_pid = temp_pid.translate( None, '[]' )
-                        # add pid
-                        proc = pif.add_proc( str(temp_pid) )
-                        temp_fd = ''.join( x for x in line[2] if x.isdigit() )
-                        # add fd
-                        temp_pipe = proc.add_fd( temp_fd )
-                        if temp_pipe:
-                            for pipe in self.mn_pipes_table:
-                                if temp_pipe == pipe['name']:
-                                    try:
-                                        new_demand = int(line[-1])
-                                    except:
-                                        continue
-                                    else:
-                                        temp_pipe['tcp_demand'] += new_demand
+                    if re.search( 'pid', line ):
+                        if re.search( 'connect', line ):
+                            line = line.split( ' ' )
+                            strace.write(str(line)+'\n')
+                            temp_pid = line[1].strip( '\n' )
+                            temp_pid = temp_pid.translate( None, '[]' )
+                            # add pid
+                            proc = pif.add_proc( temp_pid )
+                            temp_fd = ''.join( x for x in line[2] if x.isdigit() )
+                            # add fd
+                            temp_pipe = proc.add_fd( temp_fd )
+                            #temp_pipe['tcp_demand'] += int(line[-1])
+                        elif re.search( 'write', line ):
+                            line = line.split( ' ' )
+                            strace.write(str(line)+'\n')
+                            temp_pid = line[1].strip( '\n' )
+                            temp_pid = temp_pid.translate( None, '[]' )
+                            # add pid
+                            proc = pif.add_proc( str(temp_pid) )
+                            temp_fd = ''.join( x for x in line[2] if x.isdigit() )
+                            # add fd
+                            temp_pipe = proc.add_fd( temp_fd )
+                            if temp_pipe:
+                                for pipe in self.mn_pipes_table:
+                                    if temp_pipe == pipe['name']:
+                                        try:
+                                            new_demand = int(line[-1])
+                                            print demand
+                                        except:
+                                            continue
+                                        else:
+                                            temp_pipe['tcp_demand'] += new_demand
 
     def timed_update( self ):
         with open( self.demand_file, 'w' ) as demand:

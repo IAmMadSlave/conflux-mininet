@@ -82,7 +82,8 @@ class procinfo():
                 try:
                     pipe = self.find_pipe( self.host.IP, dest_ip )
                 except:
-                    print 'No such pipe!'
+                    #print 'No such pipe!'
+                    continue
                 else:
                     return pipe
 
