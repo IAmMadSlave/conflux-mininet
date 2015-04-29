@@ -2,6 +2,7 @@
 
 import os
 import shlex
+import logging
 from re import match
 from subprocess import Popen, PIPE
 
@@ -9,41 +10,48 @@ from mininet.net import Mininet
 from mininet.node import Host
 
 class procinfofactory():
-    def __init__( self, host, mn_pipes_table ):
+    def __init__( self, host, mn_pipes_table, logger ):
         self.host = host
         self.mn_pipes_table = mn_pipes_table
+        self.logger = logger
         self.procs = []
         return
 
     def add_proc( self, pid ):
         for proc in self.procs:
             if proc.pid == int(pid):
+                self.logger.debug( 'ProcInfo found with PID:{}'.format( pid ) )
                 return proc
         else:
-            proc = procinfo( pid, self.host, self.mn_pipes_table )
+            proc = procinfo( pid, self.host, self.mn_pipes_table, self.logger )
             self.procs.append( proc )
+            self.logger.debug( 'New ProcInfo with PID:{}'.format( pid ) )
             return proc
 
 class procinfo():
-    def __init__( self, pid, host, mn_pipes_table ):
+    def __init__( self, pid, host, mn_pipes_table, logger ):
         self.pid = int(pid)
         self.host = host
         self.mn_pipes_table = mn_pipes_table
+        self.logger = logger
         self.fds = []
 
     def add_fd( self, fd ):
         for f in self.fds:
             if fd == f['fd']:
+                self.logger.debug( 'Found FD:{}'.format( f['name'] ) )
                 return f['name']
         else:
             inode = self.is_socket( fd )
             if inode:
+                self.logger.debug( 'FD:{} is socket'.format( fd ) )
                 # use inode to get pipe
                 pipe = self.inode_to_pipe( inode )
                 if pipe:
-                    fd_info = { 'name': pipe,
+                    self.logger.debug( 'FD:{} belongs to {}'.format( fd, pipe['name'] ) )
+                    fd_info = { 'name': pipe['name'],
                                 'fd': fd }
-                    self.fds.add( fd_info )
+                    self.fds.append( fd_info )
                     return fd_info['name']
                 else:
                     return None
@@ -80,7 +88,8 @@ class procinfo():
                 dest_ip = dest_ip[::-1]
                 dest_ip = '.'.join( dest_ip )
                 try:
-                    pipe = self.find_pipe( self.host.IP, dest_ip )
+                    self.logger.debug( 'Find pipe from {} to {}'.format( self.host.IP(), dest_ip ) )
+                    pipe = self.find_pipe( self.host.IP(), dest_ip )
                 except:
                     #print 'No such pipe!'
                     continue

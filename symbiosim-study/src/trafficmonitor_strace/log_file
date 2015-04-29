@@ -1,0 +1,289 @@
+DEBUG - Add 10.0.0.1 to host set
+DEBUG - Add pipe1 to pipes table
+DEBUG - ProcInfoFactory for h1
+DEBUG - Start strace on 10.0.0.1
+DEBUG - Start stdout processing for 10.0.0.1
+DEBUG - Start timed updating
+DEBUG - Demand of 0 on pipe1
+DEBUG - Demand is now 0 on pipe1
+DEBUG - Start strace listener
+DEBUG - Demand of 0 on pipe1
+DEBUG - Demand is now 0 on pipe1
+DEBUG - Line is of type WRITE
+DEBUG - New ProcInfo with PID:28390
+DEBUG - PID:28390 FD:1 PIPE:None
+DEBUG - Line is of type CONNECT
+DEBUG - New ProcInfo with PID:28392
+DEBUG - FD:3 is socket
+DEBUG - Find pipe from 10.0.0.1 to 10.0.0.2
+DEBUG - FD:3 belongs to pipe1
+DEBUG - PID:28392 FD:3 PIPE:pipe1
+DEBUG - Line is of type CONNECT
+DEBUG - ProcInfo found with PID:28392
+DEBUG - Found FD:pipe1
+DEBUG - PID:28392 FD:3 PIPE:pipe1
+DEBUG - Line is of type CONNECT
+DEBUG - ProcInfo found with PID:28392
+DEBUG - Found FD:pipe1
+DEBUG - PID:28392 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28392
+DEBUG - PID:28392 FD:1 PIPE:None
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28392
+DEBUG - PID:28392 FD:1 PIPE:None
+DEBUG - Line is of type WRITE
+DEBUG - New ProcInfo with PID:28400
+DEBUG - PID:28400 FD:1 PIPE:None
+DEBUG - Line is of type CONNECT
+DEBUG - ProcInfo found with PID:28400
+DEBUG - PID:28400 FD:4 PIPE:None
+DEBUG - Line is of type CONNECT
+DEBUG - New ProcInfo with PID:28403
+DEBUG - FD:3 is socket
+DEBUG - Find pipe from 10.0.0.1 to 10.0.0.2
+DEBUG - FD:3 belongs to pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - New ProcInfo with PID:28404
+DEBUG - PID:28404 FD:1 PIPE:None
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28404
+DEBUG - PID:28404 FD:1 PIPE:None
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28404
+DEBUG - FD: is socket
+DEBUG - Find pipe from 10.0.0.1 to 10.0.0.2
+DEBUG - FD: belongs to pipe1
+DEBUG - PID:28404 FD: PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - FD: is socket
+DEBUG - Find pipe from 10.0.0.1 to 10.0.0.2
+DEBUG - FD: belongs to pipe1
+DEBUG - PID:28403 FD: PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Demand of 393282 on pipe1
+DEBUG - Demand is now 0 on pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Demand of 1310720 on pipe1
+DEBUG - Demand is now 0 on pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Demand of 1310720 on pipe1
+DEBUG - Demand is now 0 on pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Demand of 1441792 on pipe1
+DEBUG - Demand is now 0 on pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Demand of 1179648 on pipe1
+DEBUG - Demand is now 0 on pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28403
+DEBUG - Found FD:pipe1
+DEBUG - PID:28403 FD:3 PIPE:pipe1
+DEBUG - Line is of type WRITE
+DEBUG - ProcInfo found with PID:28404
+DEBUG - PID:28404 FD:1 PIPE:None
+DEBUG - Demand of 1179648 on pipe1
+DEBUG - Demand is now 0 on pipe1
+DEBUG - Demand of 0 on pipe1
+DEBUG - Demand is now 0 on pipe1
