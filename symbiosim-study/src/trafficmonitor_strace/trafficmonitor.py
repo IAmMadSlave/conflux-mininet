@@ -102,6 +102,27 @@ class trafficmonitor():
                             temp_pipe = proc.add_fd( temp_fd )
                             logging.debug( 'PID:{} FD:{} PIPE:{}'.format( temp_pid, temp_fd, temp_pipe ) )
                             #temp_pipe['tcp_demand'] += int(line[-1])
+                        elif re.search( 'close', line ):
+                            logging.debug( 'Line is of type CLOSE' )
+                            strace.write(str(line)+'\n')
+                            line = line.split()
+                            #temp_pid = line[0]
+                        elif re.search( 'socket', line ):
+                            logging.debug( 'Line is of type SOCKET' )
+                            strace.write(str(line)+'\n')
+                            line = line.split()
+                        elif re.search( 'send', line ):
+                            logging.debug( 'Line is of type SEND' )
+                            strace.write(str(line)+'\n')
+                            line = line.split()
+                        elif re.search( 'sendto', line ):
+                            logging.debug( 'Line is of type SENDTO' )
+                            strace.write(str(line)+'\n')
+                            line = line.split()
+                        elif re.search( 'sendmsg', line ):
+                            logging.debug( 'Line is of type SENDMSG' )
+                            strace.write(str(line)+'\n')
+                            line = line.split()
                         elif re.search( 'write', line ):
                             logging.debug( 'Line is of type WRITE' )
                             line = line.split( ' ' )

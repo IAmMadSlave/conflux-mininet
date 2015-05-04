@@ -58,6 +58,12 @@ class procinfo():
             else:
                 return None
 
+    def remove_fd( self, fd ):
+        for i,fd in enumerate( self.fds ):
+            if fd == f['fd']:
+                self.fds.pop( i )
+                return
+
     def is_socket( self, fd ):
         path = '/proc/{}/fd/{}'.format( self.pid, fd )
         p = Popen( ['sudo', 'ls', '-l', path], stdout=PIPE, stderr=PIPE )
